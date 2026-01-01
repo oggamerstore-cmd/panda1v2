@@ -364,7 +364,7 @@ class PandaConfig(BaseSettings):
     
     # HTTPS Settings (v0.2.10)
     enable_https: bool = Field(
-        default=False,
+        default=True,
         description="Enable HTTPS (required for mic on non-localhost)"
     )
     https_port: int = Field(
