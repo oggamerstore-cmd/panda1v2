@@ -3,7 +3,7 @@ PANDA.1 Web GUI Server
 ======================
 FastAPI-based web GUI for PANDA.1.
 
-Version: 0.2.10
+Version: 0.2.11
 
 Features:
 - Web-based GUI served locally or on LAN
@@ -51,6 +51,7 @@ import time
 import uuid
 import base64
 import ssl
+import socket
 from datetime import datetime
 from typing import Optional, Dict, Any, List
 from pathlib import Path
@@ -77,7 +78,16 @@ except ImportError:
 
 
 # Version
-__version__ = "0.2.10"
+__version__ = "0.2.11"
+
+
+# Import TTS manager for voice functionality
+try:
+    from app.panda_tts import get_tts_manager, stop_speech
+except ImportError:
+    get_tts_manager = None
+    stop_speech = None
+    logger.warning("TTS manager not available")
 
 
 # Action log storage (last 200 entries)
@@ -696,7 +706,7 @@ GUI_HTML = '''<!DOCTYPE html>
 <body>
     <div class="container">
         <div class="header">
-            <div class="logo">🐼 PANDA.1 <span style="font-size: 0.7em; color: #666;">v0.2.10</span></div>
+            <div class="logo">🐼 PANDA.1 <span style="font-size: 0.7em; color: #666;">v0.2.11</span></div>
             <div class="status-bar">
                 <div class="status-item">
                     <span class="status-dot" id="llmStatus"></span>
@@ -1507,10 +1517,13 @@ if FASTAPI_AVAILABLE:
     voice_state = {"mic": "SLEEPING", "transcript": "", "speaking": False}
     scott_status = {"online": None, "last_check": 0}
 
-    # TTS state (v0.2.10)
+    # TTS state (v0.2.11)
     tts_language = "en"  # Current TTS language: "en" or "ko"
     tts_auto_enabled = True  # Auto TTS for PANDA.1 messages
     kokoro_tts = None  # Kokoro TTS instance
+
+    # STT state (v0.2.11 - singleton pattern for performance)
+    faster_whisper_stt = None  # Global STT instance to avoid model reload overhead
     
     # Thread-safe broadcast queue for WebSocket events
     broadcast_queue: asyncio.Queue = None
@@ -1761,6 +1774,38 @@ if FASTAPI_AVAILABLE:
         return False, None, None
 
 
+    def get_stt_instance():
+        """
+        Get or create the global STT instance (singleton pattern).
+
+        This avoids the 2-5s model loading overhead on each transcription.
+        """
+        global faster_whisper_stt
+
+        if faster_whisper_stt is None:
+            try:
+                from app.voice.stt_faster_whisper import FasterWhisperSTT
+                config = get_config()
+
+                faster_whisper_stt = FasterWhisperSTT(
+                    model_size=config.stt_model,
+                    device=config.stt_device,
+                    compute_type=config.stt_compute_type,
+                )
+
+                # Pre-load the model
+                if faster_whisper_stt.load_model():
+                    logger.info(f"STT model loaded: {config.stt_model}")
+                else:
+                    logger.warning("Failed to pre-load STT model")
+
+            except Exception as e:
+                logger.error(f"Failed to initialize STT: {e}")
+                return None
+
+        return faster_whisper_stt
+
+
     def transcribe_audio(audio_data: bytes) -> str:
         """
         Transcribe audio using Faster-Whisper.
@@ -1802,10 +1847,12 @@ if FASTAPI_AVAILABLE:
                 logger.warning(f"Audio conversion error: {e}")
                 output_path = input_path
 
-            # Load and transcribe
-            from app.voice.stt_faster_whisper import FasterWhisperSTT
+            # Get global STT instance (avoids model reload overhead)
+            stt = get_stt_instance()
 
-            stt = FasterWhisperSTT(model_size="small")
+            if stt is None:
+                logger.error("STT instance not available")
+                return ""
 
             # Read the audio file
             with open(output_path, 'rb') as f:
@@ -1820,8 +1867,7 @@ if FASTAPI_AVAILABLE:
                 if output_path != input_path:
                     Path(output_path).unlink(missing_ok=True)
             except Exception as e:
-                logging.error(f'Exception caught: {e}')
-                pass
+                logger.debug(f"Temp file cleanup error: {e}")
 
             if result and hasattr(result, 'text') and result.text:
                 return result.text.strip()

@@ -3,7 +3,7 @@ PANDA.1 TTS Streamer
 ====================
 Real-time speak-as-it-types with intelligent text chunking.
 
-Version: 0.2.10
+Version: 0.2.11
 
 Features:
 - Buffers streaming text until sentence boundaries

@@ -3,7 +3,7 @@ PANDA.1 TTS Engine Manager
 ==========================
 Manages TTS engine selection and fallback.
 
-Version: 0.2.10
+Version: 0.2.11
 
 Engine Selection Order:
 1. If PANDA_TTS_ENGINE=chatterbox -> try chatterbox else fallback

@@ -3,7 +3,7 @@ PANDA.1 Voice Configuration
 ===========================
 Persistent settings for voice subsystem.
 
-Version: 0.2.10
+Version: 0.2.11
 """
 
 import json

@@ -4,7 +4,7 @@ PANDA.1 SENSEI Client
 Client for communicating with SENSEI (Smart Educational Network for
 Systematic Enlightenment & Intelligence) learning hub.
 
-Version: 0.2.10
+Version: 0.2.11
 
 Network Configuration:
 - SENSEI runs on 192.168.1.19:8002

@@ -3,7 +3,7 @@ PANDA.1 TTS System
 ==================
 Offline Text-to-Speech for PANDA.1.
 
-Version: 0.2.10
+Version: 0.2.11
 
 TTS Engines:
 - Chatterbox (default, offline, GPU-accelerated)

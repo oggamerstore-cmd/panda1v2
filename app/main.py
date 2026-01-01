@@ -4,7 +4,7 @@ PANDA.1 - Personal AI Navigator & Digital Assistant
 ===================================================
 BOS Personal Edition
 
-Version: 0.2.10
+Version: 0.2.11
 
 CLI Usage:
   panda                    Launch GUI (default)
@@ -48,7 +48,7 @@ import argparse
 from typing import Optional
 
 # Version info
-__version__ = "0.2.10"
+__version__ = "0.2.11"
 __author__ = "BOS"
 
 # TTS state (can be toggled with /voice)
@@ -906,7 +906,7 @@ def run_gui_doctor() -> int:
     
     print()
     print("═" * 60)
-    print("  PANDA.1 v0.2.10 GUI Doctor")
+    print("  PANDA.1 v0.2.11 GUI Doctor")
     print("═" * 60)
     print()
     

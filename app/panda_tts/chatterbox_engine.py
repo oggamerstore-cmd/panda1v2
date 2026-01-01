@@ -3,7 +3,7 @@ PANDA.1 Chatterbox TTS Engine
 =============================
 Offline TTS using Chatterbox (resemble-ai/chatterbox).
 
-Version: 0.2.10
+Version: 0.2.11
 
 Features:
 - English TTS via ChatterboxTTS (single model handles all languages)

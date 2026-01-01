@@ -3,7 +3,7 @@ PANDA.1 SCOTT Integration Client
 =================================
 Robust HTTP client for connecting to SCOTT news agent over LAN.
 
-Version: 0.2.10
+Version: 0.2.11
 
 Network Configuration:
 - PANDA.1 host: 192.168.1.17
@@ -138,7 +138,7 @@ class SCOTTClient:
             if self.config.api_key:
                 self._session.headers["X-API-Key"] = self.config.api_key
             self._session.headers["Accept"] = "application/json"
-            self._session.headers["User-Agent"] = "PANDA.1/0.2.10"
+            self._session.headers["User-Agent"] = "PANDA.1/0.2.11"
         
         return self._session
     
