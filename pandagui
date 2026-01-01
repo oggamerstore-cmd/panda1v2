@@ -1,0 +1,308 @@
+#!/usr/bin/env bash
+# =============================================================================
+# PANDA.1 GUI Launcher v0.2.10 - Fullscreen Browser App
+# =============================================================================
+# This script launches PANDA.1 web GUI in a fullscreen kiosk-style window.
+# 
+# Features:
+# - Headless/SSH detection (server-only mode when no display)
+# - LAN access support via PANDA_GUI_HOST
+# - Auto-restart of server if needed
+# - Browser kiosk mode for desktop sessions
+# - Voice wake support ("Hey Panda") - NEW in v0.2.10
+# =============================================================================
+
+# Configuration
+PANDA_HOME="${HOME}/.panda1"
+APP_DIR="${PANDA_HOME}/app"
+VENV_DIR="${PANDA_HOME}/venv"
+DATA_DIR="${PANDA_HOME}/data"
+LOG_DIR="${DATA_DIR}/logs"
+PORT_FILE="${DATA_DIR}/gui_port.json"
+LOG_FILE="${LOG_DIR}/pandagui.log"
+LOCK_FILE="${DATA_DIR}/pandagui.lock"
+ENV_FILE="${PANDA_HOME}/.env"
+
+# Default settings
+DEFAULT_PORT=7860
+DEFAULT_HOST="127.0.0.1"
+
+# Ensure log directory exists
+mkdir -p "${LOG_DIR}"
+
+# Logging function
+log() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "${LOG_FILE}"
+}
+
+# Check if running headless (SSH or no display)
+is_headless() {
+    # Check for SSH connection
+    if [[ -n "${SSH_CONNECTION}" ]] || [[ -n "${SSH_TTY}" ]]; then
+        return 0
+    fi
+    
+    # Check for DISPLAY
+    if [[ -z "${DISPLAY}" ]]; then
+        return 0
+    fi
+    
+    return 1
+}
+
+# Load environment safely
+load_env() {
+    if [[ -f "${ENV_FILE}" ]]; then
+        while IFS= read -r line || [[ -n "$line" ]]; do
+            [[ "$line" =~ ^#.*$ ]] && continue
+            [[ -z "$line" ]] && continue
+            export "$line" 2>/dev/null || true
+        done < "${ENV_FILE}"
+    fi
+}
+
+# Get settings from env
+get_host() {
+    echo "${PANDA_GUI_HOST:-${DEFAULT_HOST}}"
+}
+
+get_port() {
+    if [[ -f "${PORT_FILE}" ]]; then
+        port=$(python3 -c "import json; print(json.load(open('${PORT_FILE}')).get('port', ${DEFAULT_PORT}))" 2>/dev/null || echo "${DEFAULT_PORT}")
+        echo "${port}"
+    else
+        echo "${PANDA_GUI_PORT:-${DEFAULT_PORT}}"
+    fi
+}
+
+# Check if server is running
+check_server() {
+    local host=$1
+    local port=$2
+    local check_host="${host}"
+    [[ "${host}" == "0.0.0.0" ]] && check_host="127.0.0.1"
+    
+    curl -s --connect-timeout 2 "http://${check_host}:${port}/health" > /dev/null 2>&1
+    return $?
+}
+
+# Wait for server to be ready
+wait_for_server() {
+    local host=$1
+    local port=$2
+    local max_wait=30
+    local waited=0
+    
+    log "Waiting for PANDA.1 server on ${host}:${port}..."
+    
+    while [[ $waited -lt $max_wait ]]; do
+        if check_server "${host}" "${port}"; then
+            log "Server is ready!"
+            return 0
+        fi
+        sleep 1
+        ((waited++))
+    done
+    
+    log "ERROR: Server did not start within ${max_wait} seconds"
+    return 1
+}
+
+# Start the web GUI server
+start_server() {
+    local host=$1
+    local port=$2
+    
+    log "Starting PANDA.1 web GUI server on ${host}:${port}..."
+    
+    # Activate virtual environment
+    if [[ -f "${VENV_DIR}/bin/activate" ]]; then
+        source "${VENV_DIR}/bin/activate"
+    else
+        log "ERROR: Virtual environment not found at ${VENV_DIR}"
+        exit 1
+    fi
+    
+    # Set HuggingFace cache
+    export HF_HOME="${PANDA_HOME}/cache/huggingface"
+    export TRANSFORMERS_CACHE="${PANDA_HOME}/cache/huggingface/transformers"
+    
+    # Start server in background
+    cd "${PANDA_HOME}"
+    nohup python3 -m app.web_gui >> "${LOG_DIR}/web_gui.log" 2>&1 &
+    SERVER_PID=$!
+    echo "${SERVER_PID}" > "${LOCK_FILE}"
+    
+    log "Server started with PID ${SERVER_PID}"
+}
+
+# Find browser command
+find_browser() {
+    if command -v chromium-browser &> /dev/null; then
+        echo "chromium-browser"
+    elif command -v chromium &> /dev/null; then
+        echo "chromium"
+    elif command -v google-chrome &> /dev/null; then
+        echo "google-chrome"
+    elif command -v google-chrome-stable &> /dev/null; then
+        echo "google-chrome-stable"
+    elif command -v firefox &> /dev/null; then
+        echo "firefox"
+    else
+        echo ""
+    fi
+}
+
+# Open browser in app/kiosk mode
+open_browser() {
+    local port=$1
+    local host=$2
+    local browse_host="${host}"
+    [[ "${host}" == "0.0.0.0" ]] && browse_host="127.0.0.1"
+    
+    local url="http://${browse_host}:${port}"
+    local browser=$(find_browser)
+    
+    if [[ -z "${browser}" ]]; then
+        log "ERROR: No supported browser found."
+        if command -v xdg-open &> /dev/null; then
+            log "Falling back to xdg-open..."
+            xdg-open "${url}" &
+        else
+            log "Cannot open browser. Navigate to ${url} manually."
+        fi
+        return 1
+    fi
+    
+    log "Opening ${url} with ${browser}..."
+    
+    case "${browser}" in
+        chromium-browser|chromium|google-chrome|google-chrome-stable)
+            "${browser}" \
+                --app="${url}" \
+                --start-fullscreen \
+                --disable-infobars \
+                --disable-session-crashed-bubble \
+                --disable-restore-session-state \
+                --noerrdialogs \
+                --disable-translate \
+                --no-first-run \
+                --fast \
+                --fast-start \
+                --disable-features=TranslateUI \
+                --disable-popup-blocking \
+                --user-data-dir="${DATA_DIR}/browser_profile" \
+                >> "${LOG_FILE}" 2>&1 &
+            ;;
+        firefox)
+            "${browser}" --kiosk "${url}" >> "${LOG_FILE}" 2>&1 &
+            ;;
+    esac
+    
+    log "Browser opened"
+}
+
+# Show splash notification
+show_splash() {
+    if command -v notify-send &> /dev/null; then
+        notify-send "PANDA.1" "Launching GUI..." --icon=dialog-information --urgency=low 2>/dev/null || true
+    fi
+}
+
+# Print LAN access info
+print_lan_info() {
+    local host=$1
+    local port=$2
+    
+    if [[ "${host}" == "0.0.0.0" ]]; then
+        local ip=$(hostname -I | awk '{print $1}')
+        echo ""
+        echo "  LAN Access Enabled:"
+        echo "    Local:  http://127.0.0.1:${port}"
+        echo "    LAN:    http://${ip}:${port}"
+        echo ""
+    else
+        echo ""
+        echo "  URL: http://${host}:${port}"
+        echo ""
+    fi
+}
+
+# Main execution
+main() {
+    log "=========================================="
+    log "PANDA.1 GUI Launcher v0.2.10"
+    log "=========================================="
+    
+    # Load environment
+    load_env
+    
+    # Get settings
+    HOST=$(get_host)
+    PORT=$(get_port)
+    
+    # Check if running headless
+    if is_headless; then
+        log "Headless mode detected (SSH or no DISPLAY)"
+        echo ""
+        echo "╔════════════════════════════════════════════════════════════╗"
+        echo "║  PANDA.1 GUI - Server Mode (Headless)                      ║"
+        echo "╚════════════════════════════════════════════════════════════╝"
+        
+        # Start server if not running
+        if ! check_server "${HOST}" "${PORT}"; then
+            start_server "${HOST}" "${PORT}"
+            
+            if ! wait_for_server "${HOST}" "${PORT}"; then
+                echo "ERROR: Failed to start server. Check ${LOG_FILE}"
+                exit 1
+            fi
+            
+            # Re-read port
+            PORT=$(get_port)
+        else
+            log "Server already running"
+        fi
+        
+        print_lan_info "${HOST}" "${PORT}"
+        echo "  To access GUI from another machine, set in ~/.panda1/.env:"
+        echo "    PANDA_GUI_HOST=0.0.0.0"
+        echo ""
+        echo "  Server is running. Press Ctrl+C to stop."
+        
+        # Wait for interrupt
+        trap "log 'Shutting down...'; exit 0" INT TERM
+        while true; do sleep 60; done
+        
+        exit 0
+    fi
+    
+    # Desktop mode - launch browser
+    log "Desktop mode - launching browser"
+    
+    # Show splash
+    show_splash
+    
+    # Check if server needs to start
+    if ! check_server "${HOST}" "${PORT}"; then
+        start_server "${HOST}" "${PORT}"
+        
+        if ! wait_for_server "${HOST}" "${PORT}"; then
+            log "ERROR: Failed to start server"
+            notify-send "PANDA.1" "Failed to start server. Check ${LOG_FILE}" --icon=dialog-error --urgency=critical 2>/dev/null || true
+            exit 1
+        fi
+        
+        PORT=$(get_port)
+    else
+        log "Server already running on port ${PORT}"
+    fi
+    
+    # Open browser
+    open_browser "${PORT}" "${HOST}"
+    
+    log "PANDA.1 GUI launched successfully!"
+}
+
+# Run main
+main "$@"
