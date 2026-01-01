@@ -2523,39 +2523,39 @@ def run_server(host: Optional[str] = None, port: Optional[int] = None, use_https
         ssl_keyfile = cert_dir / "panda.key"
 
         if not ssl_certfile.exists() or not ssl_keyfile.exists():
-            logging.info()
+            logging.info("")
             logging.info("=" * 60)
             logging.info("  ⚠️  HTTPS CERTIFICATES NOT FOUND")
             logging.info("=" * 60)
-            logging.info()
+            logging.info("")
             logging.info(f"  Expected locations:")
             logging.info(f"    Certificate: {ssl_certfile}")
             logging.info(f"    Private Key: {ssl_keyfile}")
-            logging.info()
+            logging.info("")
             logging.info("  Generate certificates with:")
             logging.info("    cd /home/user/panda1 && ./scripts/generate_certs.sh")
-            logging.info()
+            logging.info("")
             logging.info("  Or disable HTTPS:")
             logging.info("    PANDA_ENABLE_HTTPS=false")
-            logging.info()
+            logging.info("")
             return 1
 
     # Log startup info
     headless = is_headless()
     protocol = "https" if use_https else "http"
 
-    logging.info()
+    logging.info("")
     logging.info("=" * 60)
     logging.info(f"  PANDA.1 GUI Server v{__version__}")
     logging.info("=" * 60)
-    logging.info()
+    logging.info("")
     logging.info(f"  Host: {host}")
     logging.info(f"  Port: {actual_port}")
     logging.info(f"  Protocol: {protocol.upper()}")
     logging.info(f"  Mode: {'Headless (server-only)' if headless else 'Desktop'}")
     logging.info(f"  Voice: {'Enabled' if config.gui_voice_enabled else 'Disabled'}")
     logging.info(f"  TTS Language: EN (default), use 'panda speak korean' to switch")
-    logging.info()
+    logging.info("")
 
     if host == "0.0.0.0":
         # Get actual LAN IP, not loopback
@@ -2571,16 +2571,16 @@ def run_server(host: Optional[str] = None, port: Optional[int] = None, use_https
         logging.info(f"  Local URL:   {protocol}://127.0.0.1:{actual_port}")
         logging.info(f"  LAN URL:     {protocol}://{local_ip}:{actual_port}")
         if use_https:
-            logging.info()
+            logging.info("")
             logging.warning("  ⚠️  Browser will show security warning for self-signed cert.")
             logging.info("     Click 'Advanced' → 'Proceed' to accept.")
     else:
         logging.info(f"  URL: {protocol}://{host}:{actual_port}")
 
-    logging.info()
+    logging.info("")
     logging.info("  Press Ctrl+C to stop")
     logging.info("=" * 60)
-    logging.info()
+    logging.info("")
 
     # Setup logging
     log_dir = config.logs_dir
