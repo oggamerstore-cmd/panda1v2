@@ -3,7 +3,7 @@ PANDA.1 Tools
 =============
 Safe tool implementations for documents, URLs, and search.
 
-Version: 0.2.10
+Version: 0.2.11
 
 Tools:
 - document: Open/preview .docx and text files

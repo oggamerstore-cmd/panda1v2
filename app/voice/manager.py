@@ -3,7 +3,7 @@ PANDA.1 Voice Manager
 =====================
 Unified interface for voice operations: PTT, STT, TTS.
 
-Version: 0.2.10
+Version: 0.2.11
 
 Features:
 - Push-to-talk coordination

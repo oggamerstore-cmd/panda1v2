@@ -3,7 +3,7 @@ PANDA.1 Core Orchestrator
 =========================
 Central hub for coordinating all PANDA.1 components.
 
-Version: 0.2.10
+Version: 0.2.11
 
 Features:
 - BOS-specific system prompt
@@ -169,7 +169,7 @@ class PandaCore:
         # System prompt - BOS-specific
         self.system_prompt = self._build_system_prompt()
         
-        logger.info("PANDA.1 Core v0.2.10 initialized")
+        logger.info("PANDA.1 Core v0.2.11 initialized")
     
     def _build_system_prompt(self) -> str:
         """Build the BOS-specific system prompt for the LLM."""
@@ -342,6 +342,7 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
         
         try:
             # Check for language switch
+            from language_mode import process_language_command
             is_switch, ack = process_language_command(user_input)
             if is_switch and ack:
                 self.system_prompt = self._build_system_prompt()
@@ -660,7 +661,7 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
     def get_status(self) -> Dict[str, Any]:
         """Get comprehensive system status."""
         status = {
-            "version": "0.2.10",
+            "version": "0.2.11",
             "llm": self.llm.health_check(),
             "openai": None,
             "memory": None,

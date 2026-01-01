@@ -3,7 +3,7 @@ PANDA.1 Document Tool
 =====================
 Safe file browsing and preview for documents.
 
-Version: 0.2.10
+Version: 0.2.11
 
 Supported formats:
 - .docx (Word) via python-docx

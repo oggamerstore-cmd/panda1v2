@@ -3,7 +3,7 @@ PANDA.1 Kokoro TTS (CUDA Accelerated)
 ======================================
 Text-to-speech using Kokoro-82M with PyTorch CUDA 12.1 for RTX 2060.
 
-Version: 0.2.10
+Version: 0.2.11
 
 Features:
 - Kokoro-82M model with CUDA acceleration

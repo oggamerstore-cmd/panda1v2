@@ -3,7 +3,7 @@ PANDA.1 Document Tools
 ======================
 Safe file browsing and document handling.
 
-Version: 0.2.10
+Version: 0.2.11
 
 Features:
 - Safe path resolution (no directory traversal)
