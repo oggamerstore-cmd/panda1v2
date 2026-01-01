@@ -84,13 +84,11 @@ except ImportError:
 __version__ = "0.2.10"
 
 
-# Import TTS manager for voice functionality
+# Import Kokoro TTS for voice functionality
 try:
-    from app.panda_tts import get_tts_manager, stop_speech
+    from app.voice.tts_kokoro import KOKORO_AVAILABLE
 except ImportError:
-    get_tts_manager = None
-    stop_speech = None
-    logger.warning("TTS manager not available")
+    KOKORO_AVAILABLE = False
 
 
 # Action log storage (last 200 entries)
@@ -160,13 +158,13 @@ def get_free_port(start_port: int = 7860, max_tries: int = 100) -> int:
     raise RuntimeError(f"No free port found in range {start_port}-{start_port + max_tries}")
 
 
-def save_port_file(port: int, host: str) -> None:
+def save_port_file(port: int, host: str, use_https: bool) -> None:
     """Save the active port to a file."""
     config = get_config()
     port_file = config.gui_port_file
     port_file.parent.mkdir(parents=True, exist_ok=True)
     with open(port_file, 'w') as f:
-        json.dump({"port": port, "host": host, "pid": os.getpid()}, f)
+        json.dump({"port": port, "host": host, "pid": os.getpid(), "https": use_https}, f)
 
 
 def load_port_file() -> Optional[Dict[str, Any]]:
@@ -979,10 +977,6 @@ GUI_HTML = '''<!DOCTYPE html>
             setProcessing(true);
             logAction('Chat Message Sent', message.substring(0, 50));
             
-            // Create placeholder for assistant response
-            createAssistantPlaceholder(messageId + '_response');
-            currentMessageId = messageId + '_response';
-            
             ws.send(JSON.stringify({
                 type: 'chat',
                 content: message,
@@ -1680,7 +1674,7 @@ if FASTAPI_AVAILABLE:
                 kokoro_tts = init_kokoro_tts()
 
             if kokoro_tts is None:
-                logger.warning("TTS not available, skipping speech")
+                logger.warning("Kokoro TTS not available, skipping speech")
                 return
 
             # Signal speaking start
@@ -1708,14 +1702,7 @@ if FASTAPI_AVAILABLE:
                 except Exception as e:
                     logger.warning(f"Playback failed: {e}")
                     # Fallback to panda_tts
-                    try:
-                        from app.panda_tts import get_tts_manager
-                        manager = get_tts_manager()
-                        if manager.is_ready:
-                            manager.speak(text, use_lang, blocking=True)
-                    except Exception as e:
-                        logging.error(f'Exception caught: {e}')
-                        pass
+                    logger.warning("Playback failed, Kokoro audio not played")
 
             # Signal speaking end
             queue_broadcast({"type": "speaking", "speaking": False})
@@ -1910,15 +1897,10 @@ if FASTAPI_AVAILABLE:
                 # Optional TTS acknowledgment
                 if config.voice_ack_enabled:
                     try:
-                        manager = get_tts_manager()
-                        if manager.is_ready:
-                            queue_broadcast({"type": "speaking", "speaking": True})
-                            
-                            def speak_ack():
-                                manager.speak("Yes BOS.", blocking=True)
-                                queue_broadcast({"type": "speaking", "speaking": False})
-                            
-                            threading.Thread(target=speak_ack, daemon=True).start()
+                        def speak_ack():
+                            speak_panda_response("Yes BOS.")
+
+                        threading.Thread(target=speak_ack, daemon=True).start()
                     except Exception as e:
                         logger.debug(f"TTS ack error: {e}")
             
@@ -1965,14 +1947,8 @@ if FASTAPI_AVAILABLE:
                         })
                         
                         # Speak response via TTS
-                        try:
-                            manager = get_tts_manager()
-                            if manager.is_ready and full_response:
-                                queue_broadcast({"type": "speaking", "speaking": True})
-                                manager.speak(full_response, blocking=True)
-                                queue_broadcast({"type": "speaking", "speaking": False})
-                        except Exception as e:
-                            logger.debug(f"TTS error: {e}")
+                        if full_response:
+                            speak_panda_response(full_response)
                         
                         voice_state["mic"] = "AWAKE_LISTENING"
                         queue_broadcast({"type": "voice_state", "state": "AWAKE_LISTENING"})
@@ -2149,8 +2125,8 @@ if FASTAPI_AVAILABLE:
     async def tts_stop():
         """Stop TTS playback."""
         try:
-            from app.panda_tts import stop_speech
-            stop_speech()
+            import sounddevice as sd
+            sd.stop()
             add_action_log("TTS Stopped", None, True)
             await broadcast_to_clients({"type": "speaking", "speaking": False})
             return {"ok": True, "message": "TTS stopped"}
@@ -2163,33 +2139,23 @@ if FASTAPI_AVAILABLE:
     async def tts_test():
         """Test TTS with a short phrase."""
         try:
-            
-            manager = get_tts_manager()
-            if not manager.is_ready:
-                manager.initialize()
-            
-            health = manager.healthcheck()
-            if not health.get("healthy"):
-                add_action_log("TTS Test Failed", health.get("error"), False)
-                return {"ok": False, "message": f"TTS unhealthy: {health.get('error')}"}
-            
-            # Synthesize test phrase
-            audio_path = manager.synthesize("Hello, this is PANDA speaking.")
-            if audio_path:
-                await broadcast_to_clients({"type": "speaking", "speaking": True})
-                
-                def play_test():
-                    manager.speak("Hello, this is PANDA speaking.", blocking=True)
-                    queue_broadcast({"type": "speaking", "speaking": False})
-                
-                threading.Thread(target=play_test, daemon=True).start()
-                
-                add_action_log("TTS Test", f"Engine: {health.get('engine')}", True)
-                return {"ok": True, "message": f"Playing via {health.get('engine')}"}
-            else:
-                add_action_log("TTS Test Failed", "Synthesis failed", False)
-                return {"ok": False, "message": "Synthesis failed"}
-                
+            if not KOKORO_AVAILABLE:
+                add_action_log("TTS Test Failed", "Kokoro not installed", False)
+                return {"ok": False, "message": "Kokoro not installed"}
+
+            kokoro = init_kokoro_tts()
+            if kokoro is None or not kokoro.is_initialized:
+                add_action_log("TTS Test Failed", "Kokoro init failed", False)
+                return {"ok": False, "message": "Kokoro init failed"}
+
+            def play_test():
+                speak_panda_response("Hello, this is PANDA speaking.")
+
+            threading.Thread(target=play_test, daemon=True).start()
+
+            add_action_log("TTS Test", "Engine: kokoro", True)
+            return {"ok": True, "message": "Playing via kokoro"}
+
         except Exception as e:
             add_action_log("TTS Test Error", str(e), False)
             return {"ok": False, "message": str(e)}
@@ -2199,9 +2165,12 @@ if FASTAPI_AVAILABLE:
     async def tts_status():
         """Get TTS status."""
         try:
-            manager = get_tts_manager()
-            health = manager.healthcheck()
-            return {"ok": True, "data": health}
+            status = {
+                "available": KOKORO_AVAILABLE,
+                "initialized": kokoro_tts.is_initialized if kokoro_tts else False,
+                "engine": "kokoro",
+            }
+            return {"ok": True, "data": status}
         except Exception as e:
             return {"ok": False, "message": str(e)}
 
@@ -2449,13 +2418,12 @@ if FASTAPI_AVAILABLE:
                         lines.append(f"Memory: {mem.get('count', 0)} items")
                     
                     # TTS status
-                    try:
-                        manager = get_tts_manager()
-                        health = manager.healthcheck()
-                        lines.append(f"TTS: {health.get('engine', 'unknown')} ({health.get('device', 'unknown')})")
-                    except Exception as e:
-                        logging.error(f'Exception caught: {e}')
-                        lines.append("TTS: Not available")
+                    if KOKORO_AVAILABLE:
+                        initialized = kokoro_tts.is_initialized if kokoro_tts else False
+                        status = "Ready" if initialized else "Available (not initialized)"
+                        lines.append(f"TTS: Kokoro ({status})")
+                    else:
+                        lines.append("TTS: Kokoro not installed")
                     
                     # Voice status
                     lines.append(f"Voice: {voice_state.get('mic', 'UNAVAILABLE')}")
@@ -2503,6 +2471,8 @@ def run_server(host: Optional[str] = None, port: Optional[int] = None, use_https
         port = config.https_port if (use_https or config.enable_https) else config.gui_port
     if use_https is None:
         use_https = config.enable_https
+        if use_https is None:
+            use_https = True
 
     # Check if port is available, find another if not
     try:
@@ -2512,7 +2482,7 @@ def run_server(host: Optional[str] = None, port: Optional[int] = None, use_https
         return 1
 
     # Save port file
-    save_port_file(actual_port, host)
+    save_port_file(actual_port, host, use_https)
 
     # HTTPS certificate setup
     ssl_certfile = None
@@ -2529,17 +2499,29 @@ def run_server(host: Optional[str] = None, port: Optional[int] = None, use_https
             logging.info("  ⚠️  HTTPS CERTIFICATES NOT FOUND")
             logging.info("=" * 60)
             logging.info("")
-            logging.info(f"  Expected locations:")
-            logging.info(f"    Certificate: {ssl_certfile}")
-            logging.info(f"    Private Key: {ssl_keyfile}")
+            logging.info("  Attempting to generate self-signed certs...")
             logging.info("")
-            logging.info("  Generate certificates with:")
-            logging.info("    cd /home/user/panda1 && ./scripts/generate_certs.sh")
-            logging.info("")
-            logging.info("  Or disable HTTPS:")
-            logging.info("    PANDA_ENABLE_HTTPS=false")
-            logging.info("")
-            return 1
+            try:
+                import subprocess
+                script_path = Path(__file__).resolve().parent.parent / "scripts" / "generate_certs.sh"
+                subprocess.run([str(script_path)], check=True)
+            except Exception as e:
+                logging.error(f"Auto cert generation failed: {e}")
+                logging.info("")
+                logging.info(f"  Expected locations:")
+                logging.info(f"    Certificate: {ssl_certfile}")
+                logging.info(f"    Private Key: {ssl_keyfile}")
+                logging.info("")
+                logging.info("  Generate certificates with:")
+                logging.info("    cd /home/user/panda1 && ./scripts/generate_certs.sh")
+                logging.info("")
+                logging.info("  Or disable HTTPS:")
+                logging.info("    PANDA_ENABLE_HTTPS=false")
+                logging.info("")
+                return 1
+            if not ssl_certfile.exists() or not ssl_keyfile.exists():
+                logging.error("Auto cert generation completed but cert files are missing.")
+                return 1
 
     # Log startup info
     headless = is_headless()
@@ -2630,7 +2612,8 @@ def get_server_url() -> Optional[str]:
         host = port_info.get('host', '127.0.0.1')
         if host == '0.0.0.0':
             host = '127.0.0.1'
-        return f"http://{host}:{port_info['port']}"
+        protocol = "https" if port_info.get("https") else "http"
+        return f"{protocol}://{host}:{port_info['port']}"
     return None
 
 
