@@ -1,0 +1,14 @@
+[Unit]
+Description=PANDA.1 AI Assistant Backend
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/.panda1
+Environment="PATH=%h/.panda1/venv/bin:/usr/local/bin:/usr/bin:/bin"
+ExecStart=%h/.panda1/venv/bin/python -m app.main --gui
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

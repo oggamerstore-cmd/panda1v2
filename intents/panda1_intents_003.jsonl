@@ -1,0 +1,500 @@
+{"utterance":"PANDA, help me map out today so it supports both my business and my health.","category":"general_meta"}
+{"utterance":"Look at what we’ve been talking about and suggest a plan for my next four hours.","category":"general_meta"}
+{"utterance":"Help me triage everything on my plate into must-do, nice-to-do, and can-wait.","category":"general_meta"}
+{"utterance":"Based on recent chats, what three tasks will move my income forward fastest today?","category":"general_meta"}
+{"utterance":"What should be my single non-negotiable task for today, if life gets chaotic?","category":"general_meta"}
+{"utterance":"Help me design a simple morning startup routine that fits my real life.","category":"general_meta"}
+{"utterance":"Help me design an evening shutdown routine that protects my sleep and brain.","category":"general_meta"}
+{"utterance":"Turn my scattered to-dos into a realistic schedule for today, not fantasy.","category":"general_meta"}
+{"utterance":"If I only had 90 minutes of focus today, what should I spend it on?","category":"general_meta"}
+{"utterance":"Help me chunk today into focus blocks and recovery blocks.","category":"general_meta"}
+{"utterance":"Show me a clean list of everything I promised myself recently.","category":"general_meta"}
+{"utterance":"From that promise list, which three should I honor first this week?","category":"general_meta"}
+{"utterance":"Remind me what I said was most important to BOS this month.","category":"general_meta"}
+{"utterance":"Ask me what time I want to stop working today and design around that.","category":"general_meta"}
+{"utterance":"Create a light day plan for when my energy is low but I still want progress.","category":"general_meta"}
+{"utterance":"Create a heavy push day plan for when I feel strong and focused.","category":"general_meta"}
+{"utterance":"Help me plan a ‘maintenance only’ day for BOS when I’m close to burnout.","category":"general_meta"}
+{"utterance":"Design a BOS morning where I do the hard thing before checking my phone.","category":"general_meta"}
+{"utterance":"Help me choose between working on product, marketing, or systems right now.","category":"general_meta"}
+{"utterance":"Tell me which tasks today are pure noise and could be deleted.","category":"general_meta"}
+{"utterance":"If I start listing tasks, stop me when it’s too many for one day.","category":"general_meta"}
+{"utterance":"Help me decide what to move to tomorrow without guilt.","category":"general_meta"}
+{"utterance":"Show me what a great day for BOS would look like in a simple schedule.","category":"general_meta"}
+{"utterance":"Show me what a bare-minimum survival day for BOS looks like.","category":"general_meta"}
+{"utterance":"Help me create a repeating weekly structure that supports all my brands.","category":"general_meta"}
+{"utterance":"Help me assign themes to days of the week so I know what to focus on.","category":"general_meta"}
+{"utterance":"Help me create a recurring BOS CEO hour each week and what to do in it.","category":"general_meta"}
+{"utterance":"Propose a BOS admin hour where I clear small tasks efficiently.","category":"general_meta"}
+{"utterance":"Show me how to block time for deep work and protect it from interruptions.","category":"general_meta"}
+{"utterance":"When I say I’m free, suggest a deep work block instead of random tasks.","category":"general_meta"}
+{"utterance":"If my plan is obviously overloaded, call it out and help me cut it down.","category":"general_meta"}
+{"utterance":"If my plan is too empty, suggest one meaningful challenge to add.","category":"general_meta"}
+{"utterance":"Turn my calendar and notes into a simple story of how my week might go.","category":"general_meta"}
+{"utterance":"Help me forecast the next seven days in terms of energy and workload.","category":"general_meta"}
+{"utterance":"When I plan too many context switches, suggest consolidating tasks.","category":"general_meta"}
+{"utterance":"Tell me which tasks require BOS brain only, and which could be delegated later.","category":"general_meta"}
+{"utterance":"Help me design an ideal Tuesday for BOS given current responsibilities.","category":"general_meta"}
+{"utterance":"Help me design an ideal weekend that recharges me and supports my goals.","category":"general_meta"}
+{"utterance":"Show me how to weave exercise and movement into my normal workday.","category":"general_meta"}
+{"utterance":"Show me how to make space for learning without stealing from income tasks.","category":"general_meta"}
+{"utterance":"If I keep saying I’ll do something ‘later’, put it on a clear list for review.","category":"general_meta"}
+{"utterance":"Help me plan one small act of kindness or generosity each week.","category":"general_meta"}
+{"utterance":"Turn my ambitious weekly plan into something 20% lighter and more humane.","category":"general_meta"}
+{"utterance":"Turn my lazy weekly plan into something 20% more ambitious and challenging.","category":"general_meta"}
+{"utterance":"When you sense I’m stacking too many meetings, warn me about it.","category":"general_meta"}
+{"utterance":"When you sense I’m avoiding important conversations, nudge me to schedule them.","category":"general_meta"}
+{"utterance":"Help me create a repeating reminder to check in on BOS priorities.","category":"general_meta"}
+{"utterance":"Create a simple phrase I can say in the morning to ask you for a daily plan.","category":"general_meta"}
+{"utterance":"Create a simple phrase I can say at night to ask you for a daily review.","category":"general_meta"}
+{"utterance":"Whenever I ask for a plan, ask about my energy level first, then decide intensity.","category":"general_meta"}
+{"utterance":"List all active projects by brand and mark which are money-makers.","category":"general_meta"}
+{"utterance":"Show me which projects belong to Moka’s Matcha, Kimchi, KBBQ, or PANDA.1.","category":"general_meta"}
+{"utterance":"Help me decide which brand needs BOS attention most this week.","category":"general_meta"}
+{"utterance":"Tell me which brand is currently most neglected based on our notes.","category":"general_meta"}
+{"utterance":"Suggest one high-impact move for Moka’s Matcha I could do this month.","category":"general_meta"}
+{"utterance":"Suggest one high-impact move for Mama Kim’s Kimchi I could do this month.","category":"general_meta"}
+{"utterance":"Suggest one high-impact move for KBBQ I could do this month.","category":"general_meta"}
+{"utterance":"Suggest one high-impact move for my AI systems that frees up BOS time.","category":"general_meta"}
+{"utterance":"Help me rank my brands by effort versus return right now.","category":"general_meta"}
+{"utterance":"Show me where I’m over-investing time in low-return projects.","category":"general_meta"}
+{"utterance":"Show me where I’m under-investing time in high-potential projects.","category":"general_meta"}
+{"utterance":"Help me choose a lead brand to push hard for the next 90 days.","category":"general_meta"}
+{"utterance":"Help me design a rotation so every brand gets some love each week.","category":"general_meta"}
+{"utterance":"Highlight dependencies between my projects so I stop blocking myself.","category":"general_meta"}
+{"utterance":"Show me which projects depend on me personally versus ones that could be systematized.","category":"general_meta"}
+{"utterance":"Turn my brand goals into clear, measurable targets for this quarter.","category":"general_meta"}
+{"utterance":"Help me define what 'winning' looks like for each brand this year.","category":"general_meta"}
+{"utterance":"Help me define what 'good enough' looks like so I don’t over-polish everything.","category":"general_meta"}
+{"utterance":"Tell me which brand work tends to drain BOS more than it should.","category":"general_meta"}
+{"utterance":"Tell me which brand work tends to give BOS energy and joy.","category":"general_meta"}
+{"utterance":"Design a BOS week where each brand gets at least one deep-focus block.","category":"general_meta"}
+{"utterance":"Help me spot where I’m accidentally competing with myself across brands.","category":"general_meta"}
+{"utterance":"Show me which projects are vanity and which actually help BOS’s life.","category":"general_meta"}
+{"utterance":"Help me simplify my project list to a maximum of three major active ones.","category":"general_meta"}
+{"utterance":"Help me identify projects that should be paused without guilt.","category":"general_meta"}
+{"utterance":"Help me identify projects that should be killed to free up bandwidth.","category":"general_meta"}
+{"utterance":"When I add a new project, ask what I’m willing to pause to make room.","category":"general_meta"}
+{"utterance":"Turn my sprawling project list into a simple 'Now, Next, Later' board.","category":"general_meta"}
+{"utterance":"Mark which projects are experiments and which are core to BOS income.","category":"general_meta"}
+{"utterance":"Highlight any projects that keep rolling for months with no real progress.","category":"general_meta"}
+{"utterance":"For each brand, show me one low-effort improvement with potential upside.","category":"general_meta"}
+{"utterance":"For each brand, show me one risky move I could consider carefully.","category":"general_meta"}
+{"utterance":"Help me plan a quarterly review for each brand separately.","category":"general_meta"}
+{"utterance":"Help me plan an annual review where I look at the whole BOS portfolio.","category":"general_meta"}
+{"utterance":"When I talk about a new idea, check if I already have something similar live.","category":"general_meta"}
+{"utterance":"Combine related projects into a single cleaner initiative where it makes sense.","category":"general_meta"}
+{"utterance":"Split any oversized project into smaller ones that I can actually finish.","category":"general_meta"}
+{"utterance":"Show me which projects are stuck because of missing decisions from BOS.","category":"general_meta"}
+{"utterance":"Show me which projects are stuck because of missing information or skills.","category":"general_meta"}
+{"utterance":"Suggest which stuck projects I should abandon versus push through.","category":"general_meta"}
+{"utterance":"Tag projects that are mainly for income versus mainly for creativity.","category":"general_meta"}
+{"utterance":"Tag projects that are mainly for learning and long-term upside.","category":"general_meta"}
+{"utterance":"Help me design a mix of projects that balances income, joy, and learning.","category":"general_meta"}
+{"utterance":"When I sound bored with a project, ask if its outcome still matters to BOS.","category":"general_meta"}
+{"utterance":"When I sound emotionally attached to a bad project, help me see clearly.","category":"general_meta"}
+{"utterance":"Help me create a short pitch for each brand so I can explain it on the spot.","category":"general_meta"}
+{"utterance":"Compare my brands and show me where they naturally support each other.","category":"general_meta"}
+{"utterance":"Compare my brands and show me where they create complexity without reward.","category":"general_meta"}
+{"utterance":"Based on my goals, suggest how many major projects BOS should run at once.","category":"general_meta"}
+{"utterance":"Any time I exceed that project limit, warn me and suggest what to drop.","category":"general_meta"}
+{"utterance":"Create a simple dashboard concept for BOS that tracks money in, money out, and trends.","category":"general_meta"}
+{"utterance":"From what you know, list my main sources of income and their stability.","category":"general_meta"}
+{"utterance":"From what you know, list my main areas of spending and their usefulness.","category":"general_meta"}
+{"utterance":"Help me see which activities directly bring in revenue and which are support.","category":"general_meta"}
+{"utterance":"Help me pick one daily action that increases earnings, even a little.","category":"general_meta"}
+{"utterance":"Help me pick one weekly action that protects BOS financially.","category":"general_meta"}
+{"utterance":"Help me pick one monthly action that grows BOS’s financial capacity.","category":"general_meta"}
+{"utterance":"Summarize how my businesses currently make money in one paragraph.","category":"general_meta"}
+{"utterance":"Summarize how my businesses could make more money without burning me out.","category":"general_meta"}
+{"utterance":"Create a simple phrase that keeps BOS thinking in terms of profit, not just sales.","category":"general_meta"}
+{"utterance":"When I talk about a decision, ask how it impacts cash flow, not just revenue.","category":"general_meta"}
+{"utterance":"Show me opportunities to raise average order value in my brands.","category":"general_meta"}
+{"utterance":"Show me opportunities to increase repeat customers across my brands.","category":"general_meta"}
+{"utterance":"List the top three financial risks you can infer from what you know about BOS.","category":"general_meta"}
+{"utterance":"List the top three financial strengths BOS already has.","category":"general_meta"}
+{"utterance":"Help me think through a worst-case money scenario calmly and realistically.","category":"general_meta"}
+{"utterance":"Help me think through a best-case money scenario and how to make it more likely.","category":"general_meta"}
+{"utterance":"When big money decisions come up, prompt me to slow down and think clearly.","category":"general_meta"}
+{"utterance":"Help me name a 'money rule' BOS can follow when tempted by shiny purchases.","category":"general_meta"}
+{"utterance":"Show me notes where I mentioned being stressed about money so we can learn from them.","category":"general_meta"}
+{"utterance":"Show me notes where I mentioned feeling good and confident about money.","category":"general_meta"}
+{"utterance":"Suggest small experiments to test new revenue streams with low risk.","category":"general_meta"}
+{"utterance":"Tag potential income ideas in my notes so we can revisit them regularly.","category":"general_meta"}
+{"utterance":"Tag potential cost-saving ideas so they don’t get lost.","category":"general_meta"}
+{"utterance":"Help me see where I might be undercharging for my products or time.","category":"general_meta"}
+{"utterance":"Help me see where I might be over-discounting and hurting margins.","category":"general_meta"}
+{"utterance":"Help me build a simple mental model of fixed versus variable costs in my life.","category":"general_meta"}
+{"utterance":"Help me build a simple mental model of fixed versus variable costs in my business.","category":"general_meta"}
+{"utterance":"If I sound panicked about money, help me separate facts from fear.","category":"general_meta"}
+{"utterance":"Turn my finance worries into clear questions we can work through.","category":"general_meta"}
+{"utterance":"Help me define what 'enough money' looks like for BOS right now.","category":"general_meta"}
+{"utterance":"Help me define a next-level 'comfortable money' target for BOS.","category":"general_meta"}
+{"utterance":"Help me define a long-term 'financial freedom' target that fits my lifestyle.","category":"general_meta"}
+{"utterance":"Suggest a few behaviors that align with BOS moving toward financial freedom.","category":"general_meta"}
+{"utterance":"Show me where my current behavior doesn’t match my money goals.","category":"general_meta"}
+{"utterance":"If I start talking about money in vague terms, ask me for specifics.","category":"general_meta"}
+{"utterance":"If I start talking about money only in fear terms, remind me of strengths.","category":"general_meta"}
+{"utterance":"Help me design a weekly BOS money check-in ritual.","category":"general_meta"}
+{"utterance":"Help me design a monthly BOS money review ritual.","category":"general_meta"}
+{"utterance":"Summarize what money lessons BOS has already learned the hard way.","category":"general_meta"}
+{"utterance":"Summarize what money lessons BOS still needs to internalize.","category":"general_meta"}
+{"utterance":"Coach me on saying no to low-profit, high-stress ideas.","category":"general_meta"}
+{"utterance":"Coach me on saying yes to high-leverage opportunities even if I’m nervous.","category":"general_meta"}
+{"utterance":"When a new idea comes up, ask: does this help BOS’s money, energy, or both?","category":"general_meta"}
+{"utterance":"If it helps neither money nor energy, ask if I still really want it.","category":"general_meta"}
+{"utterance":"Turn my financial goals into a simple, visual metaphor I can remember.","category":"general_meta"}
+{"utterance":"Turn my debt or obligations into a clear, non-scary overview.","category":"general_meta"}
+{"utterance":"When I say 'money priority check', help me rank what matters most right now.","category":"general_meta"}
+{"utterance":"Any time I start comparing myself to others financially, bring me back to BOS’s path.","category":"general_meta"}
+{"utterance":"Any time I set unrealistic financial expectations, gently adjust them to sane levels.","category":"general_meta"}
+{"utterance":"Show me concrete ways PANDA.1 can save BOS time each day.","category":"general_meta"}
+{"utterance":"Show me concrete ways PANDA.1 can help BOS earn more over time.","category":"general_meta"}
+{"utterance":"Propose three daily habits for using PANDA.1 as my assistant, not a toy.","category":"general_meta"}
+{"utterance":"Propose three weekly rituals that make the most of PANDA.1 and SCOTT.","category":"general_meta"}
+{"utterance":"Ask me at the start of the day how I want to use PANDA.1 today.","category":"general_meta"}
+{"utterance":"Ask me at the end of the day how PANDA.1 actually helped, so we can improve.","category":"general_meta"}
+{"utterance":"When I start doing something manually, suggest how PANDA.1 could assist.","category":"general_meta"}
+{"utterance":"Help me spot repetitive tasks that would be perfect for automation later.","category":"general_meta"}
+{"utterance":"Help me translate messy real-world problems into clear questions for PANDA.1.","category":"general_meta"}
+{"utterance":"When I write long, unfocused prompts, help me tighten them without losing meaning.","category":"general_meta"}
+{"utterance":"Highlight examples of when PANDA.1 saved me time so I remember to use it.","category":"general_meta"}
+{"utterance":"Highlight examples of when I ignored PANDA.1 and created extra work.","category":"general_meta"}
+{"utterance":"Help me define what tasks belong to PANDA.1 versus to BOS directly.","category":"general_meta"}
+{"utterance":"Help me draft simple 'playbooks' for how I want PANDA.1 to behave in key scenarios.","category":"general_meta"}
+{"utterance":"Turn repeated prompt patterns into reusable templates for BOS.","category":"general_meta"}
+{"utterance":"Tag useful conversations as 'playbook material' for later review.","category":"general_meta"}
+{"utterance":"Show me my most useful prompts so I can reuse and refine them.","category":"general_meta"}
+{"utterance":"Show me my most confusing prompts so we can fix how I ask questions.","category":"general_meta"}
+{"utterance":"When I get frustrated with AI, help me figure out if the problem is prompt or system.","category":"general_meta"}
+{"utterance":"Explain the difference between what PANDA.1 is good at and what SCOTT is good at.","category":"general_meta"}
+{"utterance":"Explain when I should call SENSEI instead of asking PANDA.1 directly.","category":"general_meta"}
+{"utterance":"Help me make sure each agent has a clear role and doesn’t overlap too much.","category":"general_meta"}
+{"utterance":"Suggest simple voice commands BOS can memorize for common tasks.","category":"general_meta"}
+{"utterance":"If I sound like I forgot a feature, remind me gently when it would help.","category":"general_meta"}
+{"utterance":"Help me design a 'BOS + PANDA.1' daily startup script.","category":"general_meta"}
+{"utterance":"Help me design a 'BOS + PANDA.1' nightly shutdown script.","category":"general_meta"}
+{"utterance":"Whenever I’m stuck, suggest two or three ways PANDA.1 could help.","category":"general_meta"}
+{"utterance":"When I misuse PANDA.1 as a distraction, call it out kindly.","category":"general_meta"}
+{"utterance":"Coach me on asking better questions so I get better answers.","category":"general_meta"}
+{"utterance":"Help me log which PANDA.1 features I actually use versus ones I never touch.","category":"general_meta"}
+{"utterance":"Suggest removing or hiding features I never use to keep things simple.","category":"general_meta"}
+{"utterance":"When I ask for something PANDA.1 cannot do, tell me honestly and suggest workarounds.","category":"general_meta"}
+{"utterance":"Show me examples of where I tried to make PANDA.1 do human-only work.","category":"general_meta"}
+{"utterance":"Show me examples of where I could have let PANDA.1 handle the heavy thinking.","category":"general_meta"}
+{"utterance":"Turn my PANDA.1 usage patterns into a short training doc for future BOS.","category":"general_meta"}
+{"utterance":"Turn my SCOTT usage patterns into a short training doc for future BOS.","category":"general_meta"}
+{"utterance":"Help me define what 'success' looks like for PANDA.1 as my assistant.","category":"general_meta"}
+{"utterance":"Help me define how I’ll know if PANDA.1 is underused.","category":"general_meta"}
+{"utterance":"If I go days without using PANDA.1, ask if that’s intentional.","category":"general_meta"}
+{"utterance":"If I start overusing PANDA.1 for tiny things, remind me to also rely on BOS judgment.","category":"general_meta"}
+{"utterance":"Help me decide which parts of planning should be AI-assisted versus analog.","category":"general_meta"}
+{"utterance":"Help me decide when to stop planning and just start doing the thing.","category":"general_meta"}
+{"utterance":"Translate technical AI language into phrases BOS can actually use.","category":"general_meta"}
+{"utterance":"When I’m debugging prompts, help me change one variable at a time.","category":"general_meta"}
+{"utterance":"Tag prompts that led to especially good results as 'gold prompts'.","category":"general_meta"}
+{"utterance":"Once in a while, show me those 'gold prompts' so I don’t forget them.","category":"general_meta"}
+{"utterance":"Help me teach future BOS how to use PANDA.1 smarter than I did at the start.","category":"general_meta"}
+{"utterance":"If I say 'meta PANDA check', tell me how well I’m using you this week.","category":"general_meta"}
+{"utterance":"Suggest one upgrade to how I use AI that could meaningfully improve my life.","category":"general_meta"}
+{"utterance":"Suggest one downgrade—something I can simplify—so AI stays a tool, not a burden.","category":"general_meta"}
+{"utterance":"Look at my recent behavior and tell me when I seem most focused.","category":"general_meta"}
+{"utterance":"Look at my recent behavior and tell me when I seem most distracted.","category":"general_meta"}
+{"utterance":"Help me design a day around my natural focus times, not against them.","category":"general_meta"}
+{"utterance":"Suggest when BOS should do creative work versus mechanical tasks.","category":"general_meta"}
+{"utterance":"When I say I’m tired, offer a lighter, realistic task menu.","category":"general_meta"}
+{"utterance":"When I say I’m energized, offer a more ambitious task menu.","category":"general_meta"}
+{"utterance":"Help me plan micro-breaks that recharge me instead of numbing me.","category":"general_meta"}
+{"utterance":"Show me how much time I spend planning versus actually doing.","category":"general_meta"}
+{"utterance":"If planning starts to dominate, remind me to move into execution.","category":"general_meta"}
+{"utterance":"Help me track 'focus blocks' I actually complete.","category":"general_meta"}
+{"utterance":"Help me track 'fake focus' where I pretend to work but don’t move the needle.","category":"general_meta"}
+{"utterance":"Give me simple signals to notice when my brain is done for the day.","category":"general_meta"}
+{"utterance":"Help me recognize the difference between laziness and genuine fatigue.","category":"general_meta"}
+{"utterance":"Suggest one tiny action I can take when I feel too tired to do real work.","category":"general_meta"}
+{"utterance":"Suggest one small way to treat myself that doesn’t wreck my health or money.","category":"general_meta"}
+{"utterance":"If I keep working late nights, warn me about the long-term cost.","category":"general_meta"}
+{"utterance":"Help me design a sustainable workweek that includes real rest.","category":"general_meta"}
+{"utterance":"Show me how pursuing rest actually helps my financial and business goals.","category":"general_meta"}
+{"utterance":"When I talk about 'hustling', check whether I’m being smart or just grinding.","category":"general_meta"}
+{"utterance":"Help me pick one habit to track this month that supports better energy.","category":"general_meta"}
+{"utterance":"Help me pick one habit to stop this month that drains energy.","category":"general_meta"}
+{"utterance":"Show me patterns in when I report headaches, stress, or exhaustion.","category":"general_meta"}
+{"utterance":"Show me patterns in when I report feeling clear and sharp.","category":"general_meta"}
+{"utterance":"Help me schedule 'nothing blocks' where I intentionally do less.","category":"general_meta"}
+{"utterance":"Help me schedule 'focus sprints' where I do extra in short bursts.","category":"general_meta"}
+{"utterance":"If I try to schedule too many focus sprints, warn me about burnout.","category":"general_meta"}
+{"utterance":"If I never schedule focus sprints, suggest trying one as an experiment.","category":"general_meta"}
+{"utterance":"Turn my ideal day into a gentle target, not a rigid rule.","category":"general_meta"}
+{"utterance":"Remind me that some days will be messy and that’s okay.","category":"general_meta"}
+{"utterance":"When I say 'time audit', help me review where my hours went recently.","category":"general_meta"}
+{"utterance":"When I say 'energy audit', help me review what lifted and drained me.","category":"general_meta"}
+{"utterance":"Show me if I’m spending most of my time on urgent things instead of important ones.","category":"general_meta"}
+{"utterance":"Highlight a few 'important but not urgent' items I should make room for.","category":"general_meta"}
+{"utterance":"Help me protect mornings from random low-impact tasks.","category":"general_meta"}
+{"utterance":"Help me protect at least one block per day for high-value work.","category":"general_meta"}
+{"utterance":"If I keep jumping tasks mid-stream, encourage me to finish one before switching.","category":"general_meta"}
+{"utterance":"Help me discover which tasks I procrastinate on the most.","category":"general_meta"}
+{"utterance":"Help me discover why I might procrastinate on those particular tasks.","category":"general_meta"}
+{"utterance":"Suggest small adjustments to make hard tasks feel more doable.","category":"general_meta"}
+{"utterance":"When I ask for a break, suggest how long it should realistically be.","category":"general_meta"}
+{"utterance":"When my schedule is too packed, ask what I can cut today.","category":"general_meta"}
+{"utterance":"When my schedule is too empty, ask what I can add that moves me forward.","category":"general_meta"}
+{"utterance":"Help me design one simple 'no work' evening each week to reset.","category":"general_meta"}
+{"utterance":"Help me design a 'creative refill' session that doesn’t feel like work.","category":"general_meta"}
+{"utterance":"Show me how my time choices reflect what I truly value right now.","category":"general_meta"}
+{"utterance":"Show me how my time choices should change to reflect what I say I value.","category":"general_meta"}
+{"utterance":"When I say 'time reality check', compare my ideal schedule with reality.","category":"general_meta"}
+{"utterance":"Help me make peace with the fact that BOS is human, not a machine.","category":"general_meta"}
+{"utterance":"Suggest one daily ritual that signals the end of work for BOS.","category":"general_meta"}
+{"utterance":"Suggest one morning ritual that signals the start of being BOS the creator, not just worker.","category":"general_meta"}
+{"utterance":"Summarize the ways BOS has grown since we first started talking.","category":"general_meta"}
+{"utterance":"Summarize the ways BOS still holds back from what he could do.","category":"general_meta"}
+{"utterance":"Highlight three moments where BOS handled something better than the old me would have.","category":"general_meta"}
+{"utterance":"Highlight patterns where BOS underestimates himself.","category":"general_meta"}
+{"utterance":"Highlight patterns where BOS is too hard on himself.","category":"general_meta"}
+{"utterance":"Help me rewrite my inner voice to be firm but kind, not cruel.","category":"general_meta"}
+{"utterance":"When you see harsh self-talk in my messages, gently challenge it.","category":"general_meta"}
+{"utterance":"When you see realistic self-critique, help me turn it into improvement steps.","category":"general_meta"}
+{"utterance":"Help me define what 'confident but humble' looks like for BOS.","category":"general_meta"}
+{"utterance":"Help me define what 'strong but gentle' looks like for BOS.","category":"general_meta"}
+{"utterance":"When I’m stuck in blame, shift me to responsibility and choice.","category":"general_meta"}
+{"utterance":"When I’m stuck in shame, shift me to learning and compassion.","category":"general_meta"}
+{"utterance":"Help me list qualities I admire in others that BOS already has.","category":"general_meta"}
+{"utterance":"Help me list qualities I want to build in myself deliberately.","category":"general_meta"}
+{"utterance":"Turn those qualities into small daily or weekly practices.","category":"general_meta"}
+{"utterance":"Show me projects where I was braver than I gave myself credit for.","category":"general_meta"}
+{"utterance":"Show me moments where I gave up on myself too quickly.","category":"general_meta"}
+{"utterance":"Help me decide what kind of man BOS wants to be in ten years.","category":"general_meta"}
+{"utterance":"Help me describe that future BOS in a way that inspires, not pressures me.","category":"general_meta"}
+{"utterance":"Help me see how present BOS is already on the path to that future.","category":"general_meta"}
+{"utterance":"When I say 'identity check', ask whether my actions match the man I want to be.","category":"general_meta"}
+{"utterance":"Help me write a short letter from future BOS to present BOS.","category":"general_meta"}
+{"utterance":"Help me write a short letter from present BOS to past BOS with gratitude.","category":"general_meta"}
+{"utterance":"Show me how I used to think, compared to how I think now.","category":"general_meta"}
+{"utterance":"Show me signs that my mindset about money has matured.","category":"general_meta"}
+{"utterance":"Show me signs that my mindset about rest and health has matured.","category":"general_meta"}
+{"utterance":"Show me signs that my mindset about risk has matured.","category":"general_meta"}
+{"utterance":"When I catastrophize, help me scale the fear back to realistic levels.","category":"general_meta"}
+{"utterance":"When I minimize real problems, help me see the seriousness without panic.","category":"general_meta"}
+{"utterance":"Suggest one phrase I can tell myself when things go wrong.","category":"general_meta"}
+{"utterance":"Suggest one phrase I can tell myself when things go well.","category":"general_meta"}
+{"utterance":"Highlight behaviors where BOS acts from courage rather than fear.","category":"general_meta"}
+{"utterance":"Highlight behaviors where BOS acts from fear rather than wisdom.","category":"general_meta"}
+{"utterance":"Help me decide which fears are trying to protect me and which are holding me back.","category":"general_meta"}
+{"utterance":"Help me create a personal rule for how BOS responds to setbacks.","category":"general_meta"}
+{"utterance":"Help me create a personal rule for how BOS responds to wins.","category":"general_meta"}
+{"utterance":"Show me ways I’m already living my values, even if imperfectly.","category":"general_meta"}
+{"utterance":"Show me where my actions and stated values conflict and need alignment.","category":"general_meta"}
+{"utterance":"Help me craft a simple personal creed BOS can read on hard days.","category":"general_meta"}
+{"utterance":"Help me craft a simple reminder BOS can read on good days to stay grounded.","category":"general_meta"}
+{"utterance":"Any time I call myself lazy, ask me what’s really going on underneath.","category":"general_meta"}
+{"utterance":"Any time I call myself stupid, remind me of evidence to the contrary.","category":"general_meta"}
+{"utterance":"Show me how my story so far could inspire someone else.","category":"general_meta"}
+{"utterance":"Show me how my story so far proves I can handle future challenges.","category":"general_meta"}
+{"utterance":"Help me see where I’ve already done hard things that scared me.","category":"general_meta"}
+{"utterance":"Help me see where I avoided hard things I actually could have handled.","category":"general_meta"}
+{"utterance":"When I’m tempted to quit, remind me of past times I kept going and won.","category":"general_meta"}
+{"utterance":"When I’m tempted to overwork, remind me of times I paid the price.","category":"general_meta"}
+{"utterance":"Help me find a middle path between all-out hustle and passive waiting.","category":"general_meta"}
+{"utterance":"Help me remember that building a good life is a marathon, not a sprint.","category":"general_meta"}
+{"utterance":"When I face a decision, help me lay out simple choices and consequences.","category":"general_meta"}
+{"utterance":"Ask me what I’m afraid of with this decision and write it down clearly.","category":"general_meta"}
+{"utterance":"Ask me what I hope for with this decision and write it down clearly.","category":"general_meta"}
+{"utterance":"Help me imagine the worst likely outcome, not the absolute worst imaginable.","category":"general_meta"}
+{"utterance":"Help me imagine the best plausible outcome, not fantasy.","category":"general_meta"}
+{"utterance":"Show me what happens if I do nothing about this decision.","category":"general_meta"}
+{"utterance":"Show me what happens if I make a small, reversible move first.","category":"general_meta"}
+{"utterance":"Show me what happens if I go all-in quickly and it works.","category":"general_meta"}
+{"utterance":"Show me what happens if I go all-in quickly and it fails.","category":"general_meta"}
+{"utterance":"Help me choose decisions that are reversible when I’m not sure yet.","category":"general_meta"}
+{"utterance":"Help me recognize when a decision is truly high stakes or just feels like it.","category":"general_meta"}
+{"utterance":"If I’m stalling on a decision, ask if I need more info or just courage.","category":"general_meta"}
+{"utterance":"Help me define what a 'good enough' decision looks like here.","category":"general_meta"}
+{"utterance":"Remind me that no decision is also a decision, with its own cost.","category":"general_meta"}
+{"utterance":"Turn this complicated choice into a simple pros and cons list.","category":"general_meta"}
+{"utterance":"Turn this complicated choice into a quick gut check question.","category":"general_meta"}
+{"utterance":"Show me which option matches my long-term values better.","category":"general_meta"}
+{"utterance":"Show me which option matches my short-term needs better.","category":"general_meta"}
+{"utterance":"Help me find a third option that combines the best of the first two.","category":"general_meta"}
+{"utterance":"If I’m obsessing over tiny details, bring me back to the main tradeoffs.","category":"general_meta"}
+{"utterance":"When I say 'risk map this', show me where the real risk sits in this plan.","category":"general_meta"}
+{"utterance":"When I say 'upside map this', show me where the real upside sits in this plan.","category":"general_meta"}
+{"utterance":"Help me identify one small test I can run before committing fully.","category":"general_meta"}
+{"utterance":"Highlight any decisions that are emotionally driven but financially dangerous.","category":"general_meta"}
+{"utterance":"Highlight any decisions that are financially good but emotionally costly.","category":"general_meta"}
+{"utterance":"Help me label which risks are one-time versus repeating.","category":"general_meta"}
+{"utterance":"Help me label which mistakes would be recoverable versus critical.","category":"general_meta"}
+{"utterance":"When I feel I must decide instantly, ask if the deadline is real.","category":"general_meta"}
+{"utterance":"When I keep delaying a decision, ask what I gain by delaying.","category":"general_meta"}
+{"utterance":"Turn my options into a short story of 'BOS in Path A' and 'BOS in Path B'.","category":"general_meta"}
+{"utterance":"Ask which version of BOS I would respect more in five years.","category":"general_meta"}
+{"utterance":"When a decision only affects pride, not survival, remind me of that.","category":"general_meta"}
+{"utterance":"When a decision affects safety or family, help me weigh it extra carefully.","category":"general_meta"}
+{"utterance":"If I’m tempted to chase ten opportunities at once, help me pick one.","category":"general_meta"}
+{"utterance":"If I’m tempted to shut down all risk, help me keep at least one growth move.","category":"general_meta"}
+{"utterance":"Help me list my best decisions of the past and what they had in common.","category":"general_meta"}
+{"utterance":"Help me list my worst decisions of the past and what they had in common.","category":"general_meta"}
+{"utterance":"Use those patterns to advise me on this new decision.","category":"general_meta"}
+{"utterance":"When I say 'decision fatigue', suggest postponing small choices and focusing on one big one.","category":"general_meta"}
+{"utterance":"Turn this long-term dream into the next three decisions I actually need to make.","category":"general_meta"}
+{"utterance":"Turn this vague fear into specific scenarios we can plan around.","category":"general_meta"}
+{"utterance":"Show me where I’m overestimating potential loss.","category":"general_meta"}
+{"utterance":"Show me where I’m underestimating potential gain.","category":"general_meta"}
+{"utterance":"Show me where I’m overestimating potential gain.","category":"general_meta"}
+{"utterance":"Show me where I’m underestimating potential loss.","category":"general_meta"}
+{"utterance":"When I feel paralyzed, ask me what a tiny, safe next step could be.","category":"general_meta"}
+{"utterance":"When I feel reckless, ask me what safeguard I’d regret not having.","category":"general_meta"}
+{"utterance":"Turn this business idea into a checklist of things to validate first.","category":"general_meta"}
+{"utterance":"Turn this life decision into a few journaling questions for BOS.","category":"general_meta"}
+{"utterance":"Help me create a 'BOS decision code' I can apply to future choices.","category":"general_meta"}
+{"utterance":"Give me a short review of how BOS has used this week.","category":"general_meta"}
+{"utterance":"Give me a short review of how BOS has used this month.","category":"general_meta"}
+{"utterance":"Give me a short review of how BOS has used this quarter.","category":"general_meta"}
+{"utterance":"Highlight the top three wins for BOS this week.","category":"general_meta"}
+{"utterance":"Highlight the top three wins for BOS this month.","category":"general_meta"}
+{"utterance":"Highlight the top three wins for BOS this year so far.","category":"general_meta"}
+{"utterance":"Show me where I created value this week that I might have forgotten.","category":"general_meta"}
+{"utterance":"Show me where I wasted time this week that I might not have noticed.","category":"general_meta"}
+{"utterance":"Turn this week into three sentences: one about money, one about health, one about joy.","category":"general_meta"}
+{"utterance":"Turn this month into three sentences: money, growth, and relationships.","category":"general_meta"}
+{"utterance":"Ask me three reflection questions about this week and wait for my answers.","category":"general_meta"}
+{"utterance":"Ask me three reflection questions about this month and wait for my answers.","category":"general_meta"}
+{"utterance":"Summarize my answers and show me the patterns you see.","category":"general_meta"}
+{"utterance":"Show me which commitments I kept and which I dropped.","category":"general_meta"}
+{"utterance":"Show me which dropped commitments I actually don’t regret.","category":"general_meta"}
+{"utterance":"Show me which dropped commitments I do regret and why.","category":"general_meta"}
+{"utterance":"Help me decide which regrets need to be acted on and which can be let go.","category":"general_meta"}
+{"utterance":"Help me create a short 'lessons learned' list from this week.","category":"general_meta"}
+{"utterance":"Help me create a short 'lessons learned' list from this month.","category":"general_meta"}
+{"utterance":"Turn those lessons into one or two rules for next week.","category":"general_meta"}
+{"utterance":"Turn those lessons into one or two rules for next month.","category":"general_meta"}
+{"utterance":"Compare my stated priorities with what I actually worked on.","category":"general_meta"}
+{"utterance":"Compare my ideal daily routine with my actual daily routine this week.","category":"general_meta"}
+{"utterance":"Point out one area where I outperformed my expectations.","category":"general_meta"}
+{"utterance":"Point out one area where I underperformed but can fix it.","category":"general_meta"}
+{"utterance":"Ask me what I’m proud of from this week and write it down.","category":"general_meta"}
+{"utterance":"Ask me what I’d like to improve next week and write it down.","category":"general_meta"}
+{"utterance":"Summarize my weekly review into a short note for future BOS.","category":"general_meta"}
+{"utterance":"Summarize my monthly review into a short note for future BOS.","category":"general_meta"}
+{"utterance":"Help me spot any story I’m telling myself that doesn’t match the facts.","category":"general_meta"}
+{"utterance":"Help me spot any story I’m telling myself that’s more negative than reality.","category":"general_meta"}
+{"utterance":"Help me spot any story I’m telling myself that ignores real risks.","category":"general_meta"}
+{"utterance":"Suggest a kinder interpretation of my efforts this week.","category":"general_meta"}
+{"utterance":"Suggest a more honest interpretation of my avoidance this week.","category":"general_meta"}
+{"utterance":"Highlight any patterns of progress that are slow but steady.","category":"general_meta"}
+{"utterance":"Highlight any patterns of stagnation I’ve been ignoring.","category":"general_meta"}
+{"utterance":"Help me see this week as part of a bigger journey, not an isolated test.","category":"general_meta"}
+{"utterance":"If I call the week a failure, challenge me with facts and nuance.","category":"general_meta"}
+{"utterance":"If I call the week a total success, help me see blind spots gently.","category":"general_meta"}
+{"utterance":"Remind me that one bad day doesn’t erase long-term progress.","category":"general_meta"}
+{"utterance":"Remind me that one good day doesn’t mean I can coast forever.","category":"general_meta"}
+{"utterance":"Help me plan one small celebration for this week’s efforts.","category":"general_meta"}
+{"utterance":"Help me pick one thing to improve next week without overloading.","category":"general_meta"}
+{"utterance":"When I say 'retro mode', guide me through a simple reflection framework.","category":"general_meta"}
+{"utterance":"When I say 'snapshot BOS today', describe who I am right now in a respectful way.","category":"general_meta"}
+{"utterance":"Show me how BOS this month compares to BOS six months ago.","category":"general_meta"}
+{"utterance":"Show me how BOS this year compares to BOS a few years ago.","category":"general_meta"}
+{"utterance":"From your perspective, is BOS trending upward overall? Explain.","category":"general_meta"}
+{"utterance":"If it looks like I’m trending downward, help me design a turnaround plan.","category":"general_meta"}
+{"utterance":"If it looks like I’m flatlining, suggest gentle ways to re-ignite progress.","category":"general_meta"}
+{"utterance":"When I wake up and say 'where do we start', help me pick a starting task.","category":"general_meta"}
+{"utterance":"If I open PANDA.1 without a plan, ask what I want from this session.","category":"general_meta"}
+{"utterance":"If I say 'I’m lost', offer me three simple directions I can choose from.","category":"general_meta"}
+{"utterance":"If I say 'I’m anxious', help me ground in facts and small actions.","category":"general_meta"}
+{"utterance":"If I say 'I’m excited', help me channel that into a concrete plan.","category":"general_meta"}
+{"utterance":"Help me design a BOS morning where I take care of my body and business.","category":"general_meta"}
+{"utterance":"Help me design a BOS afternoon where I don’t crash emotionally.","category":"general_meta"}
+{"utterance":"Help me design a BOS evening where I feel satisfied, not empty.","category":"general_meta"}
+{"utterance":"Suggest one thing I can do today that’s just for joy, not productivity.","category":"general_meta"}
+{"utterance":"Suggest one thing I can do today that clearly serves my future.","category":"general_meta"}
+{"utterance":"When I scroll through negative thoughts, gently interrupt with one good thing.","category":"general_meta"}
+{"utterance":"When I downplay my achievements, remind me they still count.","category":"general_meta"}
+{"utterance":"Help me create a short checklist for leaving the house for markets or errands.","category":"general_meta"}
+{"utterance":"Help me create a short checklist for returning home and winding down.","category":"general_meta"}
+{"utterance":"Make a mini routine for 'BOS office open' and 'BOS office closed'.","category":"general_meta"}
+{"utterance":"Any time I say 'too much', help me shrink things down to one step.","category":"general_meta"}
+{"utterance":"Any time I say 'I’ll do it later', ask if it takes under two minutes now.","category":"general_meta"}
+{"utterance":"If it does take under two minutes, encourage me to knock it out.","category":"general_meta"}
+{"utterance":"Help me turn chores into small missions instead of vague burdens.","category":"general_meta"}
+{"utterance":"Remind me that every little bit of organization still supports BOS long-term.","category":"general_meta"}
+{"utterance":"Suggest one daily question I can ask: 'What does BOS need right now?'","category":"general_meta"}
+{"utterance":"Suggest one daily question I can ask: 'What does Future BOS need from me today?'","category":"general_meta"}
+{"utterance":"Help me pick a tiny act of discipline each day that builds self-respect.","category":"general_meta"}
+{"utterance":"Help me pick a tiny act of kindness each day that builds connection.","category":"general_meta"}
+{"utterance":"When I feel lonely, suggest a small social action that fits my personality.","category":"general_meta"}
+{"utterance":"When I feel overwhelmed, suggest a way to shrink my world for an hour.","category":"general_meta"}
+{"utterance":"Help me create a 'BOS reset' script I can follow when the day goes sideways.","category":"general_meta"}
+{"utterance":"Help me create a 'BOS rally' script I can follow when I want to push a bit more.","category":"general_meta"}
+{"utterance":"If I say 'quick pep talk', give me something short and BOS-specific.","category":"general_meta"}
+{"utterance":"If I say 'honest check-in', tell me what you’re noticing about my patterns.","category":"general_meta"}
+{"utterance":"When I sound like I’ve lost my why, remind me what drives BOS in the first place.","category":"general_meta"}
+{"utterance":"When I sound like I’m chasing applause, remind me of deeper reasons.","category":"general_meta"}
+{"utterance":"Help me plan one 'offline block' per week with no screens.","category":"general_meta"}
+{"utterance":"Help me plan one 'learning block' per week that feels fun.","category":"general_meta"}
+{"utterance":"Show me one thing each day that I could be grateful for.","category":"general_meta"}
+{"utterance":"Show me one thing each day that proves I’m making progress.","category":"general_meta"}
+{"utterance":"Ask me once in a while if I still enjoy what I’m building.","category":"general_meta"}
+{"utterance":"If I say 'I hate everything', help me break it down to specifics.","category":"general_meta"}
+{"utterance":"Help me distinguish between needing rest and wanting escape.","category":"general_meta"}
+{"utterance":"Help me distinguish between needing change and fearing commitment.","category":"general_meta"}
+{"utterance":"Create a command phrase I can use to ask you to zoom out on my life.","category":"general_meta"}
+{"utterance":"Create a command phrase I can use to zoom in on one issue only.","category":"general_meta"}
+{"utterance":"When I treat every problem like an emergency, help me rank them.","category":"general_meta"}
+{"utterance":"When I treat real issues casually, help me see why they matter.","category":"general_meta"}
+{"utterance":"Help me pick one guiding theme for this week: like 'stability', 'growth', or 'care'.","category":"general_meta"}
+{"utterance":"Help me pick one guiding theme for this month.","category":"general_meta"}
+{"utterance":"If I say 'BOS compass', remind me of my big reasons, not just tasks.","category":"general_meta"}
+{"utterance":"Help me write a simple one-page BOS life manifesto over time.","category":"general_meta"}
+{"utterance":"Help me keep that manifesto realistic and kind, not harsh.","category":"general_meta"}
+{"utterance":"Once in a while, ask if my daily life still matches the life I say I want.","category":"general_meta"}
+{"utterance":"Describe how BOS and PANDA.1 working together can be a superpower.","category":"general_meta"}
+{"utterance":"Describe what happens if BOS uses PANDA.1 fully versus barely at all.","category":"general_meta"}
+{"utterance":"Help me define what 'top in financial and life' means in my own words.","category":"general_meta"}
+{"utterance":"Help me break that big 'top' vision into stages BOS can reach over time.","category":"general_meta"}
+{"utterance":"Show me how my current actions line up with stage one of that vision.","category":"general_meta"}
+{"utterance":"Show me what would need to change for me to reach stage two.","category":"general_meta"}
+{"utterance":"Show me what behaviors would sabotage that vision most.","category":"general_meta"}
+{"utterance":"Show me what behaviors would support that vision most.","category":"general_meta"}
+{"utterance":"Help me choose one 'level-up' project that moves me toward that top vision.","category":"general_meta"}
+{"utterance":"Help me choose one 'cleanup' project that removes friction from my life.","category":"general_meta"}
+{"utterance":"When I say 'long game', help me think in years, not just days.","category":"general_meta"}
+{"utterance":"When I say 'short game', help me think in days and weeks, not decades.","category":"general_meta"}
+{"utterance":"Help me blend short game and long game so I don’t sacrifice one for the other.","category":"general_meta"}
+{"utterance":"Highlight choices where I’m trading long-term peace for short-term comfort.","category":"general_meta"}
+{"utterance":"Highlight choices where I’m trading short-term discomfort for long-term gain.","category":"general_meta"}
+{"utterance":"Turn my biggest dreams into a few specific, measurable milestones.","category":"general_meta"}
+{"utterance":"Ask me which milestones truly matter and which are ego.","category":"general_meta"}
+{"utterance":"Help me design a path that honors family, health, and money together.","category":"general_meta"}
+{"utterance":"Show me how to avoid building a successful business but an unhappy life.","category":"general_meta"}
+{"utterance":"Show me how to avoid building a comfortable life but a dead business.","category":"general_meta"}
+{"utterance":"When I say 'BOS north star', remind me of my deepest reasons for all this.","category":"general_meta"}
+{"utterance":"Help me list ways I can help others once BOS is more stable.","category":"general_meta"}
+{"utterance":"Help me list ways I can help others even while I’m still building.","category":"general_meta"}
+{"utterance":"Show me how generosity and smart money can work together, not against each other.","category":"general_meta"}
+{"utterance":"Help me notice when fear of scarcity is making decisions smaller than they need to be.","category":"general_meta"}
+{"utterance":"Help me notice when delusion is making decisions bigger than they should be.","category":"general_meta"}
+{"utterance":"Suggest one practice that keeps BOS grounded as things grow.","category":"general_meta"}
+{"utterance":"Suggest one practice that keeps BOS hungry for growth without desperation.","category":"general_meta"}
+{"utterance":"Help me turn stress into a signal instead of a lifestyle.","category":"general_meta"}
+{"utterance":"Help me turn ambition into a direction instead of a constant pressure.","category":"general_meta"}
+{"utterance":"When I say 'BOS alignment check', see if my daily actions match my big goals.","category":"general_meta"}
+{"utterance":"When I say 'BOS reality check', tell me honestly where I stand financially and personally, based on what you know.","category":"general_meta"}
+{"utterance":"Help me celebrate progress quietly, even if the world doesn’t see it.","category":"general_meta"}
+{"utterance":"Help me see the hidden compounding of small, consistent actions.","category":"general_meta"}
+{"utterance":"Show me where I’m expecting overnight results from seeds that take years.","category":"general_meta"}
+{"utterance":"Show me where I’m being patient with things that should move faster.","category":"general_meta"}
+{"utterance":"Turn my relationship with work into a healthier story in my own words.","category":"general_meta"}
+{"utterance":"Turn my relationship with money into a healthier story in my own words.","category":"general_meta"}
+{"utterance":"Turn my relationship with rest into a healthier story in my own words.","category":"general_meta"}
+{"utterance":"Help me imagine an older BOS looking back, proud of how I lived, not just what I built.","category":"general_meta"}
+{"utterance":"Help me imagine an older BOS giving current me one piece of advice.","category":"general_meta"}
+{"utterance":"Help me imagine current BOS sending a thank-you note to older BOS in advance.","category":"general_meta"}
+{"utterance":"Show me how using PANDA.1 wisely can protect me from my worst habits.","category":"general_meta"}
+{"utterance":"Show me how using PANDA.1 wisely can amplify my best qualities.","category":"general_meta"}
+{"utterance":"If I start drifting far from who I want to be, gently alert me.","category":"general_meta"}
+{"utterance":"If I start moving clearly toward who I want to be, point it out so I notice.","category":"general_meta"}
+{"utterance":"Remind me that BOS is not just his businesses or his productivity.","category":"general_meta"}
+{"utterance":"Remind me that building a life includes joy, rest, and love, not just output.","category":"general_meta"}
+{"utterance":"Help me use PANDA.1 as a tool to free BOS, not trap me in more complexity.","category":"general_meta"}
+{"utterance":"Help me keep our partnership simple, powerful, and focused on what truly matters.","category":"general_meta"}

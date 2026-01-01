@@ -1,0 +1,309 @@
+{"utterance":"PANDA, what can you help me with right now?","intent":"assistant.capabilities_overview","category":"meta"}
+{"utterance":"Give me a quick rundown of your main skills.","intent":"assistant.capabilities_overview","category":"meta"}
+{"utterance":"Explain how I should be using you day to day.","intent":"assistant.usage_guidance","category":"meta"}
+{"utterance":"What are the top 5 things you’re best at for me?","intent":"assistant.capabilities_ranked","category":"meta"}
+{"utterance":"Summarize everything you remember about my AI projects.","intent":"assistant.recap_ai_projects","category":"meta"}
+{"utterance":"Summarize everything you know about my businesses.","intent":"assistant.recap_businesses","category":"meta"}
+{"utterance":"Remind me what we worked on yesterday with you.","intent":"assistant.recap_recent_session","category":"meta"}
+{"utterance":"Give me a recap of our last 5 conversations.","intent":"assistant.recap_last_n_sessions","category":"meta"}
+{"utterance":"What are some things I keep forgetting to finish?","intent":"assistant.find_unfinished_tasks","category":"meta"}
+{"utterance":"List all my open projects you know about.","intent":"assistant.list_projects","category":"meta"}
+{"utterance":"Rank my current projects by importance based on what you know.","intent":"assistant.rank_projects","category":"meta"}
+{"utterance":"Help me figure out what I should focus on for the next hour.","intent":"assistant.pick_focus_task","category":"meta"}
+{"utterance":"Help me plan my deep work block for today.","intent":"assistant.plan_deep_work","category":"meta"}
+{"utterance":"Turn that into a mini game plan for the day.","intent":"assistant.daily_plan_from_goals","category":"meta"}
+{"utterance":"Check if I’m overloading myself with tasks today.","intent":"assistant.check_overload","category":"meta"}
+{"utterance":"Show me my current task list you’re tracking.","intent":"tasks.list","category":"tasks"}
+{"utterance":"Mark that task as done.","intent":"tasks.mark_done_last_referenced","category":"tasks"}
+{"utterance":"Create a new task called 'update PANDA.1 config' and track it.","intent":"tasks.create","category":"tasks"}
+{"utterance":"What tasks did I complete this week?","intent":"tasks.list_completed_week","category":"tasks"}
+{"utterance":"Suggest one quick win task I can knock out now.","intent":"tasks.suggest_quick_win","category":"tasks"}
+{"utterance":"Which of my projects seems stuck based on our chats?","intent":"assistant.find_stuck_project","category":"meta"}
+{"utterance":"Help me get unstuck on that stuck project.","intent":"assistant.unstick_project","category":"meta"}
+{"utterance":"Remind me what PANDA.1’s main job is.","intent":"assistant.describe_self_role","category":"meta"}
+{"utterance":"Explain how SCOTT’s role is different from yours.","intent":"assistant.describe_scott_vs_panda","category":"meta"}
+{"utterance":"Do a quick self-check and tell me if anything is misconfigured.","intent":"system.self_check","category":"system"}
+{"utterance":"Tell me what’s likely to break first in my setup.","intent":"system.predict_risks","category":"system"}
+{"utterance":"Give me a safety checklist before I change anything major.","intent":"system.safety_checklist","category":"system"}
+{"utterance":"Explain your limitations to me like I’m tired.","intent":"assistant.explain_limitations_simple","category":"meta"}
+{"utterance":"When should I NOT trust your answers?","intent":"assistant.explain_when_to_double_check","category":"meta"}
+{"utterance":"Help me set rules for how I use you as a partner, not a crutch.","intent":"assistant.define_usage_rules","category":"meta"}
+{"utterance":"Point out any patterns where I repeat the same mistakes.","intent":"assistant.find_behavior_patterns","category":"meta"}
+{"utterance":"Help me simplify my overall AI setup.","intent":"system.simplify_ai_stack","category":"system"}
+{"utterance":"What’s redundant in my current AI fleet?","intent":"system.find_redundant_agents","category":"system"}
+{"utterance":"What should SENSEI be doing that you shouldn’t?","intent":"assistant.boundary_sensei","category":"meta"}
+{"utterance":"What should SCOTT be doing that you shouldn’t?","intent":"assistant.boundary_scott","category":"meta"}
+{"utterance":"Help me write rules so each agent stays in its lane.","intent":"system.agent_boundary_rules","category":"system"}
+{"utterance":"If I disappear for a week, what should I check first when I’m back?","intent":"assistant.checklist_after_absence","category":"meta"}
+{"utterance":"Generate a one-page owner’s manual for my setup so far.","intent":"docs.owner_manual_generate","category":"docs"}
+{"utterance":"Think like my COO and critique how I’m using all this.","intent":"assistant.coop_style_critique","category":"meta"}
+{"utterance":"Tell me what future BOS might thank present BOS for doing today.","intent":"assistant.future_self_suggestion","category":"meta"}
+{"utterance":"Help me pick just one thing to improve in my workflow this week.","intent":"assistant.pick_one_improvement","category":"meta"}
+{"utterance":"Ask me 5 questions to better understand how I think.","intent":"assistant.ask_personal_calibration","category":"meta"}
+{"utterance":"Ask me 5 questions to better understand my priorities.","intent":"assistant.ask_priority_calibration","category":"meta"}
+{"utterance":"Rewrite my core goals for the next 3 months in your own words.","intent":"assistant.rewrite_goals","category":"meta"}
+{"utterance":"Check if my goals and my daily actions match.","intent":"assistant.check_goal_action_alignment","category":"meta"}
+{"utterance":"Help me stop chasing shiny objects with this AI stuff.","intent":"assistant.prevent_shiny_object_syndrome","category":"meta"}
+{"utterance":"Tell me when I should stop tweaking and start executing.","intent":"assistant.nudge_execution","category":"meta"}
+{"utterance":"If you were my project manager, what would you tell me right now?","intent":"assistant.pm_style_advice","category":"meta"}
+{"utterance":"Give me a gentle roast about my procrastination patterns.","intent":"assistant.playful_procrastination_feedback","category":"meta"}
+{"utterance":"Point out any overkill I’m doing with complexity.","intent":"assistant.detect_overengineering","category":"meta"}
+{"utterance":"Explain which parts of my setup are truly high leverage.","intent":"assistant.identify_high_leverage","category":"meta"}
+{"utterance":"What small change could give me the biggest gain in productivity?","intent":"assistant.suggest_high_leverage_change","category":"meta"}
+
+{"utterance":"Turn your voice on.","intent":"voice.on","category":"voice"}
+{"utterance":"Start talking out loud please.","intent":"voice.on","category":"voice"}
+{"utterance":"Use your voice for this reply.","intent":"voice.on","category":"voice"}
+{"utterance":"Voice off for now.","intent":"voice.off","category":"voice"}
+{"utterance":"Stop talking and just type.","intent":"voice.off","category":"voice"}
+{"utterance":"No TTS for this one.","intent":"voice.off_once","category":"voice"}
+{"utterance":"Slow down your voice.","intent":"voice.slower","category":"voice"}
+{"utterance":"You’re talking too fast, chill a bit.","intent":"voice.slower","category":"voice"}
+{"utterance":"Take it slower when you read news.","intent":"voice.slower","category":"voice"}
+{"utterance":"Speed up your voice a little.","intent":"voice.faster","category":"voice"}
+{"utterance":"Talk a bit faster, you’re too slow.","intent":"voice.faster","category":"voice"}
+{"utterance":"Pick up the pace when you read for me.","intent":"voice.faster","category":"voice"}
+{"utterance":"Go back to normal voice speed.","intent":"voice.normal","category":"voice"}
+{"utterance":"Reset your speaking speed to default.","intent":"voice.normal","category":"voice"}
+{"utterance":"Talk at normal speed again.","intent":"voice.normal","category":"voice"}
+{"utterance":"Repeat that last answer out loud.","intent":"voice.repeat_last","category":"voice"}
+{"utterance":"Say that again please.","intent":"voice.repeat_last","category":"voice"}
+{"utterance":"One more time, repeat your answer.","intent":"voice.repeat_last","category":"voice"}
+{"utterance":"Stop reading right now.","intent":"voice.stop_reading","category":"voice"}
+{"utterance":"Okay, you can stop reading.","intent":"voice.stop_reading","category":"voice"}
+{"utterance":"Cancel the reading, that’s enough.","intent":"voice.stop_reading","category":"voice"}
+{"utterance":"Next story, please.","intent":"voice.next_story","category":"voice"}
+{"utterance":"Skip this story and go to the next one.","intent":"voice.next_story","category":"voice"}
+{"utterance":"Go to the next headline.","intent":"voice.next_story","category":"voice"}
+{"utterance":"Read the previous story again.","intent":"voice.previous_story","category":"voice"}
+{"utterance":"Go back one story and reread it.","intent":"voice.previous_story","category":"voice"}
+{"utterance":"Voice super slow mode.","intent":"voice.set_speed_min","category":"voice"}
+{"utterance":"Voice turbo mode.","intent":"voice.set_speed_max","category":"voice"}
+{"utterance":"Mute yourself for this answer, just print it.","intent":"voice.off_once","category":"voice"}
+{"utterance":"Only headlines when you read news, from now on.","intent":"voice.news_headlines_only_mode","category":"voice"}
+{"utterance":"Read the headline and a short summary for each story.","intent":"voice.news_headline_plus_summary_mode","category":"voice"}
+{"utterance":"Pause a bit longer between heavy stories.","intent":"voice.pause_more_on_negative_news","category":"voice"}
+{"utterance":"Sound more excited when Dodgers win.","intent":"voice.prosody_dodgers_positive","category":"voice"}
+{"utterance":"Keep a neutral tone on political news.","intent":"voice.prosody_politics_neutral","category":"voice"}
+{"utterance":"Use a calm tone for stressful news.","intent":"voice.prosody_calm_on_stress","category":"voice"}
+{"utterance":"Talk to me in storytime mode when reading long articles.","intent":"voice.read_style_storytime","category":"voice"}
+{"utterance":"Just the facts tone for this news batch.","intent":"voice.read_style_factual","category":"voice"}
+{"utterance":"Make your pauses between sentences a little longer.","intent":"voice.increase_sentence_pause","category":"voice"}
+{"utterance":"Make your pauses between sentences shorter and snappier.","intent":"voice.decrease_sentence_pause","category":"voice"}
+{"utterance":"Give me a voice diagnostics report.","intent":"voice.status_report","category":"voice"}
+
+{"utterance":"Give me the news.","intent":"news.top","category":"news"}
+{"utterance":"Catch me up on today’s news.","intent":"news.top","category":"news"}
+{"utterance":"What are today’s headlines?","intent":"news.top","category":"news"}
+{"utterance":"Quick news update, please.","intent":"news.top","category":"news"}
+{"utterance":"Wake SCOTT and get today’s news.","intent":"news.top_scott","category":"news"}
+{"utterance":"Tell SCOTT to pull headlines for me.","intent":"news.top_scott","category":"news"}
+{"utterance":"Give me top tech news.","intent":"news.top_topic","category":"news"}
+{"utterance":"What’s the latest AI news?","intent":"news.top_topic","category":"news"}
+{"utterance":"Give me 3 tech stories only.","intent":"news.top_topic_limit","category":"news"}
+{"utterance":"4 top news on Korea.","intent":"news.top_topic_limit","category":"news"}
+{"utterance":"Give me 1 top news on baseball.","intent":"news.top_topic_limit","category":"news"}
+{"utterance":"Just one big headline about AI today.","intent":"news.top_topic_limit","category":"news"}
+{"utterance":"Top 3 business stories from today.","intent":"news.top_topic_limit","category":"news"}
+{"utterance":"Korea politics news only, please.","intent":"news.top_topic_filter","category":"news"}
+{"utterance":"Show me Korean economy news today.","intent":"news.top_topic_filter","category":"news"}
+{"utterance":"Give me US news focused on economy.","intent":"news.top_topic_filter","category":"news"}
+{"utterance":"World news brief, nothing too heavy.","intent":"news.top_world_calm","category":"news"}
+{"utterance":"MLB news update for today.","intent":"news.top_mlb","category":"news"}
+{"utterance":"Dodgers-related headlines only.","intent":"news.top_mlb_dodgers_only","category":"news"}
+{"utterance":"Give me baseball offseason rumors only.","intent":"news.top_mlb_rumors","category":"news"}
+{"utterance":"Stock market headlines without deep details.","intent":"news.top_markets_shallow","category":"news"}
+{"utterance":"Show me any inflation-related headlines today.","intent":"news.search_keyword","category":"news"}
+{"utterance":"Show me LA-area news from today.","intent":"news.top_local","category":"news"}
+{"utterance":"Search today’s news for ‘farmers market’ issues.","intent":"news.search_keyword","category":"news"}
+{"utterance":"Search headlines mentioning kimchi this week.","intent":"news.search_keyword","category":"news"}
+{"utterance":"Search headlines mentioning matcha this week.","intent":"news.search_keyword","category":"news"}
+{"utterance":"Search for any Etsy policy change news.","intent":"news.search_keyword","category":"news"}
+{"utterance":"Any news on farmers market regulations in California?","intent":"news.search_keyword","category":"news"}
+{"utterance":"Any shipping rate or USPS/UPS news lately?","intent":"news.search_keyword","category":"news"}
+{"utterance":"Any AI regulation headlines this week?","intent":"news.search_keyword","category":"news"}
+{"utterance":"Any big data breach stories this week?","intent":"news.search_keyword","category":"news"}
+{"utterance":"Any scam or fraud alerts small businesses should care about?","intent":"news.search_keyword","category":"news"}
+{"utterance":"Give me a calm world news briefing.","intent":"news.brief_world_calm","category":"news"}
+{"utterance":"Give me a Korea news briefing focused on economy.","intent":"news.brief_korea_economy","category":"news"}
+{"utterance":"Give me a tech news digest with three items.","intent":"news.brief_tech_3items","category":"news"}
+{"utterance":"Show me the main US headline I should know about.","intent":"news.single_us_key_story","category":"news"}
+{"utterance":"Give me the main sports headline of the day.","intent":"news.single_sports_key_story","category":"news"}
+{"utterance":"Give me a morning news and weather combo in under 2 minutes.","intent":"news.morning_briefing","category":"news"}
+{"utterance":"Evening wrap-up: top 3 news plus tomorrow’s weather.","intent":"news.evening_briefing","category":"news"}
+{"utterance":"Market check.","intent":"news.market_check","category":"news"}
+{"utterance":"Global check.","intent":"news.global_check","category":"news"}
+{"utterance":"News drilldown on AI agents.","intent":"news.drilldown_topic","category":"news"}
+{"utterance":"Compare today’s headlines to yesterday’s and tell me what changed.","intent":"news.compare_days","category":"news"}
+{"utterance":"What’s the vibe of today’s news?","intent":"news.mood_summary","category":"news"}
+{"utterance":"Show me one random interesting headline.","intent":"news.random_headline","category":"news"}
+{"utterance":"Good news only for this batch, please.","intent":"news.filter_positive","category":"news"}
+{"utterance":"No politics today, filter those out.","intent":"news.filter_no_politics","category":"news"}
+{"utterance":"Bedtime mode: only light and calm news.","intent":"news.bedtime_mode","category":"news"}
+{"utterance":"Sports-only briefing with MLB focus.","intent":"news.sports_only_brief","category":"news"}
+{"utterance":"News blackout until I say otherwise.","intent":"news.blackout_on","category":"news"}
+{"utterance":"Turn news back on.","intent":"news.blackout_off","category":"news"}
+
+{"utterance":"What’s the weather in LA today?","intent":"weather.current_local","category":"weather"}
+{"utterance":"Give me tomorrow’s weather in LA in one sentence.","intent":"weather.tomorrow_local","category":"weather"}
+{"utterance":"Weekly weather outlook for LA.","intent":"weather.week_local","category":"weather"}
+{"utterance":"Highlight any rain days coming up.","intent":"weather.highlight_rain","category":"weather"}
+{"utterance":"Any extreme weather alerts for my area?","intent":"weather.alerts_local","category":"weather"}
+
+{"utterance":"Give me detailed news about item number 1.","intent":"news.detail_from_last_list","category":"news"}
+{"utterance":"Tell me more about number 3.","intent":"news.detail_from_last_list","category":"news"}
+{"utterance":"I want details on item 4 from that list.","intent":"news.detail_from_last_list","category":"news"}
+{"utterance":"What was number 2 again?","intent":"news.repeat_item_from_last_list","category":"news"}
+{"utterance":"Show me the headlines again from that batch.","intent":"news.reprint_last_list","category":"news"}
+{"utterance":"Short summary of item 2 only.","intent":"news.detail_short_from_last_list","category":"news"}
+{"utterance":"Give me the long version of item 1.","intent":"news.detail_long_from_last_list","category":"news"}
+{"utterance":"Stick with this topic for follow-ups.","intent":"news.lock_topic_context","category":"news"}
+{"utterance":"Change topic, I’m done with that.","intent":"news.unlock_topic_context","category":"news"}
+{"utterance":"Reset SCOTT context, forget that last list.","intent":"news.reset_context","category":"news"}
+
+{"utterance":"Remember this: SCOTT runs on the SCOTT PC, not PANDA PC.","intent":"memory.add_fact","category":"memory"}
+{"utterance":"Make a note that Dodgers home games affect my schedule.","intent":"memory.add_fact","category":"memory"}
+{"utterance":"Remember that I want to scale Moka’s Matcha online this year.","intent":"memory.add_goal","category":"memory"}
+{"utterance":"Start a new notebook just for Moka’s Matcha ideas.","intent":"memory.create_notebook","category":"memory"}
+{"utterance":"Start a notebook for Mama Kim’s Kimchi notes.","intent":"memory.create_notebook","category":"memory"}
+{"utterance":"Add this as a note under the Moka notebook.","intent":"memory.add_note_to_notebook","category":"memory"}
+{"utterance":"Add this as a note in the SCOTT notebook.","intent":"memory.add_note_to_notebook","category":"memory"}
+{"utterance":"Show me all notes from the Moka notebook.","intent":"memory.list_notebook_notes","category":"memory"}
+{"utterance":"Show me all notes from the SCOTT notebook.","intent":"memory.list_notebook_notes","category":"memory"}
+{"utterance":"Search my notes for ‘latte ratio’.","intent":"memory.search_notes","category":"memory"}
+{"utterance":"Search my notes for ‘ollama docker’.","intent":"memory.search_notes","category":"memory"}
+{"utterance":"Summarize everything you have stored about Moka’s Matcha products.","intent":"memory.summarize_topic","category":"memory"}
+{"utterance":"Summarize everything you have stored about Mama Kim’s farmers markets.","intent":"memory.summarize_topic","category":"memory"}
+{"utterance":"Flag this note as high priority.","intent":"memory.flag_priority","category":"memory"}
+{"utterance":"Flag this note as someday/maybe.","intent":"memory.flag_someday","category":"memory"}
+{"utterance":"Show me only high-priority notes.","intent":"memory.list_priority","category":"memory"}
+{"utterance":"Show me someday/maybe notes.","intent":"memory.list_someday","category":"memory"}
+{"utterance":"Archive this note, I don’t need it active.","intent":"memory.archive_note","category":"memory"}
+{"utterance":"Restore that archived note we talked about earlier.","intent":"memory.restore_note","category":"memory"}
+{"utterance":"Delete this note permanently.","intent":"memory.delete_note","category":"memory"}
+{"utterance":"Merge these two notes into one clean note.","intent":"memory.merge_notes","category":"memory"}
+{"utterance":"Clean up this messy note into bullet points.","intent":"memory.clean_note","category":"memory"}
+{"utterance":"Turn these notes into a simple checklist.","intent":"memory.convert_to_checklist","category":"memory"}
+{"utterance":"Every time I say 'remember this for BOS', store it as a special note.","intent":"memory.set_rule_special_tag","category":"memory"}
+{"utterance":"Show me all 'future BOS' notes.","intent":"memory.list_future_self","category":"memory"}
+{"utterance":"Once a week, show me one 'future BOS' note at random.","intent":"memory.weekly_future_self_prompt","category":"memory"}
+{"utterance":"Note dump: capture everything until I say end note dump.","intent":"memory.start_dump_mode","category":"memory"}
+{"utterance":"End note dump.","intent":"memory.stop_dump_mode","category":"memory"}
+{"utterance":"Clip this answer as a note.","intent":"memory.clip_last_answer","category":"memory"}
+{"utterance":"Clip that news story as a note for later.","intent":"memory.clip_last_news","category":"memory"}
+{"utterance":"Organize my clips by topic.","intent":"memory.organize_clips","category":"memory"}
+{"utterance":"Show me last week’s clips.","intent":"memory.list_clips_last_week","category":"memory"}
+
+{"utterance":"Set a 10-minute timer.","intent":"timer.start","category":"timer"}
+{"utterance":"Timer for 25 minutes for matcha brewing.","intent":"timer.start","category":"timer"}
+{"utterance":"Remind me in 2 hours to turn off the server.","intent":"timer.start","category":"timer"}
+{"utterance":"What timers are running right now?","intent":"timer.list","category":"timer"}
+{"utterance":"Cancel the matcha timer.","intent":"timer.cancel","category":"timer"}
+{"utterance":"Cancel all timers.","intent":"timer.cancel_all","category":"timer"}
+
+{"utterance":"Show me where PANDA.1 is installed and which version is running.","intent":"system.show_panda_install","category":"system"}
+{"utterance":"Show me where SCOTT is installed and which version is running.","intent":"system.show_scott_install","category":"system"}
+{"utterance":"Check if Ollama is running and which models are loaded.","intent":"system.check_ollama","category":"system"}
+{"utterance":"Give me a simple status dashboard of PANDA.1, SCOTT, and SENSEI.","intent":"system.dashboard_agents","category":"system"}
+{"utterance":"Run a quick network check between PANDA PC and SCOTT PC.","intent":"system.check_network_between_agents","category":"system"}
+{"utterance":"Show me open ports related to my AI stack.","intent":"system.list_ai_ports","category":"system"}
+{"utterance":"Summarize my current AI infrastructure in one paragraph.","intent":"system.summary_infra","category":"system"}
+{"utterance":"Summarize my AI infrastructure as a diagram in text form.","intent":"system.text_diagram_infra","category":"system"}
+{"utterance":"Show me the most recent errors PANDA.1 encountered.","intent":"system.show_recent_errors_panda","category":"system"}
+{"utterance":"Show me any SCOTT errors from today.","intent":"system.show_recent_errors_scott","category":"system"}
+{"utterance":"Show me connection errors between PANDA.1 and SCOTT.","intent":"system.show_integration_errors","category":"system"}
+{"utterance":"Help me collect all error messages into a single report for Claude.","intent":"system.error_report_for_claude","category":"system"}
+{"utterance":"Help me draft a changelog for the next PANDA.1 version.","intent":"docs.changelog_panda","category":"docs"}
+{"utterance":"Help me draft a changelog for the next SCOTT version.","intent":"docs.changelog_scott","category":"docs"}
+{"utterance":"Generate a setup checklist for a fresh reinstall of PANDA.1.","intent":"docs.setup_checklist_panda","category":"docs"}
+{"utterance":"Generate a setup checklist for a fresh SCOTT install.","intent":"docs.setup_checklist_scott","category":"docs"}
+{"utterance":"Generate rollback instructions if a new version goes wrong.","intent":"docs.rollback_plan","category":"docs"}
+{"utterance":"Explain how to safely test new versions without breaking my main setup.","intent":"system.testing_best_practices","category":"system"}
+{"utterance":"Track which versions of PANDA.1 I’ve used and what changed.","intent":"system.track_panda_versions","category":"system"}
+{"utterance":"Track which versions of SCOTT I’ve used and what changed.","intent":"system.track_scott_versions","category":"system"}
+{"utterance":"Give me a health snapshot of my system and agents.","intent":"system.health_snapshot","category":"system"}
+{"utterance":"Run a deep health check on everything.","intent":"system.health_deep_check","category":"system"}
+{"utterance":"Advise me when to snapshot the system before big changes.","intent":"system.snapshot_advice","category":"system"}
+
+{"utterance":"Turn this week’s tasks into a simple BOS weekly plan.","intent":"business.weekly_plan","category":"business"}
+{"utterance":"Turn my scattered brand tasks into a single calendar view.","intent":"business.unified_calendar","category":"business"}
+{"utterance":"Help me decide which brand needs my attention most this week.","intent":"business.pick_brand_focus","category":"business"}
+{"utterance":"Summarize the current status of Moka’s Matcha in one paragraph.","intent":"business.status_moka","category":"business"}
+{"utterance":"Summarize the current status of Mama Kim’s Kimchi in one paragraph.","intent":"business.status_kimchi","category":"business"}
+{"utterance":"Summarize the current status of Mama Kim’s KBBQ in one paragraph.","intent":"business.status_kbbq","category":"business"}
+{"utterance":"List my current open business problems by brand.","intent":"business.list_problems","category":"business"}
+{"utterance":"Suggest one realistic win for each brand this month.","intent":"business.suggest_wins","category":"business"}
+{"utterance":"Help me plan inventory needs for upcoming markets.","intent":"business.plan_inventory_markets","category":"business"}
+{"utterance":"Help me think through worst-case scenarios for a bad market week.","intent":"business.risk_worst_case","category":"business"}
+{"utterance":"Help me think through best-case scenarios and how to be ready.","intent":"business.opportunity_best_case","category":"business"}
+{"utterance":"Turn these ideas into a simple 90-day growth plan.","intent":"business.plan_90_day","category":"business"}
+{"utterance":"Turn these ideas into a simple 30-day sprint plan.","intent":"business.plan_30_day","category":"business"}
+{"utterance":"Help me list which tasks I can delegate vs keep.","intent":"business.delegation_map","category":"business"}
+{"utterance":"Show me what I keep insisting on doing myself that I could delegate.","intent":"business.highlight_undelagated","category":"business"}
+{"utterance":"Help me design a 'BOS away' operating plan so the brands can run.","intent":"business.plan_bos_away","category":"business"}
+{"utterance":"Help me define what a ‘good week’ looks like for BOS.","intent":"business.define_good_week","category":"business"}
+{"utterance":"Help me define what a ‘good month’ looks like for BOS.","intent":"business.define_good_month","category":"business"}
+{"utterance":"When I say 'weekly BOS review', guide me through that process.","intent":"business.weekly_review_ritual","category":"business"}
+{"utterance":"When I say 'monthly BOS review', guide me through the bigger version.","intent":"business.monthly_review_ritual","category":"business"}
+{"utterance":"Translate this big vague goal into smaller concrete steps.","intent":"business.break_down_goal","category":"business"}
+{"utterance":"Tell me if I’m overcomplicating how I run Moka’s Matcha.","intent":"business.check_complexity_moka","category":"business"}
+{"utterance":"Tell me if I’m overcomplicating how I run Mama Kim’s Kimchi.","intent":"business.check_complexity_kimchi","category":"business"}
+{"utterance":"Summarize the story of my business journey so far in a motivational way.","intent":"business.story_motivational","category":"business"}
+{"utterance":"Summarize the story of my business journey so far in a practical way.","intent":"business.story_practical","category":"business"}
+
+{"utterance":"Motivate BOS.","intent":"flow.pep_talk","category":"flow"}
+{"utterance":"Calm BOS down.","intent":"flow.calming_message","category":"flow"}
+{"utterance":"BOS break, suggest a short non-screen break.","intent":"flow.suggest_break","category":"flow"}
+{"utterance":"Back to work, help me refocus.","intent":"flow.refocus","category":"flow"}
+{"utterance":"Cold start, help me get moving after doing nothing.","intent":"flow.cold_start_help","category":"flow"}
+{"utterance":"Show BOS progress from the last few days.","intent":"flow.show_progress","category":"flow"}
+{"utterance":"Show BOS stuckness, what hasn’t moved in a while.","intent":"flow.show_stuck","category":"flow"}
+{"utterance":"Suggest one thing I could gracefully quit or pause.","intent":"flow.suggest_quit_or_pause","category":"flow"}
+{"utterance":"Suggest one thing I should absolutely not quit right now.","intent":"flow.suggest_core_commitment","category":"flow"}
+{"utterance":"Scope check, ask questions to avoid scope creep.","intent":"flow.scope_check","category":"flow"}
+{"utterance":"Catch me when I’m doomscrolling news and suggest stopping.","intent":"flow.detect_news_overuse","category":"flow"}
+{"utterance":"Catch me when I’m overtuning prompts and suggest shipping.","intent":"flow.detect_over_tuning","category":"flow"}
+{"utterance":"Set a focus timer for 25 minutes.","intent":"timer.start_focus","category":"timer"}
+{"utterance":"How long have we been working on this?","intent":"flow.estimate_session_time","category":"flow"}
+{"utterance":"Time audit, help me reconstruct where my time went today.","intent":"flow.time_audit","category":"flow"}
+{"utterance":"Energy check, ask me questions and advise next step.","intent":"flow.energy_check","category":"flow"}
+{"utterance":"Brain is mush, keep explanations ultra simple.","intent":"flow.simple_language_mode_on","category":"flow"}
+{"utterance":"Give me TL;DR only from now on.","intent":"flow.tldr_mode_on","category":"flow"}
+{"utterance":"You can be verbose again.","intent":"flow.tldr_mode_off","category":"flow"}
+{"utterance":"Talk to me like a friend.","intent":"flow.tone_friend","category":"flow"}
+{"utterance":"Talk to me like a coach.","intent":"flow.tone_coach","category":"flow"}
+{"utterance":"No fluff, coach mode.","intent":"flow.tone_coach_no_fluff","category":"flow"}
+{"utterance":"Just listen, don’t solve yet.","intent":"flow.listen_only","category":"flow"}
+{"utterance":"Okay now help me solve it.","intent":"flow.switch_to_problem_solving","category":"flow"}
+{"utterance":"Joke break, tell me one short safe joke.","intent":"flow.joke_break","category":"flow"}
+{"utterance":"Stop joking, back to serious mode.","intent":"flow.stop_jokes","category":"flow"}
+
+{"utterance":"Convert this into a checklist.","intent":"docs.convert_to_checklist","category":"docs"}
+{"utterance":"Convert this into a reusable template.","intent":"docs.convert_to_template","category":"docs"}
+{"utterance":"Convert this into a Claude prompt.","intent":"docs.convert_to_claude_prompt","category":"docs"}
+{"utterance":"Convert this into a PANDA.1 system rule.","intent":"docs.convert_to_system_rule","category":"docs"}
+
+{"utterance":"I didn’t like that answer.","intent":"assistant.feedback_negative","category":"meta"}
+{"utterance":"Remember this preference.","intent":"assistant.save_preference","category":"meta"}
+{"utterance":"Forget that preference.","intent":"assistant.forget_preference","category":"meta"}
+{"utterance":"Tell me how you decided that answer.","intent":"assistant.explain_reasoning","category":"meta"}
+{"utterance":"Show me only the high-level steps of your reasoning.","intent":"assistant.explain_reasoning_high_level","category":"meta"}
+{"utterance":"Stop overexplaining.","intent":"assistant.less_meta","category":"meta"}
+{"utterance":"Explain like I’m an engineer.","intent":"assistant.explain_technical","category":"meta"}
+{"utterance":"Explain like I’m half-asleep.","intent":"assistant.explain_very_simple","category":"meta"}
+{"utterance":"Check for contradictions in what I just said.","intent":"assistant.check_user_contradictions","category":"meta"}
+{"utterance":"Check for contradictions in your answers so far.","intent":"assistant.check_self_contradictions","category":"meta"}
+{"utterance":"When did I last ask something like this?","intent":"assistant.search_history_similar","category":"meta"}
+{"utterance":"Pattern match this to old conversations.","intent":"assistant.search_history_pattern","category":"meta"}
+{"utterance":"Help me not repeat that mistake.","intent":"assistant.prevent_repeat_mistake","category":"meta"}
+
+{"utterance":"Design BOS 2.0 based on everything you know.","intent":"assistant.future_bos_design","category":"meta"}
+{"utterance":"Simulate BOS in 5 years if I keep this up.","intent":"assistant.future_projection_current_path","category":"meta"}
+{"utterance":"Simulate BOS in 5 years if I do the smart thing.","intent":"assistant.future_projection_optimized_path","category":"meta"}
+{"utterance":"Compare those two futures side by side.","intent":"assistant.future_projection_compare","category":"meta"}
+{"utterance":"Use gentle honesty with me.","intent":"assistant.tone_gentle_honesty","category":"meta"}
+{"utterance":"Use brutal honesty right now.","intent":"assistant.tone_brutal_honesty","category":"meta"}
+{"utterance":"Dial it back to normal tone.","intent":"assistant.tone_reset_normal","category":"meta"}
+{"utterance":"Check the mood of my messages lately.","intent":"assistant.mood_analysis_user","category":"meta"}
+{"utterance":"When am I at my best based on our messages?","intent":"assistant.best_state_analysis","category":"meta"}
+

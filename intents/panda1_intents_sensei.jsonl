@@ -1,0 +1,30 @@
+{"utterance":"Learn panda","intent":"sensei.learn","category":"sensei"}
+{"utterance":"Learn from sensei","intent":"sensei.learn","category":"sensei"}
+{"utterance":"Download lessons from SENSEI","intent":"sensei.learn","category":"sensei"}
+{"utterance":"Get lessons from SENSEI","intent":"sensei.learn","category":"sensei"}
+{"utterance":"SENSEI teach me","intent":"sensei.learn","category":"sensei"}
+{"utterance":"Teach me SENSEI","intent":"sensei.learn","category":"sensei"}
+{"utterance":"Update knowledge from SENSEI","intent":"sensei.learn","category":"sensei"}
+{"utterance":"Sync with SENSEI","intent":"sensei.learn","category":"sensei"}
+{"utterance":"Deep learn from SENSEI","intent":"sensei.learn","category":"sensei"}
+{"utterance":"Acquire knowledge from SENSEI","intent":"sensei.learn","category":"sensei"}
+{"utterance":"Download knowledge from SENSEI","intent":"sensei.learn","category":"sensei"}
+{"utterance":"Get knowledge from SENSEI","intent":"sensei.learn","category":"sensei"}
+{"utterance":"Learn new things from SENSEI","intent":"sensei.learn","category":"sensei"}
+{"utterance":"Have SENSEI teach you something new","intent":"sensei.learn","category":"sensei"}
+{"utterance":"Connect to SENSEI and learn","intent":"sensei.learn","category":"sensei"}
+{"utterance":"Pull lessons from SENSEI","intent":"sensei.learn","category":"sensei"}
+{"utterance":"Fetch lessons from SENSEI","intent":"sensei.learn","category":"sensei"}
+{"utterance":"Import lessons from SENSEI","intent":"sensei.learn","category":"sensei"}
+{"utterance":"Load knowledge from SENSEI","intent":"sensei.learn","category":"sensei"}
+{"utterance":"Train with SENSEI data","intent":"sensei.learn","category":"sensei"}
+{"utterance":"Is SENSEI available?","intent":"sensei.status","category":"sensei"}
+{"utterance":"Check SENSEI connection","intent":"sensei.status","category":"sensei"}
+{"utterance":"Can you connect to SENSEI?","intent":"sensei.status","category":"sensei"}
+{"utterance":"SENSEI status","intent":"sensei.status","category":"sensei"}
+{"utterance":"What categories does SENSEI have?","intent":"sensei.categories","category":"sensei"}
+{"utterance":"Show SENSEI lesson categories","intent":"sensei.categories","category":"sensei"}
+{"utterance":"What can SENSEI teach?","intent":"sensei.categories","category":"sensei"}
+{"utterance":"List SENSEI topics","intent":"sensei.categories","category":"sensei"}
+{"utterance":"How many lessons has SENSEI collected?","intent":"sensei.status","category":"sensei"}
+{"utterance":"What did you learn from SENSEI?","intent":"sensei.learned_summary","category":"sensei"}
