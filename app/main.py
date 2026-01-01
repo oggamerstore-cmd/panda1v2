@@ -28,16 +28,19 @@ Agent Commands (v0.2.10):
   panda --scott-doctor     SCOTT news agent diagnostics
   panda --penny-doctor     PENNY finance agent diagnostics
   panda --sensei-doctor    SENSEI learning hub diagnostics
+  panda --echo-doctor      ECHO context hub diagnostics
   panda --agents-doctor    Check all agents at once
   panda --news [topic]     Get news from SCOTT
   panda --penny "query"    Query PENNY for JNJ FOODS LLC finances
   panda --learn [topic]    Learn from SENSEI (download lessons to memory)
+  panda --echo "query"     Query ECHO for context snippets
 
 Interactive CLI Commands:
   /news [topic]            Get news from SCOTT
   /penny <query>           Query PENNY finance agent
   /sensei                  Show SENSEI status
   /learn [topic]           Learn from SENSEI
+  /echo <query>            Query ECHO for context snippets
 
 GUI is the PRIMARY interface. CLI is secondary.
 """
@@ -230,9 +233,14 @@ Examples:
         help='Run SENSEI learning hub diagnostics'
     )
     parser.add_argument(
+        '--echo-doctor',
+        action='store_true',
+        help='Run ECHO context hub diagnostics'
+    )
+    parser.add_argument(
         '--agents-doctor',
         action='store_true',
-        help='Run diagnostics for all agents (SCOTT, PENNY, SENSEI)'
+        help='Run diagnostics for all agents (SCOTT, PENNY, SENSEI, ECHO)'
     )
 
     # Learning command (v0.2.10)
@@ -250,6 +258,13 @@ Examples:
         nargs='+',
         metavar='QUERY',
         help='Query PENNY finance agent'
+    )
+
+    parser.add_argument(
+        '--echo',
+        nargs='+',
+        metavar='QUERY',
+        help='Query ECHO for context snippets'
     )
 
     return parser
@@ -399,6 +414,14 @@ def show_full_status() -> int:
                 print(f"  ✓ PENNY: Connected ({config.penny_api_url})")
             else:
                 print(f"  ○ PENNY: {penny.get('error', 'Offline')}")
+
+        # ECHO
+        echo = status.get("echo")
+        if echo:
+            if echo.get("healthy"):
+                print(f"  ✓ ECHO: Connected ({config.echo_base_url})")
+            else:
+                print(f"  ○ ECHO: {echo.get('error', 'Offline')}")
         
         # TTS
         tts_status = get_tts_status()
@@ -510,6 +533,7 @@ Commands:
   /penny <query>  - Query PENNY finance agent
   /sensei         - Show SENSEI status and categories
   /learn [topic]  - Learn from SENSEI (download to memory)
+  /echo <query>   - Query ECHO for context snippets
   /agents         - Show all agent connection status
   /memory         - Memory stats
   /config         - Show configuration
@@ -627,6 +651,18 @@ JNJ FOODS LLC queries (auto-routes to PENNY):
                     speak(response, block=True)
                 continue
 
+            if cmd.startswith('/echo'):
+                parts = user_input.split(maxsplit=1)
+                if len(parts) < 2:
+                    print("Usage: /echo <your question>")
+                    continue
+                query = parts[1]
+                response = panda._handle_echo_query(query)
+                print(f"\n{response}\n")
+                if _voice_enabled and tts_available:
+                    speak(response, block=True)
+                continue
+
             if cmd == '/agents':
                 print("\nAgent Status:")
                 # SCOTT
@@ -653,6 +689,14 @@ JNJ FOODS LLC queries (auto-routes to PENNY):
                         print(f"  SENSEI: Offline")
                 else:
                     print("  SENSEI: Not configured")
+                # ECHO
+                if panda.echo_client:
+                    if panda.echo_client.is_healthy():
+                        print(f"  ECHO: Connected ({panda.config.echo_base_url})")
+                    else:
+                        print("  ECHO: Offline")
+                else:
+                    print("  ECHO: Not configured")
                 print()
                 continue
 
@@ -1438,6 +1482,63 @@ def run_sensei_doctor() -> int:
     return 0
 
 
+def run_echo_doctor() -> int:
+    """Run ECHO context hub diagnostics."""
+
+    print()
+    print("═" * 60)
+    print("  PANDA.1 ECHO Doctor")
+    print("═" * 60)
+    print()
+
+    config = get_config()
+
+    if config.echo_enabled:
+        print("  PANDA_ECHO_ENABLED: True")
+    else:
+        print("  PANDA_ECHO_ENABLED: False")
+        print("\n  ECHO is disabled. Enable with PANDA_ECHO_ENABLED=true")
+        return 0
+
+    print(f"  PANDA_ECHO_BASE_URL: {config.echo_base_url}")
+
+    try:
+        from .echo_client import EchoClient
+        client = EchoClient(
+            base_url=config.echo_base_url,
+            timeout=config.echo_timeout,
+            api_key=config.echo_api_key or None,
+        )
+        health = client.health_check()
+
+        if health.get("healthy"):
+            print("\n  TCP/HTTP: Connected")
+            print("  Health check: OK")
+            if health.get("data"):
+                print(f"  Server info: {health.get('data')}")
+            print("\n" + "=" * 60)
+            print("  Overall: OK")
+        else:
+            print("\n  Health check: FAILED")
+            print(f"  Error: {health.get('error', 'Unknown')}")
+            print("\n  Common fixes:")
+            print("  - Ensure ECHO server is running on the database PC")
+            print(f"  - Check if {config.echo_base_url} is reachable")
+            print("  - Verify firewall allows connections")
+            print("\n" + "=" * 60)
+            print("  Overall: ERROR")
+            return 1
+
+    except Exception as e:
+        print(f"\n  Connection failed: {e}")
+        print("\n" + "=" * 60)
+        print("  Overall: ERROR")
+        return 1
+
+    print()
+    return 0
+
+
 def run_agents_doctor() -> int:
     """Run diagnostics for all agents."""
     print()
@@ -1465,6 +1566,7 @@ def run_agents_doctor() -> int:
     try:
         config = get_config()
         if config.penny_enabled:
+            from .penny_client import PennyClient
             client = PennyClient(base_url=config.penny_api_url, timeout=config.penny_timeout)
             health = client.health_check()
             if health.get("healthy"):
@@ -1485,6 +1587,7 @@ def run_agents_doctor() -> int:
     try:
         config = get_config()
         if config.sensei_enabled:
+            from .sensei_client import SenseiClient
             client = SenseiClient(base_url=config.sensei_api_url, timeout=config.sensei_timeout)
             health = client.health_check()
             if health.get("healthy"):
@@ -1499,6 +1602,31 @@ def run_agents_doctor() -> int:
     except Exception as e:
         print(f"  Error: {e}")
         results.append(("SENSEI", "error"))
+
+    # ECHO
+    print("\n--- ECHO Context Hub ---")
+    try:
+        config = get_config()
+        if config.echo_enabled:
+            from .echo_client import EchoClient
+            client = EchoClient(
+                base_url=config.echo_base_url,
+                timeout=config.echo_timeout,
+                api_key=config.echo_api_key or None,
+            )
+            health = client.health_check()
+            if health.get("healthy"):
+                print(f"  Connected to {config.echo_base_url}")
+                results.append(("ECHO", "ok"))
+            else:
+                print(f"  Offline: {health.get('error', 'Unknown')}")
+                results.append(("ECHO", "error"))
+        else:
+            print("  Disabled")
+            results.append(("ECHO", "disabled"))
+    except Exception as e:
+        print(f"  Error: {e}")
+        results.append(("ECHO", "error"))
 
     # Summary
     print()
@@ -1564,6 +1692,29 @@ def run_penny_query(query: str) -> int:
         panda = PandaCore()
         response = panda._handle_penny_intent(query)
         print(f"PENNY: {response}")
+        print()
+        return 0
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return 1
+
+
+def run_echo_query(query: str) -> int:
+    """Query ECHO for context snippets."""
+
+    print()
+
+    config = get_config()
+
+    if not config.echo_enabled:
+        print("ECHO is disabled. Enable with PANDA_ECHO_ENABLED=true")
+        return 1
+
+    try:
+        panda = PandaCore()
+        response = panda._handle_echo_query(query)
+        print(f"ECHO: {response}")
         print()
         return 0
 
@@ -1666,6 +1817,9 @@ def main() -> int:
     if args.sensei_doctor:
         return run_sensei_doctor()
 
+    if args.echo_doctor:
+        return run_echo_doctor()
+
     if args.agents_doctor:
         return run_agents_doctor()
 
@@ -1678,6 +1832,11 @@ def main() -> int:
     if args.penny:
         query = " ".join(args.penny)
         return run_penny_query(query)
+
+    # Query ECHO
+    if args.echo:
+        query = " ".join(args.echo)
+        return run_echo_query(query)
 
     # TTS test
     if args.tts_test:
