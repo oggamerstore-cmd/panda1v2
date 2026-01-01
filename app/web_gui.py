@@ -64,6 +64,9 @@ APP_DIR = Path(__file__).parent
 if str(APP_DIR) not in sys.path:
     sys.path.insert(0, str(APP_DIR))
 
+# Import config - needed for get_config() used throughout
+from config import get_config
+
 try:
     from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Request
     from fastapi.staticfiles import StaticFiles
@@ -158,7 +161,6 @@ def get_free_port(start_port: int = 7860, max_tries: int = 100) -> int:
 
 def save_port_file(port: int, host: str) -> None:
     """Save the active port to a file."""
-    from config import get_config
     config = get_config()
     port_file = config.gui_port_file
     port_file.parent.mkdir(parents=True, exist_ok=True)
