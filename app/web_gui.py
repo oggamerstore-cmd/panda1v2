@@ -3,7 +3,7 @@ PANDA.1 Web GUI Server
 ======================
 FastAPI-based web GUI for PANDA.1.
 
-Version: 0.2.11
+Version: 0.2.10
 
 Features:
 - Web-based GUI served locally or on LAN
@@ -81,7 +81,7 @@ except ImportError:
 
 
 # Version
-__version__ = "0.2.11"
+__version__ = "0.2.10"
 
 
 # Import TTS manager for voice functionality
@@ -113,7 +113,7 @@ class ActionLogCreate(BaseModel):
     success: bool = True
 
 
-def add_action_log(action: str, details: str = None, success: bool = True):
+def add_action_log(action: str, details: str = None, success: bool = True) -> Dict[str, Any]:
     """Add an entry to the action log."""
     with action_log_lock:
         entry = {
@@ -124,6 +124,7 @@ def add_action_log(action: str, details: str = None, success: bool = True):
         }
         action_log.append(entry)
         logger.debug(f"Action logged: {action}")
+        return entry
 
 
 def get_action_logs() -> List[Dict]:
@@ -2093,8 +2094,8 @@ if FASTAPI_AVAILABLE:
         NOTE: Uses ActionLogCreate which does NOT require timestamp.
         Timestamp is generated server-side.
         """
-        add_action_log(entry.action, entry.details, entry.success)
-        return {"ok": True, "message": "Logged"}
+        logged = add_action_log(entry.action, entry.details, entry.success)
+        return {"ok": True, "status": "logged", "timestamp": logged["timestamp"]}
     
     
     # =========================================================================
