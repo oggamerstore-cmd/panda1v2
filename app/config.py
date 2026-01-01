@@ -173,6 +173,19 @@ class PandaConfig(BaseSettings):
         description="SENSEI learning hub API URL"
     )
     sensei_timeout: int = Field(default=30, description="SENSEI request timeout in seconds")
+
+    # ECHO Context Hub (Database PC)
+    echo_enabled: bool = Field(default=True, description="Enable ECHO context hub integration")
+    echo_base_url: str = Field(
+        default="http://192.168.1.20:9010",
+        description="ECHO vector database base URL"
+    )
+    echo_api_key: str = Field(
+        default="",
+        description="ECHO API key for authentication"
+    )
+    echo_timeout: int = Field(default=8, description="ECHO request timeout in seconds")
+    echo_top_k: int = Field(default=5, description="Default number of ECHO context results")
     
     # Local network info (for documentation/reference)
     panda_ip: str = Field(
@@ -509,6 +522,8 @@ class PandaConfig(BaseSettings):
             "SCOTT URL": self.scott_base_url if self.scott_enabled else "disabled",
             "PENNY Enabled": self.penny_enabled,
             "PENNY URL": self.penny_api_url if self.penny_enabled else "disabled",
+            "ECHO Enabled": self.echo_enabled,
+            "ECHO URL": self.echo_base_url if self.echo_enabled else "disabled",
             "Memory Enabled": self.enable_memory,
             "Voice Enabled": self.voice_enabled,
             "Language Mode": self.language_mode.upper(),

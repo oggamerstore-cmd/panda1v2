@@ -162,6 +162,21 @@ class PandaCore:
             except ImportError:
                 pass
 
+        # Initialize ECHO client (optional)
+        self.echo_client = None
+        if self.config.echo_enabled:
+            try:
+                from echo_client import EchoClient
+                api_key = self.config.echo_api_key or None
+                self.echo_client = EchoClient(
+                    base_url=self.config.echo_base_url,
+                    timeout=self.config.echo_timeout,
+                    api_key=api_key,
+                )
+                logger.info(f"ECHO client initialized: {self.config.echo_base_url}")
+            except ImportError:
+                pass
+
         # Conversation history
         self.conversation_history = []
         self.max_history = 10
@@ -221,6 +236,8 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
             return 'scott', 1.0
         if user_input.startswith('/learn '):
             return 'sensei', 1.0
+        if user_input.startswith('/echo '):
+            return 'echo', 1.0
 
         # Learning commands go to SENSEI
         if self._is_learning_command(user_input):
@@ -292,6 +309,10 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
                 actual_input = user_input[6:]
             elif user_input.startswith('/learn '):
                 actual_input = user_input[7:]
+            elif user_input.startswith('/echo '):
+                actual_input = user_input[6:]
+            elif user_input.startswith('/echo '):
+                actual_input = user_input[6:]
 
             # Route based on intent
             target, confidence = self._get_routing_target(user_input)
@@ -304,6 +325,9 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
 
             if target == "penny" and self.penny_client:
                 return self._handle_penny_intent(actual_input)
+
+            if target == "echo" and self.echo_client:
+                return self._handle_echo_query(actual_input)
 
             if target == "openai" and self.openai_client:
                 return self._handle_openai_query(actual_input)
@@ -375,6 +399,10 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
                 yield self._handle_penny_intent(actual_input)
                 return
 
+            if target == "echo" and self.echo_client:
+                yield self._handle_echo_query(actual_input)
+                return
+
             if target == "openai" and self.openai_client:
                 # Stream from OpenAI
                 messages = self._build_messages(actual_input)
@@ -424,11 +452,34 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
                     messages[0]["content"] += f"\n\nRelevant memories:\n{context}"
             except Exception:
                 pass
+
+        if self.echo_client:
+            try:
+                echo_context = self._get_echo_context(user_input)
+                if echo_context:
+                    messages[0]["content"] += f"\n\nECHO context:\n{echo_context}"
+            except Exception:
+                pass
         
         # Add current input
         messages.append({"role": "user", "content": user_input})
         
         return messages
+
+    def _get_echo_context(self, user_input: str) -> str:
+        """Fetch top-k context snippets from ECHO."""
+        if not self.echo_client or not user_input.strip():
+            return ""
+        result = self.echo_client.query(
+            user_input,
+            top_k=self.config.echo_top_k,
+        )
+        if not result.get("success"):
+            return ""
+        items = result.get("results", [])
+        if not items:
+            return ""
+        return "\n".join([f"- {item.get('text', '')}" for item in items if item.get("text")])
     
     def _add_to_history(self, user_input: str, response: str) -> None:
         """Add exchange to conversation history."""
@@ -577,6 +628,53 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
             messages = self._build_messages(user_input)
             return self.llm.generate(messages)
 
+    def _handle_echo_query(self, user_input: str) -> str:
+        """Handle explicit ECHO queries."""
+        if not self.echo_client:
+            if self.lang_manager.mode == "ko":
+                return "ECHO 기능이 설정되어 있지 않습니다."
+            return "ECHO is not configured."
+
+        try:
+            if not self.echo_client.is_healthy():
+                if self.lang_manager.mode == "ko":
+                    return "ECHO에 연결할 수 없습니다. 나중에 다시 시도해주세요."
+                return "Cannot connect to ECHO. Please try again later."
+
+            result = self.echo_client.query(
+                user_input,
+                top_k=self.config.echo_top_k,
+            )
+            if not result.get("success"):
+                error = result.get("error", "Unknown error")
+                if self.lang_manager.mode == "ko":
+                    return f"ECHO 쿼리 실패: {error}"
+                return f"ECHO query failed: {error}"
+
+            items = result.get("results", [])
+            if not items:
+                if self.lang_manager.mode == "ko":
+                    return "ECHO에서 일치하는 컨텍스트가 없습니다."
+                return "No matching context from ECHO."
+
+            if self.lang_manager.mode == "ko":
+                lines = ["ECHO에서 찾은 컨텍스트입니다:"]
+            else:
+                lines = ["Here is the context from ECHO:"]
+
+            for i, item in enumerate(items, 1):
+                text = item.get("text", "")
+                score = item.get("score")
+                score_line = f" (score: {score:.3f})" if isinstance(score, float) else ""
+                lines.append(f"\n{i}. {text}{score_line}")
+
+            return "\n".join(lines)
+        except Exception as exc:
+            logger.error(f"ECHO error: {exc}")
+            if self.lang_manager.mode == "ko":
+                return f"ECHO 오류: {str(exc)}"
+            return f"ECHO error: {str(exc)}"
+
     def _handle_sensei_learning(self, user_input: str) -> str:
         """
         Handle learning requests via SENSEI.
@@ -668,6 +766,7 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
             "scott": None,
             "penny": None,
             "sensei": None,
+            "echo": None,
             "mood": None,
             "language": self.lang_manager.mode,
         }
@@ -686,6 +785,9 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
 
         if self.sensei_client:
             status["sensei"] = self.sensei_client.health_check()
+
+        if self.echo_client:
+            status["echo"] = self.echo_client.health_check()
 
         if self.mood:
             status["mood"] = self.mood.get_state()
