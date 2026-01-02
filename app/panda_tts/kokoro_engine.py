@@ -49,7 +49,7 @@ class KokoroEngine(TTSEngine):
 
     def __init__(
         self,
-        voice: str = "am_michael",
+        voice: str = "michael",
         speed: float = 1.0,
         output_dir: Optional[Path] = None,
         device: str = "cpu",
@@ -58,14 +58,14 @@ class KokoroEngine(TTSEngine):
         Initialize Kokoro engine.
 
         Args:
-            voice: Voice ID (default: am_michael for Michael)
+            voice: Voice ID (default: michael for Michael)
             speed: Speech speed multiplier (0.5-2.0)
             output_dir: Audio output directory
             device: Device for inference (cpu recommended to save GPU for LLM)
         """
         super().__init__()
 
-        self._voice = voice
+        self._voice = "am_michael" if voice == "michael" else voice
         self._speed = max(0.5, min(2.0, speed))
         self._device = device
         self._output_dir = output_dir or Path.home() / ".panda1" / "audio_out"
@@ -81,7 +81,12 @@ class KokoroEngine(TTSEngine):
         # Create output directory
         self._output_dir.mkdir(parents=True, exist_ok=True)
 
-        logger.info(f"KokoroEngine initialized (voice={voice}, speed={speed}, device={device})")
+        logger.info(
+            "KokoroEngine initialized (voice=%s, speed=%s, device=%s)",
+            self._voice,
+            self._speed,
+            self._device,
+        )
 
     def warmup(self) -> bool:
         """Load Kokoro pipeline."""

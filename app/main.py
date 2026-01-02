@@ -134,8 +134,8 @@ Examples:
     parser.add_argument(
         '--port', '-p',
         type=int,
-        default=7860,
-        help='GUI/API server port (default: 7860)'
+        default=None,
+        help='GUI/API server port (defaults to config values)'
     )
     
     # Behavior options
@@ -746,10 +746,12 @@ JNJ FOODS LLC queries (auto-routes to PENNY):
     return 0
 
 
-def run_gui(port: int = 7860) -> int:
+def run_gui(port: Optional[int] = None) -> int:
     """Launch the web GUI."""
     try:
         from .web_gui import run_server
+        if port is None:
+            return run_server()
         return run_server(port=port)
     except ImportError as e:
         print(f"GUI not available: {e}")
@@ -798,10 +800,13 @@ def run_single_query(query: str, console) -> int:
     return 0
 
 
-def run_api(port: int) -> int:
+def run_api(port: Optional[int]) -> int:
     """Start the API server."""
     try:
         from .api_server import start_server
+        if port is None:
+            from .config import get_config
+            port = get_config().api_port
         return start_server(port=port)
     except ImportError as e:
         print(f"API server not available: {e}")

@@ -1760,7 +1760,7 @@ if FASTAPI_AVAILABLE:
             tts_manager.initialize(
                 engine="kokoro",
                 device="cpu",  # CPU to preserve GPU for LLM
-                voice_name="am_michael",  # Michael male voice
+                voice_name="michael",  # Michael male voice
             )
 
             if tts_manager.is_ready:
