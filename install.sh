@@ -205,6 +205,8 @@ create_env_file() {
 # Ollama
 PANDA_OLLAMA_HOST=http://localhost:11434
 PANDA_LLM_MODEL=panda1:latest
+PANDA_LLM_MAX_TOKENS=4096
+PANDA_LLM_CONTEXT_LENGTH=8192
 
 # Voice
 PANDA_VOICE_ENABLED=true
@@ -218,6 +220,16 @@ ENV_EOF
             print_warning ".env.template not found, created minimal .env"
             print_warning "Edit ~/.panda1/.env to add full configuration"
         fi
+    fi
+}
+
+install_echo() {
+    if [ -f "${SCRIPT_DIR}/install_echo.sh" ]; then
+        print_step "Installing ECHO context hub..."
+        PANDA_HOME="${PANDA_HOME}" bash "${SCRIPT_DIR}/install_echo.sh"
+        print_success "ECHO context hub installed"
+    else
+        print_warning "install_echo.sh not found; skipping ECHO install"
     fi
 }
 
@@ -375,6 +387,7 @@ create_venv
 install_python_deps
 copy_files
 create_env_file
+install_echo
 install_launcher
 create_desktop_shortcut
 create_systemd_service

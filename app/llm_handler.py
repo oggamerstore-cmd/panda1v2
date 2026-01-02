@@ -62,6 +62,7 @@ class LLMHandler:
         self.fallback_model = self.config.llm_fallback_model
         self.temperature = self.config.llm_temperature
         self.max_tokens = self.config.llm_max_tokens
+        self.context_length = self.config.llm_context_length
         
         # Track API capabilities
         self._has_chat_api = True  # Assume yes until 404
@@ -269,6 +270,7 @@ class LLMHandler:
             "options": {
                 "temperature": kwargs.get('temperature', self.temperature),
                 "num_predict": kwargs.get('max_tokens', self.max_tokens),
+                "num_ctx": kwargs.get('context_length', self.context_length),
             }
         }
         
@@ -306,6 +308,7 @@ class LLMHandler:
             "options": {
                 "temperature": kwargs.get('temperature', self.temperature),
                 "num_predict": kwargs.get('max_tokens', self.max_tokens),
+                "num_ctx": kwargs.get('context_length', self.context_length),
             }
         }
         
@@ -356,6 +359,7 @@ class LLMHandler:
             "options": {
                 "temperature": kwargs.get('temperature', self.temperature),
                 "num_predict": kwargs.get('max_tokens', self.max_tokens),
+                "num_ctx": kwargs.get('context_length', self.context_length),
             }
         }
         
@@ -398,6 +402,7 @@ class LLMHandler:
             "options": {
                 "temperature": kwargs.get('temperature', self.temperature),
                 "num_predict": kwargs.get('max_tokens', self.max_tokens),
+                "num_ctx": kwargs.get('context_length', self.context_length),
             }
         }
         

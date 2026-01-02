@@ -87,8 +87,8 @@ class PandaConfig(BaseSettings):
     )
     
     llm_temperature: float = Field(default=0.7, ge=0.0, le=2.0)
-    llm_max_tokens: int = Field(default=2048, ge=128, le=8192)
-    llm_context_length: int = Field(default=4096, ge=512, le=32768)
+    llm_max_tokens: int = Field(default=4096, ge=128, le=8192)
+    llm_context_length: int = Field(default=8192, ge=512, le=32768)
     
     # =========================================================================
     # OPENAI CLOUD LLM CONFIGURATION
