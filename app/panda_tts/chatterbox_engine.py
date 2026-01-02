@@ -20,6 +20,13 @@ import threading
 from pathlib import Path
 from typing import Optional, Dict, Any, Literal
 
+try:
+    import torch
+    TORCH_AVAILABLE = True
+except ImportError:
+    torch = None
+    TORCH_AVAILABLE = False
+
 from .base import TTSEngine, chunk_text
 from .playback import get_player
 
@@ -98,12 +105,15 @@ class ChatterboxEngine(TTSEngine):
     def warmup(self) -> bool:
         """Load model (single model handles all languages)."""
         try:
+            if not TORCH_AVAILABLE:
+                logger.error("PyTorch not installed - Chatterbox requires torch")
+                return False
+
             logger.info("Warming up Chatterbox TTS...")
-            
+
             # Try loading on configured device
             if self._device == "cuda":
                 try:
-                    import torch
                     if torch.cuda.is_available():
                         if self._try_load_model("cuda"):
                             self._is_warmed_up = True
@@ -325,33 +335,37 @@ class ChatterboxEngine(TTSEngine):
             "cache_dir": str(self._cache_dir),
             "error": None
         }
-        
+
         try:
             # Check if chatterbox is importable
             import chatterbox
             result["chatterbox_version"] = getattr(chatterbox, "__version__", "unknown")
-            
+
             # Check torch
-            result["torch_version"] = torch.__version__
-            result["cuda_available"] = torch.cuda.is_available()
-            
-            if torch.cuda.is_available():
-                result["cuda_device"] = torch.cuda.get_device_name(0)
-            
+            if TORCH_AVAILABLE and torch is not None:
+                result["torch_version"] = torch.__version__
+                result["cuda_available"] = torch.cuda.is_available()
+
+                if torch.cuda.is_available():
+                    result["cuda_device"] = torch.cuda.get_device_name(0)
+            else:
+                result["torch_version"] = "not installed"
+                result["cuda_available"] = False
+
             # Check if model is loaded
             result["models_loaded"] = self._model is not None
-            
+
             # Check audio player
             player = get_player()
             result["audio_player"] = player.get_player_name()
-            
+
             result["healthy"] = True
-            
+
         except ImportError as e:
             result["error"] = f"Import error: {e}"
         except Exception as e:
             result["error"] = str(e)
-        
+
         return result
     
     def prefetch_models(self) -> bool:

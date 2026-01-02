@@ -1091,6 +1091,40 @@ GUI_HTML = '''<!DOCTYPE html>
                 currentTtsAudio = null;
                 setSpeaking(false);
             }
+            // Also stop browser speech synthesis
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
+        }
+
+        // Browser Web Speech API fallback TTS
+        function playBrowserTts(text, lang) {
+            return new Promise((resolve) => {
+                if (!window.speechSynthesis) {
+                    console.warn('Browser TTS not supported');
+                    resolve(false);
+                    return;
+                }
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = lang === 'ko' ? 'ko-KR' : 'en-US';
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+
+                utterance.onstart = () => setSpeaking(true);
+                utterance.onend = () => {
+                    setSpeaking(false);
+                    resolve(true);
+                };
+                utterance.onerror = (e) => {
+                    console.error('Browser TTS error:', e);
+                    setSpeaking(false);
+                    resolve(false);
+                };
+
+                window.speechSynthesis.speak(utterance);
+            });
         }
 
         async function playTtsAudio(text, lang) {
@@ -1109,18 +1143,25 @@ GUI_HTML = '''<!DOCTYPE html>
 
                 const contentType = response.headers.get('Content-Type') || '';
                 if (!response.ok) {
+                    // Server TTS failed - try browser fallback
+                    console.warn('Server TTS failed, using browser fallback');
+                    const browserResult = await playBrowserTts(text, lang);
+                    if (browserResult) {
+                        return true;
+                    }
                     if (contentType.includes('application/json')) {
                         const errorData = await response.json();
-                        showToast(errorData.message || 'TTS failed', 'error');
+                        showToast(errorData.message || 'TTS unavailable', 'error');
                     } else {
-                        showToast('TTS failed', 'error');
+                        showToast('TTS unavailable', 'error');
                     }
                     return false;
                 }
 
                 if (!contentType.includes('audio')) {
-                    showToast('TTS returned unexpected response', 'error');
-                    return false;
+                    // Unexpected response - try browser fallback
+                    console.warn('Unexpected TTS response, using browser fallback');
+                    return await playBrowserTts(text, lang);
                 }
 
                 const audioBlob = await response.blob();
@@ -1142,16 +1183,21 @@ GUI_HTML = '''<!DOCTYPE html>
                     if (currentTtsAudio === audio) {
                         currentTtsAudio = null;
                     }
-                    showToast('Audio playback failed', 'error');
+                    // Try browser fallback on audio playback error
+                    playBrowserTts(text, lang);
                 });
 
                 await audio.play();
                 return true;
             } catch (e) {
                 console.error('TTS playback error:', e);
-                showToast('TTS playback error: ' + e.message, 'error');
+                // Try browser fallback on any error
+                const browserResult = await playBrowserTts(text, lang);
+                if (!browserResult) {
+                    showToast('TTS unavailable', 'error');
+                }
                 setSpeaking(false);
-                return false;
+                return browserResult;
             }
         }
         
@@ -2245,7 +2291,7 @@ if FASTAPI_AVAILABLE:
             if not TTS_AVAILABLE:
                 return JSONResponse(
                     status_code=503,
-                    content={"ok": False, "message": "TTS not available"},
+                    content={"ok": False, "message": "TTS not available", "use_browser": True},
                 )
 
             data = await request.json()
@@ -2268,14 +2314,21 @@ if FASTAPI_AVAILABLE:
             if manager is None or not manager.is_ready:
                 return JSONResponse(
                     status_code=503,
-                    content={"ok": False, "message": "Piper init failed"},
+                    content={"ok": False, "message": "TTS engine not ready", "use_browser": True},
+                )
+
+            # Check if using NullEngine (no audio output)
+            if manager.engine_name == "null":
+                return JSONResponse(
+                    status_code=503,
+                    content={"ok": False, "message": "No TTS engine available", "use_browser": True},
                 )
 
             audio_path = manager.synthesize(text, lang)
             if not audio_path or not audio_path.exists():
                 return JSONResponse(
-                    status_code=500,
-                    content={"ok": False, "message": "TTS synthesis failed"},
+                    status_code=503,
+                    content={"ok": False, "message": "TTS synthesis failed", "use_browser": True},
                 )
 
             add_action_log("TTS Synthesized", f"{audio_path.name}", True)
@@ -2287,7 +2340,7 @@ if FASTAPI_AVAILABLE:
             )
         except Exception as e:
             add_action_log("TTS Synthesize Error", str(e), False)
-            return JSONResponse(status_code=500, content={"ok": False, "message": str(e)})
+            return JSONResponse(status_code=503, content={"ok": False, "message": str(e), "use_browser": True})
     
     
     @app.get("/api/tts/status")
