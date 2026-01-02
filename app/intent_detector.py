@@ -143,7 +143,22 @@ class IntentDetector:
                 entities["count"] = int(count_match.group(1))
             
             # Common news topics
-            topics = ["tech", "ai", "business", "sports", "gaming", "food"]
+            topics = [
+                "world",
+                "us",
+                "los angeles",
+                "la weather",
+                "entertainment",
+                "china",
+                "tech",
+                "business",
+                "science",
+                "sports",
+                "mlb",
+                "korea",
+                "koreanews",
+                "ai",
+            ]
             for topic in topics:
                 if topic in text.lower():
                     entities["topic"] = topic
