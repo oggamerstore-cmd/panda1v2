@@ -27,7 +27,7 @@ v0.2.10 Changes:
 v0.2.10 Changes:
 - Push-to-talk voice (Space bar or mic icon)
 - Faster-Whisper STT (not openai-whisper)
-- Piper TTS with lightweight offline synthesis
+- Kokoro TTS with lightweight offline synthesis (Michael voice)
 - Korean language support
 - Fixed double bubble bug
 - SCOTT LAN integration
@@ -1091,6 +1091,40 @@ GUI_HTML = '''<!DOCTYPE html>
                 currentTtsAudio = null;
                 setSpeaking(false);
             }
+            // Also stop browser speech synthesis
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
+        }
+
+        // Browser Web Speech API fallback TTS
+        function playBrowserTts(text, lang) {
+            return new Promise((resolve) => {
+                if (!window.speechSynthesis) {
+                    console.warn('Browser TTS not supported');
+                    resolve(false);
+                    return;
+                }
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = lang === 'ko' ? 'ko-KR' : 'en-US';
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+
+                utterance.onstart = () => setSpeaking(true);
+                utterance.onend = () => {
+                    setSpeaking(false);
+                    resolve(true);
+                };
+                utterance.onerror = (e) => {
+                    console.error('Browser TTS error:', e);
+                    setSpeaking(false);
+                    resolve(false);
+                };
+
+                window.speechSynthesis.speak(utterance);
+            });
         }
 
         async function playTtsAudio(text, lang) {
@@ -1109,18 +1143,25 @@ GUI_HTML = '''<!DOCTYPE html>
 
                 const contentType = response.headers.get('Content-Type') || '';
                 if (!response.ok) {
+                    // Server TTS failed - try browser fallback
+                    console.warn('Server TTS failed, using browser fallback');
+                    const browserResult = await playBrowserTts(text, lang);
+                    if (browserResult) {
+                        return true;
+                    }
                     if (contentType.includes('application/json')) {
                         const errorData = await response.json();
-                        showToast(errorData.message || 'TTS failed', 'error');
+                        showToast(errorData.message || 'TTS unavailable', 'error');
                     } else {
-                        showToast('TTS failed', 'error');
+                        showToast('TTS unavailable', 'error');
                     }
                     return false;
                 }
 
                 if (!contentType.includes('audio')) {
-                    showToast('TTS returned unexpected response', 'error');
-                    return false;
+                    // Unexpected response - try browser fallback
+                    console.warn('Unexpected TTS response, using browser fallback');
+                    return await playBrowserTts(text, lang);
                 }
 
                 const audioBlob = await response.blob();
@@ -1142,16 +1183,21 @@ GUI_HTML = '''<!DOCTYPE html>
                     if (currentTtsAudio === audio) {
                         currentTtsAudio = null;
                     }
-                    showToast('Audio playback failed', 'error');
+                    // Try browser fallback on audio playback error
+                    playBrowserTts(text, lang);
                 });
 
                 await audio.play();
                 return true;
             } catch (e) {
                 console.error('TTS playback error:', e);
-                showToast('TTS playback error: ' + e.message, 'error');
+                // Try browser fallback on any error
+                const browserResult = await playBrowserTts(text, lang);
+                if (!browserResult) {
+                    showToast('TTS unavailable', 'error');
+                }
                 setSpeaking(false);
-                return false;
+                return browserResult;
             }
         }
         
@@ -1697,8 +1743,8 @@ if FASTAPI_AVAILABLE:
         return scott_status["online"]
 
 
-    def init_piper_tts():
-        """Initialize Piper TTS engine."""
+    def init_kokoro_tts():
+        """Initialize Kokoro TTS engine."""
         global tts_manager
 
         if tts_manager is not None and tts_manager.is_ready:
@@ -1712,26 +1758,26 @@ if FASTAPI_AVAILABLE:
             config = get_config()
             tts_manager = get_tts_manager()
             tts_manager.initialize(
-                engine="piper",
-                device=config.tts_device,
-                voice_name=config.tts_voice_en,
+                engine="kokoro",
+                device="cpu",  # CPU to preserve GPU for LLM
+                voice_name="am_michael",  # Michael male voice
             )
 
             if tts_manager.is_ready:
-                logger.info("Piper TTS initialized for auto TTS")
+                logger.info("Kokoro TTS initialized (voice: Michael)")
                 return tts_manager
 
-            logger.warning("Failed to initialize Piper TTS")
+            logger.warning("Failed to initialize Kokoro TTS")
             return None
 
         except Exception as e:
-            logger.error(f"Failed to init Piper TTS: {e}")
+            logger.error(f"Failed to init Kokoro TTS: {e}")
             return None
 
 
     def speak_panda_response(text: str, lang: str = None):
         """
-        Speak PANDA.1's response using Piper TTS.
+        Speak PANDA.1's response using Kokoro TTS.
 
         Args:
             text: Text to speak
@@ -1747,10 +1793,10 @@ if FASTAPI_AVAILABLE:
         try:
             # Initialize TTS if needed
             if tts_manager is None or not tts_manager.is_ready:
-                tts_manager = init_piper_tts()
+                tts_manager = init_kokoro_tts()
 
             if tts_manager is None or not tts_manager.is_ready:
-                logger.warning("Piper TTS not available, skipping speech")
+                logger.warning("Kokoro TTS not available, skipping speech")
                 return
 
             # Signal speaking start
@@ -1759,7 +1805,7 @@ if FASTAPI_AVAILABLE:
             # Synthesize and play
             success = tts_manager.speak(text, use_lang, blocking=True)
             if not success:
-                logger.warning("Piper TTS playback failed")
+                logger.warning("Kokoro TTS playback failed")
 
             # Signal speaking end
             queue_broadcast({"type": "speaking", "speaking": False})
@@ -2220,18 +2266,18 @@ if FASTAPI_AVAILABLE:
                 add_action_log("TTS Test Failed", "TTS not available", False)
                 return {"ok": False, "message": "TTS not available"}
 
-            manager = init_piper_tts()
+            manager = init_kokoro_tts()
             if manager is None or not manager.is_ready:
-                add_action_log("TTS Test Failed", "Piper init failed", False)
-                return {"ok": False, "message": "Piper init failed"}
+                add_action_log("TTS Test Failed", "Kokoro init failed", False)
+                return {"ok": False, "message": "Kokoro init failed"}
 
             def play_test():
                 request_client_tts("Hello, this is PANDA speaking.")
 
             threading.Thread(target=play_test, daemon=True).start()
 
-            add_action_log("TTS Test", "Engine: piper", True)
-            return {"ok": True, "message": "Playing via piper"}
+            add_action_log("TTS Test", "Engine: kokoro", True)
+            return {"ok": True, "message": "Playing via kokoro"}
 
         except Exception as e:
             add_action_log("TTS Test Error", str(e), False)
@@ -2245,7 +2291,7 @@ if FASTAPI_AVAILABLE:
             if not TTS_AVAILABLE:
                 return JSONResponse(
                     status_code=503,
-                    content={"ok": False, "message": "TTS not available"},
+                    content={"ok": False, "message": "TTS not available", "use_browser": True},
                 )
 
             data = await request.json()
@@ -2264,18 +2310,25 @@ if FASTAPI_AVAILABLE:
                     content={"ok": False, "message": "Invalid language"},
                 )
 
-            manager = init_piper_tts()
+            manager = init_kokoro_tts()
             if manager is None or not manager.is_ready:
                 return JSONResponse(
                     status_code=503,
-                    content={"ok": False, "message": "Piper init failed"},
+                    content={"ok": False, "message": "TTS engine not ready", "use_browser": True},
+                )
+
+            # Check if using NullEngine (no audio output)
+            if manager.engine_name == "null":
+                return JSONResponse(
+                    status_code=503,
+                    content={"ok": False, "message": "No TTS engine available", "use_browser": True},
                 )
 
             audio_path = manager.synthesize(text, lang)
             if not audio_path or not audio_path.exists():
                 return JSONResponse(
-                    status_code=500,
-                    content={"ok": False, "message": "TTS synthesis failed"},
+                    status_code=503,
+                    content={"ok": False, "message": "TTS synthesis failed", "use_browser": True},
                 )
 
             add_action_log("TTS Synthesized", f"{audio_path.name}", True)
@@ -2287,7 +2340,7 @@ if FASTAPI_AVAILABLE:
             )
         except Exception as e:
             add_action_log("TTS Synthesize Error", str(e), False)
-            return JSONResponse(status_code=500, content={"ok": False, "message": str(e)})
+            return JSONResponse(status_code=503, content={"ok": False, "message": str(e), "use_browser": True})
     
     
     @app.get("/api/tts/status")
@@ -2297,12 +2350,12 @@ if FASTAPI_AVAILABLE:
             if not TTS_AVAILABLE:
                 return {"ok": True, "data": {"available": False, "engine": "none"}}
 
-            manager = init_piper_tts()
+            manager = init_kokoro_tts()
             health = manager.healthcheck() if manager else {}
             status = {
                 "available": bool(manager and manager.is_ready),
                 "initialized": bool(manager and manager.is_ready),
-                "engine": health.get("engine", "piper"),
+                "engine": health.get("engine", "kokoro"),
                 "device": health.get("device", "cpu"),
                 "error": health.get("error"),
             }
@@ -2484,7 +2537,7 @@ if FASTAPI_AVAILABLE:
                                 "message_id": response_id
                             })
 
-                            # Auto TTS: Speak PANDA.1's response using Piper
+                            # Auto TTS: Speak PANDA.1's response using Kokoro
                             if full_response and tts_auto_enabled:
                                 await websocket.send_json({
                                     "type": "tts",
@@ -2561,12 +2614,12 @@ if FASTAPI_AVAILABLE:
                     
                     # TTS status
                     if TTS_AVAILABLE:
-                        manager = init_piper_tts()
+                        manager = init_kokoro_tts()
                         initialized = manager.is_ready if manager else False
-                        status = "Ready" if initialized else "Available (not initialized)"
-                        lines.append(f"TTS: Piper ({status})")
+                        tts_status = "Ready" if initialized else "Available (not initialized)"
+                        lines.append(f"TTS: Kokoro ({tts_status})")
                     else:
-                        lines.append("TTS: Piper not available")
+                        lines.append("TTS: Kokoro not available")
                     
                     # Voice status
                     lines.append(f"Voice: {voice_state.get('mic', 'UNAVAILABLE')}")

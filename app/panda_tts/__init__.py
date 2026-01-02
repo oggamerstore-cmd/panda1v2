@@ -3,26 +3,25 @@ PANDA.1 TTS System
 ==================
 Offline Text-to-Speech for PANDA.1.
 
-Version: 0.2.11
+Version: 0.3.0
 
 TTS Engines:
-- Chatterbox (default, offline, GPU-accelerated)
-- Piper (fallback, offline, CPU)
-- Null (last resort, no audio)
+- Kokoro (default, lightweight 82M model, CPU-optimized, Michael voice)
+- Null (fallback, browser TTS via Web Speech API)
 
 Usage:
     from app.panda_tts import get_tts_manager, speak, stop_speech
-    
+
     # Initialize
     manager = get_tts_manager()
     manager.initialize()
-    
+
     # Speak
     speak("Hello, I am PANDA.1!")
-    
+
     # Or with explicit language
     speak("안녕하세요!", lang="ko")
-    
+
     # Stop
     stop_speech()
 """
@@ -53,4 +52,4 @@ __all__ = [
     "get_player",
 ]
 
-__version__ = "0.2.10"
+__version__ = "0.3.0"
