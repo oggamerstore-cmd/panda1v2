@@ -53,7 +53,7 @@ class TTSManager:
             device: Device override (cpu recommended for Kokoro)
             cache_dir: Model cache directory
             output_dir: Audio output directory
-            voice_name: Voice ID (default: am_michael)
+            voice_name: Voice ID (default: michael)
             speed: Speech speed multiplier (0.5-2.0)
 
         Returns:
@@ -64,7 +64,9 @@ class TTSManager:
             engine = os.environ.get("PANDA_TTS_ENGINE", "").lower()
 
         if voice_name is None:
-            voice_name = os.environ.get("PANDA_TTS_VOICE", "am_michael")
+            voice_name = os.environ.get("PANDA_TTS_VOICE", "michael")
+        if voice_name == "michael":
+            voice_name = "am_michael"
         self._voice_name = voice_name
 
         if device is None:
