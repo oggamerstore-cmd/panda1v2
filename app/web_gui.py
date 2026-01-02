@@ -824,6 +824,7 @@ GUI_HTML = '''<!DOCTYPE html>
         let logPanelCollapsed = false;
         let currentMessageId = null;  // Track current streaming message
         let messageElements = {};  // Map message_id to DOM element
+        let currentTtsAudio = null;
         
         // Show toast notification
         function showToast(message, type = 'success') {
@@ -940,6 +941,12 @@ GUI_HTML = '''<!DOCTYPE html>
                     break;
                 case 'speaking':
                     setSpeaking(data.speaking);
+                    break;
+                case 'tts':
+                    playTtsAudio(data.text, data.lang || currentTtsLanguage);
+                    break;
+                case 'tts_stop':
+                    stopTtsAudio();
                     break;
                 case 'wake':
                     wake();
@@ -1074,6 +1081,77 @@ GUI_HTML = '''<!DOCTYPE html>
             } else {
                 orb.classList.remove('speaking');
                 orbStatus.textContent = 'READY';
+            }
+        }
+
+        function stopTtsAudio() {
+            if (currentTtsAudio) {
+                currentTtsAudio.pause();
+                currentTtsAudio.currentTime = 0;
+                currentTtsAudio = null;
+                setSpeaking(false);
+            }
+        }
+
+        async function playTtsAudio(text, lang) {
+            if (!text || !text.trim()) {
+                return false;
+            }
+
+            stopTtsAudio();
+
+            try {
+                const response = await fetch('/api/tts/synthesize', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ text, lang })
+                });
+
+                const contentType = response.headers.get('Content-Type') || '';
+                if (!response.ok) {
+                    if (contentType.includes('application/json')) {
+                        const errorData = await response.json();
+                        showToast(errorData.message || 'TTS failed', 'error');
+                    } else {
+                        showToast('TTS failed', 'error');
+                    }
+                    return false;
+                }
+
+                if (!contentType.includes('audio')) {
+                    showToast('TTS returned unexpected response', 'error');
+                    return false;
+                }
+
+                const audioBlob = await response.blob();
+                const audioUrl = URL.createObjectURL(audioBlob);
+                const audio = new Audio(audioUrl);
+                currentTtsAudio = audio;
+
+                audio.addEventListener('play', () => setSpeaking(true));
+                audio.addEventListener('ended', () => {
+                    setSpeaking(false);
+                    URL.revokeObjectURL(audioUrl);
+                    if (currentTtsAudio === audio) {
+                        currentTtsAudio = null;
+                    }
+                });
+                audio.addEventListener('error', () => {
+                    setSpeaking(false);
+                    URL.revokeObjectURL(audioUrl);
+                    if (currentTtsAudio === audio) {
+                        currentTtsAudio = null;
+                    }
+                    showToast('Audio playback failed', 'error');
+                });
+
+                await audio.play();
+                return true;
+            } catch (e) {
+                console.error('TTS playback error:', e);
+                showToast('TTS playback error: ' + e.message, 'error');
+                setSpeaking(false);
+                return false;
             }
         }
         
@@ -1215,6 +1293,7 @@ GUI_HTML = '''<!DOCTYPE html>
         
         document.getElementById('stopTtsBtn').addEventListener('click', async () => {
             logAction('Stop TTS');
+            stopTtsAudio();
             const result = await apiCall('/api/tts/stop');
             if (result) {
                 showToast('TTS stopped', 'success');
@@ -1224,9 +1303,9 @@ GUI_HTML = '''<!DOCTYPE html>
         
         document.getElementById('testTtsBtn').addEventListener('click', async () => {
             logAction('Test TTS');
-            const result = await apiCall('/api/tts/test');
-            if (result) {
-                showToast('TTS test: ' + result.message, result.ok ? 'success' : 'error');
+            const success = await playTtsAudio('Hello, this is PANDA speaking.', currentTtsLanguage);
+            if (success) {
+                showToast('TTS test playing in browser', 'success');
             }
         });
         
@@ -1690,6 +1769,24 @@ if FASTAPI_AVAILABLE:
             queue_broadcast({"type": "speaking", "speaking": False})
 
 
+    def request_client_tts(text: str, lang: str = None) -> None:
+        """Send TTS request to connected browser clients, fallback to server playback."""
+        if not text or not text.strip():
+            return
+
+        with connections_lock:
+            has_clients = bool(active_connections)
+
+        if has_clients:
+            queue_broadcast({
+                "type": "tts",
+                "text": text,
+                "lang": lang or tts_language,
+            })
+            return
+
+        speak_panda_response(text, lang)
+
     def process_language_switch(text: str) -> tuple:
         """
         Check if text contains language switch command.
@@ -1876,7 +1973,7 @@ if FASTAPI_AVAILABLE:
                 if config.voice_ack_enabled:
                     try:
                         def speak_ack():
-                            speak_panda_response("Yes BOS.")
+                            request_client_tts("Yes BOS.")
 
                         threading.Thread(target=speak_ack, daemon=True).start()
                     except Exception as e:
@@ -1926,7 +2023,7 @@ if FASTAPI_AVAILABLE:
                         
                         # Speak response via TTS
                         if full_response:
-                            speak_panda_response(full_response)
+                            request_client_tts(full_response)
                         
                         voice_state["mic"] = "AWAKE_LISTENING"
                         queue_broadcast({"type": "voice_state", "state": "AWAKE_LISTENING"})
@@ -2108,6 +2205,7 @@ if FASTAPI_AVAILABLE:
             stop_speech()
             add_action_log("TTS Stopped", None, True)
             await broadcast_to_clients({"type": "speaking", "speaking": False})
+            await broadcast_to_clients({"type": "tts_stop"})
             return {"ok": True, "message": "TTS stopped"}
         except Exception as e:
             add_action_log("TTS Stop Failed", str(e), False)
@@ -2128,7 +2226,7 @@ if FASTAPI_AVAILABLE:
                 return {"ok": False, "message": "Piper init failed"}
 
             def play_test():
-                speak_panda_response("Hello, this is PANDA speaking.")
+                request_client_tts("Hello, this is PANDA speaking.")
 
             threading.Thread(target=play_test, daemon=True).start()
 
@@ -2138,6 +2236,58 @@ if FASTAPI_AVAILABLE:
         except Exception as e:
             add_action_log("TTS Test Error", str(e), False)
             return {"ok": False, "message": str(e)}
+
+
+    @app.post("/api/tts/synthesize")
+    async def tts_synthesize(request: Request):
+        """Synthesize TTS audio and return it as a WAV file."""
+        try:
+            if not TTS_AVAILABLE:
+                return JSONResponse(
+                    status_code=503,
+                    content={"ok": False, "message": "TTS not available"},
+                )
+
+            data = await request.json()
+            text = (data.get("text") or "").strip()
+            lang = data.get("lang") or None
+
+            if not text:
+                return JSONResponse(
+                    status_code=400,
+                    content={"ok": False, "message": "Text is required"},
+                )
+
+            if lang is not None and lang not in ("en", "ko"):
+                return JSONResponse(
+                    status_code=400,
+                    content={"ok": False, "message": "Invalid language"},
+                )
+
+            manager = init_piper_tts()
+            if manager is None or not manager.is_ready:
+                return JSONResponse(
+                    status_code=503,
+                    content={"ok": False, "message": "Piper init failed"},
+                )
+
+            audio_path = manager.synthesize(text, lang)
+            if not audio_path or not audio_path.exists():
+                return JSONResponse(
+                    status_code=500,
+                    content={"ok": False, "message": "TTS synthesis failed"},
+                )
+
+            add_action_log("TTS Synthesized", f"{audio_path.name}", True)
+            return FileResponse(
+                audio_path,
+                media_type="audio/wav",
+                filename=audio_path.name,
+                headers={"Cache-Control": "no-store"},
+            )
+        except Exception as e:
+            add_action_log("TTS Synthesize Error", str(e), False)
+            return JSONResponse(status_code=500, content={"ok": False, "message": str(e)})
     
     
     @app.get("/api/tts/status")
@@ -2299,10 +2449,12 @@ if FASTAPI_AVAILABLE:
                                 "tts_language": new_lang
                             })
 
-                            # Speak acknowledgment in new language
-                            def speak_ack():
-                                speak_panda_response(ack_msg, new_lang)
-                            threading.Thread(target=speak_ack, daemon=True).start()
+                            # Speak acknowledgment in new language (browser playback)
+                            await websocket.send_json({
+                                "type": "tts",
+                                "text": ack_msg,
+                                "lang": new_lang,
+                            })
 
                             continue  # Skip normal processing
 
@@ -2333,9 +2485,11 @@ if FASTAPI_AVAILABLE:
 
                             # Auto TTS: Speak PANDA.1's response using Piper
                             if full_response and tts_auto_enabled:
-                                def speak_response():
-                                    speak_panda_response(full_response)
-                                threading.Thread(target=speak_response, daemon=True).start()
+                                await websocket.send_json({
+                                    "type": "tts",
+                                    "text": full_response,
+                                    "lang": tts_language,
+                                })
 
                         except Exception as e:
                             await websocket.send_json({
@@ -2365,10 +2519,12 @@ if FASTAPI_AVAILABLE:
                         "tts_language": new_lang
                     })
 
-                    # Speak the switch confirmation
-                    def speak_switch():
-                        speak_panda_response(msg, new_lang)
-                    threading.Thread(target=speak_switch, daemon=True).start()
+                    # Speak the switch confirmation (browser playback)
+                    await websocket.send_json({
+                        "type": "tts",
+                        "text": msg,
+                        "lang": new_lang,
+                    })
                 
                 elif msg_type == "voice_wake":
                     if voice_assistant:
