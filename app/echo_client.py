@@ -47,8 +47,14 @@ class EchoClient:
         self._session = requests.Session()
         retry_strategy = Retry(
             total=max_retries,
+            connect=0,
+            read=0,
+            status=max_retries,
+            other=0,
             backoff_factor=0.4,
             status_forcelist=[500, 502, 503, 504],
+            allowed_methods=frozenset(["GET", "POST"]),
+            raise_on_status=False,
         )
         adapter = HTTPAdapter(max_retries=retry_strategy)
         self._session.mount("http://", adapter)
@@ -138,4 +144,3 @@ class EchoClient:
         except Exception as exc:
             self._record_failure()
             return {"success": False, "error": str(exc)}
-

@@ -102,7 +102,14 @@ class PandaCore:
         from language_mode import get_language_manager
         self.lang_manager = get_language_manager()
         logger.info(f"Language mode: {self.lang_manager.mode}")
-        
+
+        # Initialize news topic resolver
+        try:
+            from panda_news import TopicResolver
+            self.topic_resolver = TopicResolver()
+        except Exception:
+            self.topic_resolver = None
+
         # Initialize intent detector (optional)
         self.intent_detector = None
         if self.config.enable_intent_detection:
@@ -538,25 +545,24 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
             return "News feature (SCOTT) is not configured."
         
         try:
-            # Check SCOTT health first
-            if not self.scott_client.is_healthy():
-                if self.lang_manager.mode == "ko":
-                    return "SCOTT에 연결할 수 없습니다. 나중에 다시 시도해주세요."
-                return "Cannot connect to SCOTT. Please try again later."
-            
             # Parse for topic/count
-            count = 5  # default
-            topic = None
-            
-            # Extract count
-            count_match = re.search(r'(?:top\s+)?(\d+)', user_input)
-            if count_match:
-                count = min(int(count_match.group(1)), 20)
-            
-            # Get articles
+            if self.topic_resolver:
+                topic, count = self.topic_resolver.parse_news_request(user_input)
+            else:
+                topic = None
+                count = 5
+                count_match = re.search(r'(?:top\s+)?(\d+)', user_input)
+                if count_match:
+                    count = min(int(count_match.group(1)), 20)
+
+            # Get articles (attempt even if SCOTT health check fails)
             articles = self.scott_client.get_top_articles(limit=count, topic=topic)
             
             if not articles:
+                if not self.scott_client.is_healthy():
+                    if self.lang_manager.mode == "ko":
+                        return "SCOTT에 연결할 수 없습니다. 나중에 다시 시도해주세요."
+                    return "Cannot connect to SCOTT. Please try again later."
                 if self.lang_manager.mode == "ko":
                     return "현재 사용 가능한 뉴스 기사가 없습니다, BOS."
                 return "No news articles available right now, BOS."

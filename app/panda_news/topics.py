@@ -22,7 +22,41 @@ class TopicResolver:
     
     # Topic mappings: keyword patterns → SCOTT slug
     TOPIC_MAPPINGS = {
-        "technology": [
+        "world": [
+            r"\bworld\b",
+            r"\binternational\b",
+            r"\bglobal\b",
+            r"\bforeign\b",
+        ],
+        "us": [
+            r"\bus\b",
+            r"\bu\.s\.\b",
+            r"\bunited states\b",
+            r"\bamerica\b",
+            r"\bamerican\b",
+        ],
+        "los angeles": [
+            r"\blos angeles\b",
+            r"\bla\b",
+            r"\bl\.a\.\b",
+        ],
+        "la weather": [
+            r"\bla weather\b",
+            r"\blos angeles weather\b",
+        ],
+        "entertainment": [
+            r"\bentertainment\b",
+            r"\bmovies?\b",
+            r"\bmusic\b",
+            r"\bcelebrity\b",
+            r"\bhollywood\b",
+        ],
+        "china": [
+            r"\bchina\b",
+            r"\bbeijing\b",
+            r"\bshanghai\b",
+        ],
+        "tech": [
             r"\btech\b",
             r"\btechnology\b",
             r"\bsoftware\b",
@@ -38,15 +72,6 @@ class TopicResolver:
             r"\bchatgpt\b",
             r"\bclaude\b",
         ],
-        "gaming": [
-            r"\bgaming\b",
-            r"\bgame\b",
-            r"\bvideo game\b",
-            r"\besports\b",
-            r"\bplaystation\b",
-            r"\bxbox\b",
-            r"\bnintendo\b",
-        ],
         "business": [
             r"\bbusiness\b",
             r"\bfinance\b",
@@ -54,13 +79,6 @@ class TopicResolver:
             r"\bmarket\b",
             r"\bstock\b",
             r"\binvest\b",
-        ],
-        "food": [
-            r"\bfood\b",
-            r"\brestaurant\b",
-            r"\bcooking\b",
-            r"\brecipe\b",
-            r"\bdining\b",
         ],
         "sports": [
             r"\bsports?\b",
@@ -71,6 +89,10 @@ class TopicResolver:
             r"\bnba\b",
             r"\bnfl\b",
         ],
+        "mlb": [
+            r"\bmlb\b",
+            r"\bmajor league baseball\b",
+        ],
         "science": [
             r"\bscience\b",
             r"\bresearch\b",
@@ -78,11 +100,15 @@ class TopicResolver:
             r"\bspace\b",
             r"\bnasa\b",
         ],
-        "world": [
-            r"\bworld\b",
-            r"\binternational\b",
-            r"\bglobal\b",
-            r"\bforeign\b",
+        "korea": [
+            r"\bkorea\b",
+            r"\bsouth korea\b",
+            r"\bseoul\b",
+        ],
+        "koreanews": [
+            r"\bkorea news\b",
+            r"\bkorean news\b",
+            r"\bkoreanews\b",
         ],
     }
     
