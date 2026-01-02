@@ -27,7 +27,7 @@ v0.2.10 Changes:
 v0.2.10 Changes:
 - Push-to-talk voice (Space bar or mic icon)
 - Faster-Whisper STT (not openai-whisper)
-- Kokoro TTS with real-time streaming
+- Piper TTS with lightweight offline synthesis
 - Korean language support
 - Fixed double bubble bug
 - SCOTT LAN integration
@@ -84,11 +84,12 @@ except ImportError:
 __version__ = "0.2.10"
 
 
-# Import Kokoro TTS for voice functionality
+# Import TTS for voice functionality
 try:
-    from app.voice.tts_kokoro import KOKORO_AVAILABLE
+    from app.panda_tts import get_tts_manager, stop_speech
+    TTS_AVAILABLE = True
 except ImportError:
-    KOKORO_AVAILABLE = False
+    TTS_AVAILABLE = False
 
 
 # Action log storage (last 200 entries)
@@ -1517,7 +1518,7 @@ if FASTAPI_AVAILABLE:
     # TTS state (v0.2.11)
     tts_language = "en"  # Current TTS language: "en" or "ko"
     tts_auto_enabled = True  # Auto TTS for PANDA.1 messages
-    kokoro_tts = None  # Kokoro TTS instance
+    tts_manager = None  # TTS manager instance
 
     # STT state (v0.2.11 - singleton pattern for performance)
     faster_whisper_stt = None  # Global STT instance to avoid model reload overhead
@@ -1617,51 +1618,47 @@ if FASTAPI_AVAILABLE:
         return scott_status["online"]
 
 
-    def init_kokoro_tts():
-        """Initialize Kokoro TTS engine."""
-        global kokoro_tts
+    def init_piper_tts():
+        """Initialize Piper TTS engine."""
+        global tts_manager
 
-        if kokoro_tts is not None:
-            return kokoro_tts
+        if tts_manager is not None and tts_manager.is_ready:
+            return tts_manager
+
+        if not TTS_AVAILABLE:
+            logger.warning("TTS system not available")
+            return None
 
         try:
-            from app.voice.tts_kokoro import KokoroTTS, KOKORO_AVAILABLE
-
-            if not KOKORO_AVAILABLE:
-                logger.warning("Kokoro TTS not available")
-                return None
-
             config = get_config()
-
-            kokoro_tts = KokoroTTS(
-                voice_en="am_michael",  # American Male Michael
-                voice_ko="km_omega",    # Korean Male Omega
-                speed=config.tts_speed,
+            tts_manager = get_tts_manager()
+            tts_manager.initialize(
+                engine="piper",
                 device=config.tts_device,
+                voice_name=config.tts_voice_en,
             )
 
-            # Initialize both language pipelines
-            if kokoro_tts.initialize("both"):
-                logger.info("Kokoro TTS initialized for auto TTS")
-                return kokoro_tts
-            else:
-                logger.warning("Failed to initialize Kokoro TTS")
-                return None
+            if tts_manager.is_ready:
+                logger.info("Piper TTS initialized for auto TTS")
+                return tts_manager
+
+            logger.warning("Failed to initialize Piper TTS")
+            return None
 
         except Exception as e:
-            logger.error(f"Failed to init Kokoro TTS: {e}")
+            logger.error(f"Failed to init Piper TTS: {e}")
             return None
 
 
     def speak_panda_response(text: str, lang: str = None):
         """
-        Speak PANDA.1's response using Kokoro TTS.
+        Speak PANDA.1's response using Piper TTS.
 
         Args:
             text: Text to speak
             lang: Language (en/ko), defaults to current tts_language
         """
-        global tts_language, kokoro_tts
+        global tts_language, tts_manager
 
         if not text or not text.strip():
             return
@@ -1670,39 +1667,20 @@ if FASTAPI_AVAILABLE:
 
         try:
             # Initialize TTS if needed
-            if kokoro_tts is None:
-                kokoro_tts = init_kokoro_tts()
+            if tts_manager is None or not tts_manager.is_ready:
+                tts_manager = init_piper_tts()
 
-            if kokoro_tts is None:
-                logger.warning("Kokoro TTS not available, skipping speech")
+            if tts_manager is None or not tts_manager.is_ready:
+                logger.warning("Piper TTS not available, skipping speech")
                 return
 
             # Signal speaking start
             queue_broadcast({"type": "speaking", "speaking": True})
 
             # Synthesize and play
-            result = kokoro_tts.synthesize(text, use_lang)
-
-            if result.success and result.audio_data:
-                # Play with sounddevice
-                try:
-                    import sounddevice as sd
-                    import numpy as np
-                    import wave
-                    import io
-
-                    wav_io = io.BytesIO(result.audio_data)
-                    with wave.open(wav_io, 'rb') as wav:
-                        frames = wav.readframes(wav.getnframes())
-                        audio = np.frombuffer(frames, dtype=np.int16).astype(np.float32) / 32767
-
-                    sd.play(audio, result.sample_rate)
-                    sd.wait()
-
-                except Exception as e:
-                    logger.warning(f"Playback failed: {e}")
-                    # Fallback to panda_tts
-                    logger.warning("Playback failed, Kokoro audio not played")
+            success = tts_manager.speak(text, use_lang, blocking=True)
+            if not success:
+                logger.warning("Piper TTS playback failed")
 
             # Signal speaking end
             queue_broadcast({"type": "speaking", "speaking": False})
@@ -2125,8 +2103,9 @@ if FASTAPI_AVAILABLE:
     async def tts_stop():
         """Stop TTS playback."""
         try:
-            import sounddevice as sd
-            sd.stop()
+            if not TTS_AVAILABLE:
+                raise RuntimeError("TTS system not available")
+            stop_speech()
             add_action_log("TTS Stopped", None, True)
             await broadcast_to_clients({"type": "speaking", "speaking": False})
             return {"ok": True, "message": "TTS stopped"}
@@ -2139,22 +2118,22 @@ if FASTAPI_AVAILABLE:
     async def tts_test():
         """Test TTS with a short phrase."""
         try:
-            if not KOKORO_AVAILABLE:
-                add_action_log("TTS Test Failed", "Kokoro not installed", False)
-                return {"ok": False, "message": "Kokoro not installed"}
+            if not TTS_AVAILABLE:
+                add_action_log("TTS Test Failed", "TTS not available", False)
+                return {"ok": False, "message": "TTS not available"}
 
-            kokoro = init_kokoro_tts()
-            if kokoro is None or not kokoro.is_initialized:
-                add_action_log("TTS Test Failed", "Kokoro init failed", False)
-                return {"ok": False, "message": "Kokoro init failed"}
+            manager = init_piper_tts()
+            if manager is None or not manager.is_ready:
+                add_action_log("TTS Test Failed", "Piper init failed", False)
+                return {"ok": False, "message": "Piper init failed"}
 
             def play_test():
                 speak_panda_response("Hello, this is PANDA speaking.")
 
             threading.Thread(target=play_test, daemon=True).start()
 
-            add_action_log("TTS Test", "Engine: kokoro", True)
-            return {"ok": True, "message": "Playing via kokoro"}
+            add_action_log("TTS Test", "Engine: piper", True)
+            return {"ok": True, "message": "Playing via piper"}
 
         except Exception as e:
             add_action_log("TTS Test Error", str(e), False)
@@ -2165,10 +2144,17 @@ if FASTAPI_AVAILABLE:
     async def tts_status():
         """Get TTS status."""
         try:
+            if not TTS_AVAILABLE:
+                return {"ok": True, "data": {"available": False, "engine": "none"}}
+
+            manager = init_piper_tts()
+            health = manager.healthcheck() if manager else {}
             status = {
-                "available": KOKORO_AVAILABLE,
-                "initialized": kokoro_tts.is_initialized if kokoro_tts else False,
-                "engine": "kokoro",
+                "available": bool(manager and manager.is_ready),
+                "initialized": bool(manager and manager.is_ready),
+                "engine": health.get("engine", "piper"),
+                "device": health.get("device", "cpu"),
+                "error": health.get("error"),
             }
             return {"ok": True, "data": status}
         except Exception as e:
@@ -2345,7 +2331,7 @@ if FASTAPI_AVAILABLE:
                                 "message_id": response_id
                             })
 
-                            # Auto TTS: Speak PANDA.1's response using Kokoro
+                            # Auto TTS: Speak PANDA.1's response using Piper
                             if full_response and tts_auto_enabled:
                                 def speak_response():
                                     speak_panda_response(full_response)
@@ -2418,12 +2404,13 @@ if FASTAPI_AVAILABLE:
                         lines.append(f"Memory: {mem.get('count', 0)} items")
                     
                     # TTS status
-                    if KOKORO_AVAILABLE:
-                        initialized = kokoro_tts.is_initialized if kokoro_tts else False
+                    if TTS_AVAILABLE:
+                        manager = init_piper_tts()
+                        initialized = manager.is_ready if manager else False
                         status = "Ready" if initialized else "Available (not initialized)"
-                        lines.append(f"TTS: Kokoro ({status})")
+                        lines.append(f"TTS: Piper ({status})")
                     else:
-                        lines.append("TTS: Kokoro not installed")
+                        lines.append("TTS: Piper not available")
                     
                     # Voice status
                     lines.append(f"Voice: {voice_state.get('mic', 'UNAVAILABLE')}")

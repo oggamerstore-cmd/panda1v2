@@ -58,7 +58,7 @@ class VoiceConfig:
     tts_speed: float = 1.0  # 0.5 - 2.0
     tts_volume: float = 1.0  # 0.0 - 1.0
     tts_muted: bool = False
-    tts_voice_en: str = "en-US-EricNeural"  # English voice
+    tts_voice_en: str = "joe"  # English voice
     tts_voice_ko: str = "km_omega"  # Korean voice
     
     # PTT settings

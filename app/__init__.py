@@ -6,7 +6,7 @@ BOS's local-first AI assistant with voice, news, and business tools.
 Version: 0.2.11 (Vision Upgrade)
 
 New in v0.2.10:
-- Complete voice subsystem rewrite (PTT + Faster-Whisper + Kokoro)
+- Complete voice subsystem rewrite (PTT + Faster-Whisper + Piper)
 - Real-time speak-as-it-types TTS
 - Korean language support (STT + TTS)
 - Improved SCOTT integration with clear error messages

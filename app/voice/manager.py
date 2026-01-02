@@ -8,14 +8,14 @@ Version: 0.2.11
 Features:
 - Push-to-talk coordination
 - STT with Faster-Whisper
-- TTS with Kokoro
-- Real-time speak-as-it-types
+- TTS with Piper
 - Language detection and routing
 """
 
 import time
 import logging
 import threading
+import shutil
 from enum import Enum, auto
 from pathlib import Path
 from typing import Optional, Callable, Generator
@@ -25,9 +25,7 @@ from .voice_config import VoiceConfig, get_voice_config, LanguageMode
 from .devices import list_input_devices, list_output_devices, get_device_info
 from .capture import AudioCapture, CaptureState, CaptureResult
 from .stt_faster_whisper import FasterWhisperSTT, STTResult, STTLanguage
-from .tts_kokoro import KokoroTTS, TTSResult, detect_language
-from .tts_streamer import TTSStreamer, StreamingPlayer
-from .playback import AudioPlayer, get_player
+from app.panda_tts import get_tts_manager, stop_speech, detect_language
 
 logger = logging.getLogger(__name__)
 
@@ -94,9 +92,7 @@ class VoiceManager:
         self._state = VoiceState.IDLE
         self._capture: Optional[AudioCapture] = None
         self._stt: Optional[FasterWhisperSTT] = None
-        self._tts: Optional[KokoroTTS] = None
-        self._player: Optional[AudioPlayer] = None
-        self._streamer: Optional[TTSStreamer] = None
+        self._tts_manager = None
         
         self._initialized = False
         self._lock = threading.Lock()
@@ -174,25 +170,12 @@ class VoiceManager:
             if not self._stt.load_model():
                 logger.warning("STT model failed to load")
             
-            # Initialize TTS with CUDA support
-            self._tts = KokoroTTS(
-                voice_en=self.config.tts_voice_en,
-                voice_ko=self.config.tts_voice_ko,
-                speed=self.config.tts_speed,
+            # Initialize TTS (Piper)
+            self._tts_manager = get_tts_manager()
+            self._tts_manager.initialize(
+                engine="piper",
                 device=self.config.tts_device,
-            )
-            
-            # Initialize player
-            self._player = AudioPlayer(
-                device_index=self.config.output_device,
-                volume=self.config.tts_volume,
-            )
-            self._player.mute(self.config.tts_muted)
-            
-            # Initialize streamer
-            self._streamer = TTSStreamer(
-                tts=self._tts,
-                default_lang=self.config.language_mode.value if self.config.language_mode != LanguageMode.AUTO else "en",
+                voice_name=self.config.tts_voice_en,
             )
             
             self._initialized = True
@@ -315,31 +298,25 @@ class VoiceManager:
         self._set_state(VoiceState.SPEAKING)
         
         # Initialize TTS if needed
-        if not self._tts.is_initialized:
-            self._tts.initialize(lang)
-        
-        # Synthesize
-        result = self._tts.synthesize(text, lang)
-        
-        if not result.success:
-            logger.warning(f"TTS failed: {result.error}")
+        if not self._tts_manager or not self._tts_manager.is_ready:
+            logger.warning("TTS manager not ready")
             self._set_state(VoiceState.IDLE)
             return False
-        
-        # Play
-        play_result = self._player.play(result.audio_data, blocking=blocking)
+
+        # Speak
+        play_result = self._tts_manager.speak(text, lang, blocking=blocking)
         
         if blocking:
             self._set_state(VoiceState.IDLE)
         else:
             # Set state back to idle after playback
             def _on_complete():
-                time.sleep(result.duration + 0.1)
+                time.sleep(0.1)
                 if self._state == VoiceState.SPEAKING:
                     self._set_state(VoiceState.IDLE)
             threading.Thread(target=_on_complete, daemon=True).start()
         
-        return play_result.success
+        return play_result
     
     def speak_streaming(
         self,
@@ -347,7 +324,7 @@ class VoiceManager:
         lang: Optional[str] = None,
     ) -> None:
         """
-        Speak text in real-time as it streams.
+        Speak text once the stream completes (Piper does not support streaming).
         
         Args:
             text_stream: Generator yielding text tokens
@@ -364,60 +341,35 @@ class VoiceManager:
             return
         
         self._set_state(VoiceState.SPEAKING)
-        
-        # Start streamer
-        if not self._streamer.start():
-            self._set_state(VoiceState.IDLE)
-            return
-        
-        # Create streaming player
-        player = StreamingPlayer(device_index=self.config.output_device)
-        player.mute(self.config.tts_muted)
-        player.start()
-        
-        # Feed text and queue audio
+
+        # Collect streamed text and speak once complete
         def _stream_worker():
             try:
+                tokens = []
                 for token in text_stream:
-                    if not self._streamer.is_running:
-                        break
-                    self._streamer.feed(token)
-                
-                self._streamer.end()
-                
-                # Play audio as it becomes available
-                for audio in self._streamer.get_audio():
-                    player.queue(audio)
-                
-                player.wait()
-                
+                    tokens.append(token)
+
+                combined = "".join(tokens).strip()
+                if combined:
+                    self.speak(combined, lang, blocking=True)
             finally:
-                player.stop()
-                self._streamer.stop()
                 self._set_state(VoiceState.IDLE)
         
         threading.Thread(target=_stream_worker, daemon=True).start()
     
     def stop_speaking(self) -> None:
         """Stop current TTS playback."""
-        if self._player:
-            self._player.stop()
-        if self._streamer:
-            self._streamer.stop()
+        stop_speech()
         self._set_state(VoiceState.IDLE)
     
     def set_mute(self, muted: bool) -> None:
         """Set TTS mute state."""
         self.config.tts_muted = muted
-        if self._player:
-            self._player.mute(muted)
         self.config.save()
     
     def set_volume(self, volume: float) -> None:
         """Set TTS volume (0.0 - 1.0)."""
         self.config.tts_volume = max(0.0, min(1.0, volume))
-        if self._player:
-            self._player.set_volume(self.config.tts_volume)
         self.config.save()
     
     def set_language_mode(self, mode: LanguageMode) -> None:
@@ -435,8 +387,6 @@ class VoiceManager:
     def set_output_device(self, device_index: Optional[int]) -> None:
         """Set output device."""
         self.config.output_device = device_index
-        if self._player:
-            self._player.set_device(device_index)
         self.config.save()
     
     def get_status(self) -> dict:
@@ -446,7 +396,7 @@ class VoiceManager:
             "initialized": self._initialized,
             "config": self.config.to_dict(),
             "stt": self._stt.get_status() if self._stt else {"available": False},
-            "tts": self._tts.get_status() if self._tts else {"available": False},
+            "tts": self._tts_manager.healthcheck() if self._tts_manager else {"available": False},
             "devices": get_device_info(),
         }
     
@@ -554,18 +504,18 @@ def voice_doctor() -> dict:
             "message": "pip install faster-whisper"
         })
     
-    try:
-        from kokoro import KPipeline
+    piper_bin = shutil.which("piper") or shutil.which("piper-tts")
+    if piper_bin:
         results["checks"].append({
-            "name": "kokoro",
+            "name": "piper",
             "status": "ok",
-            "message": "TTS engine available"
+            "message": f"TTS engine available ({piper_bin})"
         })
-    except ImportError:
+    else:
         results["checks"].append({
-            "name": "kokoro",
+            "name": "piper",
             "status": "warning",
-            "message": "pip install kokoro (TTS disabled)"
+            "message": "Install piper (piper-tts) for TTS output"
         })
     
     # Check devices

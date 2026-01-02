@@ -32,6 +32,7 @@ class TTSManager:
         self._engine: Optional[TTSEngine] = None
         self._engine_name: Optional[str] = None
         self._initialized = False
+        self._voice_name: Optional[str] = None
     
     def initialize(
         self,
@@ -40,6 +41,7 @@ class TTSManager:
         cache_dir: Optional[Path] = None,
         output_dir: Optional[Path] = None,
         reference_audio: Optional[Path] = None,
+        voice_name: Optional[str] = None,
     ) -> TTSEngine:
         """
         Initialize TTS engine with fallback.
@@ -57,6 +59,10 @@ class TTSManager:
         # Get from environment if not specified
         if engine is None:
             engine = os.environ.get("PANDA_TTS_ENGINE", "").lower()
+
+        if voice_name is None:
+            voice_name = os.environ.get("PANDA_TTS_VOICE")
+        self._voice_name = voice_name
         
         if device is None:
             device = os.environ.get("PANDA_TTS_DEVICE", "").lower()
@@ -74,7 +80,7 @@ class TTSManager:
             if not self._engine:
                 self._engine = self._fallback()
         elif engine == "piper":
-            self._engine = self._try_piper(output_dir)
+            self._engine = self._try_piper(output_dir, self._voice_name)
             if not self._engine:
                 self._engine = self._fallback()
         elif engine == "null" or engine == "off" or engine == "none":
@@ -83,7 +89,7 @@ class TTSManager:
             # Default: try chatterbox -> piper -> null
             self._engine = self._try_chatterbox(device, cache_dir, output_dir, reference_audio)
             if not self._engine:
-                self._engine = self._try_piper(output_dir)
+                self._engine = self._try_piper(output_dir, self._voice_name)
             if not self._engine:
                 self._engine = self._create_null()
         
@@ -125,12 +131,15 @@ class TTSManager:
             logger.error(f"Chatterbox init failed: {e}")
             return None
     
-    def _try_piper(self, output_dir: Path) -> Optional[TTSEngine]:
+    def _try_piper(self, output_dir: Path, voice_name: Optional[str]) -> Optional[TTSEngine]:
         """Try to initialize Piper."""
         try:
             from .piper_engine import PiperEngine
             
-            engine = PiperEngine(output_dir=output_dir)
+            engine = PiperEngine(
+                output_dir=output_dir,
+                model_name=voice_name,
+            )
             
             if engine.warmup():
                 logger.info("Piper engine ready (fallback)")
@@ -159,7 +168,7 @@ class TTSManager:
         """Fallback through engines."""
         # Try piper first
         panda_home = Path.home() / ".panda1"
-        engine = self._try_piper(panda_home / "audio_out")
+        engine = self._try_piper(panda_home / "audio_out", self._voice_name)
         if engine:
             return engine
         
