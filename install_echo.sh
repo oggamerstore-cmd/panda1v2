@@ -3,10 +3,16 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ECHO_HOME="${ECHO_HOME:-$HOME/.echo}"
+PANDA_HOME="${PANDA_HOME:-$HOME/.panda1}"
 VENV_DIR="${ECHO_HOME}/venv"
 ENV_FILE="${ECHO_HOME}/.env"
 SERVICE_DIR="${HOME}/.config/systemd/user"
 SERVICE_FILE="${SERVICE_DIR}/echo.service"
+APP_BASE="${SCRIPT_DIR}"
+
+if [ -d "${PANDA_HOME}/app" ]; then
+  APP_BASE="${PANDA_HOME}"
+fi
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "  🧠 ECHO Database PC Installer"
@@ -48,7 +54,7 @@ After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=${SCRIPT_DIR}
+WorkingDirectory=${APP_BASE}
 EnvironmentFile=${ENV_FILE}
 ExecStart=${VENV_DIR}/bin/python -m app.echo_server
 Restart=on-failure

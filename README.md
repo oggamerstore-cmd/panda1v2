@@ -80,6 +80,28 @@ SCOTT_API_KEY=your_secret
 
 Test: `panda --scott-doctor`
 
+## ECHO Context Hub (Database PC)
+
+`install.sh` now runs `install_echo.sh` automatically to set up the ECHO vector
+server under `~/.echo` and register the user systemd service.
+
+If you need to install or repair ECHO manually:
+
+```bash
+./install_echo.sh
+systemctl --user status echo.service
+```
+
+Configure in `~/.panda1/.env`:
+
+```bash
+PANDA_ECHO_ENABLED=true
+PANDA_ECHO_BASE_URL=http://192.168.1.20:9010
+PANDA_ECHO_TOP_K=5
+```
+
+Test: `panda --echo-doctor`
+
 ## HTTPS Mode
 
 For microphone on non-localhost:
