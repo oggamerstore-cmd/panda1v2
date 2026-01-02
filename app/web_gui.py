@@ -2501,24 +2501,77 @@ def run_server(host: Optional[str] = None, port: Optional[int] = None, use_https
             logging.info("")
             logging.info("  Attempting to generate self-signed certs...")
             logging.info("")
+            def generate_certs_with_openssl(cert_dir: Path, cert_file: Path, key_file: Path) -> None:
+                import subprocess
+
+                cert_dir.mkdir(parents=True, exist_ok=True)
+                os.chmod(cert_dir, 0o700)
+
+                local_ip = None
+                try:
+                    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+                        sock.connect(("8.8.8.8", 80))
+                        local_ip = sock.getsockname()[0]
+                except OSError:
+                    local_ip = None
+
+                san_entries = ["DNS:localhost", "DNS:panda1", "IP:127.0.0.1"]
+                if local_ip and not local_ip.startswith("127."):
+                    san_entries.append(f"IP:{local_ip}")
+
+                subprocess.run(
+                    [
+                        "openssl",
+                        "req",
+                        "-x509",
+                        "-nodes",
+                        "-days",
+                        "365",
+                        "-newkey",
+                        "rsa:2048",
+                        "-keyout",
+                        str(key_file),
+                        "-out",
+                        str(cert_file),
+                        "-subj",
+                        "/CN=PANDA.1/O=Local/C=US",
+                        "-addext",
+                        f"subjectAltName={','.join(san_entries)}",
+                    ],
+                    check=True,
+                )
+                os.chmod(key_file, 0o600)
+                os.chmod(cert_file, 0o644)
+
             try:
                 import subprocess
                 script_path = Path(__file__).resolve().parent.parent / "scripts" / "generate_certs.sh"
-                subprocess.run([str(script_path)], check=True)
+                if script_path.exists():
+                    if os.access(script_path, os.X_OK):
+                        subprocess.run([str(script_path)], check=True)
+                    else:
+                        subprocess.run(["bash", str(script_path)], check=True)
+                else:
+                    raise FileNotFoundError(f"Certificate script not found at {script_path}")
             except Exception as e:
-                logging.error(f"Auto cert generation failed: {e}")
-                logging.info("")
-                logging.info(f"  Expected locations:")
-                logging.info(f"    Certificate: {ssl_certfile}")
-                logging.info(f"    Private Key: {ssl_keyfile}")
-                logging.info("")
-                logging.info("  Generate certificates with:")
-                logging.info("    cd /home/user/panda1 && ./scripts/generate_certs.sh")
-                logging.info("")
-                logging.info("  Or disable HTTPS:")
-                logging.info("    PANDA_ENABLE_HTTPS=false")
-                logging.info("")
-                return 1
+                logging.warning(f"Auto cert generation via script failed: {e}")
+                logging.info("  Falling back to direct openssl generation...")
+                try:
+                    generate_certs_with_openssl(cert_dir, ssl_certfile, ssl_keyfile)
+                except Exception as fallback_error:
+                    logging.error(f"Auto cert generation failed: {fallback_error}")
+                    logging.info("")
+                    logging.info(f"  Expected locations:")
+                    logging.info(f"    Certificate: {ssl_certfile}")
+                    logging.info(f"    Private Key: {ssl_keyfile}")
+                    logging.info("")
+                    logging.info("  Generate certificates with:")
+                    logging.info("    cd /home/user/panda1 && ./scripts/generate_certs.sh")
+                    logging.info("")
+                    logging.info("  Or disable HTTPS:")
+                    logging.info("    PANDA_ENABLE_HTTPS=false")
+                    logging.info("")
+                    return 1
             if not ssl_certfile.exists() or not ssl_keyfile.exists():
                 logging.error("Auto cert generation completed but cert files are missing.")
                 return 1
