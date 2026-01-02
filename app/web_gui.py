@@ -2392,6 +2392,7 @@ if FASTAPI_AVAILABLE:
     @app.websocket("/ws")
     async def websocket_endpoint(websocket: WebSocket):
         """WebSocket endpoint for real-time chat."""
+        global tts_language
         await websocket.accept()
         
         with connections_lock:
@@ -2498,7 +2499,6 @@ if FASTAPI_AVAILABLE:
                             })
                 
                 elif msg_type == "toggle_language":
-                    global tts_language
                     # Toggle TTS language
                     new_lang = "ko" if tts_language == "en" else "en"
                     tts_language = new_lang
