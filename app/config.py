@@ -12,7 +12,7 @@ Network Configuration:
 
 Voice Configuration (NEW in v0.2.10):
 - Faster-Whisper STT with EN/KO/AUTO modes
-- Kokoro TTS with real-time speak-as-it-types
+- Piper TTS with lightweight offline synthesis
 - PTT via Space bar or mic button
 - Language mode: Auto / English / Korean
 
@@ -194,7 +194,7 @@ class PandaConfig(BaseSettings):
     )
     
     # =========================================================================
-    # VOICE CONFIGURATION (v0.2.10 - Faster-Whisper + Kokoro)
+    # VOICE CONFIGURATION (v0.2.10 - Faster-Whisper + Piper)
     # =========================================================================
     
     voice_enabled: bool = Field(default=True, description="Enable TTS voice output")
@@ -220,20 +220,20 @@ class PandaConfig(BaseSettings):
         description="STT device: auto, cpu, cuda"
     )
     
-    # Text-to-Speech (TTS) - Kokoro-82M with CUDA (v0.2.10)
+    # Text-to-Speech (TTS) - Piper (CPU) (v0.2.10)
     tts_engine: str = Field(
-        default="kokoro",
-        description="TTS engine: kokoro (CUDA-accelerated), piper (fallback), null (off)"
+        default="piper",
+        description="TTS engine: piper (CPU), chatterbox (offline), null (off)"
     )
 
     tts_voice_en: str = Field(
-        default="en-US-EricNeural",
-        description="English TTS voice (default: en-US-EricNeural)"
+        default="joe",
+        description="English TTS voice (default: joe)"
     )
 
     tts_voice_ko: str = Field(
         default="km_omega",
-        description="Kokoro Korean voice (default: km_omega)"
+        description="Korean TTS voice (default: km_omega)"
     )
 
     tts_speed: float = Field(
@@ -247,8 +247,8 @@ class PandaConfig(BaseSettings):
     )
 
     tts_device: str = Field(
-        default="cuda",
-        description="TTS device: cuda (RTX 2060, ~0.4GB VRAM), cpu (fallback)"
+        default="cpu",
+        description="TTS device: cpu (default), cuda (if supported)"
     )
     
     tts_cache_dir: Optional[str] = Field(
@@ -488,7 +488,7 @@ class PandaConfig(BaseSettings):
             self.certs_dir, self.files_dir,
             self.base_dir / "cache" / "voice",
             self.base_dir / "cache" / "whisper",
-            self.base_dir / "cache" / "kokoro",
+            self.base_dir / "cache" / "piper",
         ]:
             dir_path.mkdir(parents=True, exist_ok=True)
     

@@ -36,6 +36,7 @@ class PiperEngine(TTSEngine):
     def __init__(
         self,
         model_path: Optional[Path] = None,
+        model_name: Optional[str] = None,
         output_dir: Optional[Path] = None,
     ):
         """
@@ -48,6 +49,7 @@ class PiperEngine(TTSEngine):
         super().__init__()
         
         self._model_path = model_path
+        self._model_name = model_name
         self._output_dir = output_dir or Path.home() / ".panda1" / "audio_out"
         
         # Find piper binary
@@ -92,13 +94,32 @@ class PiperEngine(TTSEngine):
             Path("/usr/share/piper/models"),
         ]
         
+        model_name = self._model_name.lower() if self._model_name else None
+        candidates = []
+
         for model_dir in model_dirs:
-            if model_dir.exists():
-                # Find any .onnx file
-                for onnx in model_dir.rglob("*.onnx"):
-                    logger.info(f"Found Piper model: {onnx}")
-                    return onnx
-        
+            if not model_dir.exists():
+                continue
+            for onnx in model_dir.rglob("*.onnx"):
+                candidates.append(onnx)
+
+        if model_name:
+            preferred = [
+                model for model in candidates
+                if model_name in model.stem.lower() or model_name in model.name.lower()
+            ]
+            if preferred:
+                preferred.sort(key=lambda path: path.name.lower())
+                logger.info(f"Found Piper model matching '{self._model_name}': {preferred[0]}")
+                return preferred[0]
+            else:
+                logger.warning(f"No Piper model matching '{self._model_name}' found; using first available model.")
+
+        if candidates:
+            candidates.sort(key=lambda path: path.name.lower())
+            logger.info(f"Found Piper model: {candidates[0]}")
+            return candidates[0]
+
         return None
     
     def warmup(self) -> bool:

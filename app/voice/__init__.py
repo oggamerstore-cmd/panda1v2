@@ -1,7 +1,7 @@
 """
 PANDA.1 Voice Subsystem
 =======================
-Complete voice pipeline: PTT capture → Faster-Whisper STT → Kokoro TTS
+Complete voice pipeline: PTT capture → Faster-Whisper STT → Piper TTS
 
 Version: 0.2.11
 
@@ -9,8 +9,7 @@ Components:
 - devices: Audio device enumeration and selection
 - capture: Push-to-talk recording engine
 - stt_faster_whisper: Speech-to-text with Faster-Whisper
-- tts_kokoro: Text-to-speech with Kokoro v1.0
-- tts_streamer: Real-time speak-while-streaming
+- piper_engine: Text-to-speech with Piper
 - playback: Audio output management
 - voice_config: Persistent voice settings
 
@@ -27,7 +26,7 @@ Usage:
     
     # TTS playback
     vm.speak("Hello, I am PANDA!")
-    vm.speak_streaming(text_generator)  # Real-time TTS
+    vm.speak_streaming(text_generator)  # Buffered TTS for Piper
 """
 
 from .voice_config import VoiceConfig, get_voice_config
@@ -40,8 +39,6 @@ from .devices import (
 )
 from .capture import AudioCapture, CaptureState
 from .stt_faster_whisper import FasterWhisperSTT, STTResult
-from .tts_kokoro import KokoroTTS
-from .tts_streamer import TTSStreamer
 from .playback import AudioPlayer
 from .manager import VoiceManager, VoiceState
 
@@ -61,9 +58,6 @@ __all__ = [
     # STT
     "FasterWhisperSTT",
     "STTResult",
-    # TTS
-    "KokoroTTS",
-    "TTSStreamer",
     # Playback
     "AudioPlayer",
     # Manager

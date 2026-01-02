@@ -17,11 +17,11 @@ Wake Phrases:
 Uses:
 - Faster-Whisper for ALL speech recognition (wake and command)
 - webrtcvad for Voice Activity Detection (reduces CPU)
-- Kokoro TTS for speech output (v0.2.10)
+- Piper TTS for speech output (v0.2.10)
 
 v0.2.10 Changes:
 - Switched from openai-whisper to faster-whisper (3-4x faster)
-- Updated for Kokoro TTS support
+- Updated for Piper TTS support
 - Korean language support improved
 """
 
