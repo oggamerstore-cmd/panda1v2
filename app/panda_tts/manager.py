@@ -3,12 +3,14 @@ PANDA.1 TTS Engine Manager
 ==========================
 Manages TTS engine selection and fallback.
 
-Version: 0.2.11
+Version: 0.3.0
 
 Engine Selection Order:
-1. If PANDA_TTS_ENGINE=chatterbox -> try chatterbox else fallback
-2. If PANDA_TTS_ENGINE=piper -> try piper else fallback
-3. Default: chatterbox -> piper -> null
+1. Kokoro (default, lightweight 82M model, CPU-optimized)
+2. Null (fallback - browser TTS will be used via frontend)
+
+Note: Chatterbox and Piper have been removed to save GPU VRAM.
+Browser-based Web Speech API provides fallback when Kokoro is unavailable.
 """
 
 import os
@@ -24,35 +26,36 @@ logger = logging.getLogger(__name__)
 class TTSManager:
     """
     TTS Engine Manager.
-    
+
     Handles engine selection, fallback, and lifecycle.
     """
-    
+
     def __init__(self):
         self._engine: Optional[TTSEngine] = None
         self._engine_name: Optional[str] = None
         self._initialized = False
         self._voice_name: Optional[str] = None
-    
+
     def initialize(
         self,
         engine: Optional[str] = None,
         device: Optional[str] = None,
         cache_dir: Optional[Path] = None,
         output_dir: Optional[Path] = None,
-        reference_audio: Optional[Path] = None,
         voice_name: Optional[str] = None,
+        speed: float = 1.0,
     ) -> TTSEngine:
         """
         Initialize TTS engine with fallback.
-        
+
         Args:
-            engine: Engine name (chatterbox, piper, null) or None for auto
-            device: Device override (cuda, cpu) or None for auto
+            engine: Engine name (kokoro, null) or None for auto
+            device: Device override (cpu recommended for Kokoro)
             cache_dir: Model cache directory
             output_dir: Audio output directory
-            reference_audio: Voice cloning reference
-        
+            voice_name: Voice ID (default: am_michael)
+            speed: Speech speed multiplier (0.5-2.0)
+
         Returns:
             Initialized TTSEngine
         """
@@ -61,135 +64,97 @@ class TTSManager:
             engine = os.environ.get("PANDA_TTS_ENGINE", "").lower()
 
         if voice_name is None:
-            voice_name = os.environ.get("PANDA_TTS_VOICE")
+            voice_name = os.environ.get("PANDA_TTS_VOICE", "am_michael")
         self._voice_name = voice_name
-        
+
         if device is None:
-            device = os.environ.get("PANDA_TTS_DEVICE", "").lower()
+            device = os.environ.get("PANDA_TTS_DEVICE", "cpu").lower()
+            # Default to CPU for Kokoro to preserve GPU for LLM
             if device not in ("cuda", "cpu"):
-                device = None  # Auto-detect
-        
+                device = "cpu"
+
         # Default directories
         panda_home = Path.home() / ".panda1"
-        cache_dir = cache_dir or panda_home / "cache" / "huggingface"
         output_dir = output_dir or panda_home / "audio_out"
-        
+
         # Try engines in order
-        if engine == "chatterbox":
-            self._engine = self._try_chatterbox(device, cache_dir, output_dir, reference_audio)
+        if engine == "kokoro" or engine == "":
+            # Kokoro is default
+            self._engine = self._try_kokoro(output_dir, voice_name, speed, device)
             if not self._engine:
-                self._engine = self._fallback()
-        elif engine == "piper":
-            self._engine = self._try_piper(output_dir, self._voice_name)
-            if not self._engine:
-                self._engine = self._fallback()
+                self._engine = self._create_null()
         elif engine == "null" or engine == "off" or engine == "none":
             self._engine = self._create_null()
         else:
-            # Default: try chatterbox -> piper -> null
-            self._engine = self._try_chatterbox(device, cache_dir, output_dir, reference_audio)
-            if not self._engine:
-                self._engine = self._try_piper(output_dir, self._voice_name)
+            # Unknown engine - try Kokoro then null
+            logger.warning(f"Unknown TTS engine '{engine}', trying Kokoro")
+            self._engine = self._try_kokoro(output_dir, voice_name, speed, device)
             if not self._engine:
                 self._engine = self._create_null()
-        
+
         self._engine_name = self._engine.name
         self._initialized = True
-        
+
         logger.info(f"TTS engine initialized: {self._engine_name}")
         return self._engine
-    
-    def _try_chatterbox(
+
+    def _try_kokoro(
         self,
-        device: Optional[str],
-        cache_dir: Path,
         output_dir: Path,
-        reference_audio: Optional[Path],
+        voice_name: str,
+        speed: float,
+        device: str,
     ) -> Optional[TTSEngine]:
-        """Try to initialize Chatterbox."""
+        """Try to initialize Kokoro."""
         try:
-            from .chatterbox_engine import ChatterboxEngine
-            
-            engine = ChatterboxEngine(
+            from .kokoro_engine import KokoroEngine
+
+            engine = KokoroEngine(
+                voice=voice_name,
+                speed=speed,
+                output_dir=output_dir,
                 device=device,
-                cache_dir=cache_dir,
-                output_dir=output_dir,
-                reference_audio=reference_audio,
             )
-            
+
             if engine.warmup():
-                logger.info("Chatterbox engine ready")
+                logger.info(f"Kokoro engine ready (voice={voice_name})")
                 return engine
             else:
-                logger.warning("Chatterbox warmup failed")
+                logger.warning("Kokoro warmup failed")
                 return None
-                
+
         except ImportError as e:
-            logger.warning(f"Chatterbox not available: {e}")
+            logger.warning(f"Kokoro not available: {e}")
+            logger.info("Install with: pip install kokoro soundfile")
             return None
         except Exception as e:
-            logger.error(f"Chatterbox init failed: {e}")
+            logger.error(f"Kokoro init failed: {e}")
             return None
-    
-    def _try_piper(self, output_dir: Path, voice_name: Optional[str]) -> Optional[TTSEngine]:
-        """Try to initialize Piper."""
-        try:
-            from .piper_engine import PiperEngine
-            
-            engine = PiperEngine(
-                output_dir=output_dir,
-                model_name=voice_name,
-            )
-            
-            if engine.warmup():
-                logger.info("Piper engine ready (fallback)")
-                return engine
-            else:
-                logger.warning("Piper warmup failed")
-                return None
-                
-        except ImportError as e:
-            logger.warning(f"Piper not available: {e}")
-            return None
-        except Exception as e:
-            logger.error(f"Piper init failed: {e}")
-            return None
-    
+
     def _create_null(self) -> TTSEngine:
-        """Create null engine."""
+        """Create null engine (browser TTS will be used)."""
         from .null_engine import NullEngine
-        
+
         engine = NullEngine()
         engine.warmup()
-        logger.warning("Using NullEngine - no TTS audio")
+        logger.warning("Using NullEngine - browser TTS will be used as fallback")
         return engine
-    
-    def _fallback(self) -> TTSEngine:
-        """Fallback through engines."""
-        # Try piper first
-        panda_home = Path.home() / ".panda1"
-        engine = self._try_piper(panda_home / "audio_out", self._voice_name)
-        if engine:
-            return engine
-        
-        # Last resort: null
-        return self._create_null()
-    
+
     @property
     def engine(self) -> Optional[TTSEngine]:
         """Get current engine."""
         return self._engine
-    
+
     @property
     def engine_name(self) -> str:
         """Get current engine name."""
         return self._engine_name or "none"
-    
+
     @property
     def is_ready(self) -> bool:
         """Check if TTS is ready."""
         return self._engine is not None and self._engine.is_ready
-    
+
     def speak(
         self,
         text: str,
@@ -198,30 +163,30 @@ class TTSManager:
     ) -> bool:
         """
         Speak text using current engine.
-        
+
         Args:
             text: Text to speak
             lang: Language (auto-detected if None)
             blocking: Wait for speech to complete
-        
+
         Returns:
             True if speech started
         """
         if not self._engine:
             logger.error("TTS not initialized")
             return False
-        
+
         # Auto-detect language if not specified
         if lang is None:
             lang = detect_language(text)
-        
+
         return self._engine.speak(text, lang, blocking)
-    
+
     def stop(self) -> None:
         """Stop current speech."""
         if self._engine:
             self._engine.stop()
-    
+
     def synthesize(
         self,
         text: str,
@@ -231,12 +196,12 @@ class TTSManager:
         """Synthesize text to file."""
         if not self._engine:
             return None
-        
+
         if lang is None:
             lang = detect_language(text)
-        
+
         return self._engine.synthesize(text, lang, output_path)
-    
+
     def healthcheck(self) -> Dict[str, Any]:
         """Get engine health status."""
         if not self._engine:
@@ -245,9 +210,9 @@ class TTSManager:
                 "engine": "none",
                 "error": "TTS not initialized"
             }
-        
+
         return self._engine.healthcheck()
-    
+
     @property
     def is_speaking(self) -> bool:
         """Check if currently speaking."""
