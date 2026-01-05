@@ -117,6 +117,7 @@ class VoiceAssistant:
         self._event_queue: queue.Queue = queue.Queue()
         self._mic_available = False
         self._mic_info: Optional[Dict] = None
+        self._sd = None
         
         # Audio components (initialized lazily)
         self._whisper_model = None
@@ -229,6 +230,7 @@ class VoiceAssistant:
         """Initialize audio input stream."""
         try:
             import sounddevice as sd
+            self._sd = sd
             
             # Get device info
             try:
@@ -346,6 +348,8 @@ class VoiceAssistant:
         if self._vad is None:
             return True  # If no VAD, assume always speech
         
+        import numpy as np
+
         try:
             
             # Convert to 16-bit PCM if needed
@@ -391,7 +395,8 @@ class VoiceAssistant:
         """Main listening loop."""
         
         logger.info("Voice assistant listening loop started")
-        
+        import numpy as np
+
         try:
             # Recording parameters
             recording = False
@@ -413,6 +418,10 @@ class VoiceAssistant:
             if self.audio_input_device is not None:
                 stream_kwargs['device'] = self.audio_input_device
             
+            sd = self._sd
+            if sd is None:
+                raise RuntimeError("sounddevice not available")
+
             with sd.InputStream(**stream_kwargs) as stream:
                 
                 while self._running:
