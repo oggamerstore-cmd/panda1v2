@@ -12,7 +12,7 @@ Network Configuration:
 
 Voice Configuration (NEW in v0.2.10):
 - Faster-Whisper STT with EN/KO/AUTO modes
-- Piper TTS with lightweight offline synthesis
+- Kokoro TTS with lightweight offline synthesis
 - PTT via Space bar or mic button
 - Language mode: Auto / English / Korean
 
@@ -194,7 +194,7 @@ class PandaConfig(BaseSettings):
     )
     
     # =========================================================================
-    # VOICE CONFIGURATION (v0.2.10 - Faster-Whisper + Piper)
+    # VOICE CONFIGURATION (v0.2.10 - Faster-Whisper + Kokoro)
     # =========================================================================
     
     voice_enabled: bool = Field(default=True, description="Enable TTS voice output")
@@ -220,20 +220,20 @@ class PandaConfig(BaseSettings):
         description="STT device: auto, cpu, cuda"
     )
     
-    # Text-to-Speech (TTS) - Piper (CPU) (v0.2.10)
+    # Text-to-Speech (TTS) - Kokoro (CPU) (v0.2.10)
     tts_engine: str = Field(
-        default="piper",
-        description="TTS engine: piper (CPU), chatterbox (offline), null (off)"
+        default="kokoro",
+        description="TTS engine: kokoro (CPU), null (off)"
     )
 
     tts_voice_en: str = Field(
-        default="joe",
-        description="English TTS voice (default: joe)"
+        default="am_michael",
+        description="English TTS voice (default: am_michael)"
     )
 
     tts_voice_ko: str = Field(
-        default="km_omega",
-        description="Korean TTS voice (default: km_omega)"
+        default="am_michael",
+        description="Korean TTS voice (default: am_michael)"
     )
 
     tts_speed: float = Field(
@@ -488,7 +488,7 @@ class PandaConfig(BaseSettings):
             self.certs_dir, self.files_dir,
             self.base_dir / "cache" / "voice",
             self.base_dir / "cache" / "whisper",
-            self.base_dir / "cache" / "piper",
+            self.base_dir / "cache" / "kokoro",
         ]:
             dir_path.mkdir(parents=True, exist_ok=True)
     

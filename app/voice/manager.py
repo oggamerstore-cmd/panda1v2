@@ -8,7 +8,7 @@ Version: 0.2.11
 Features:
 - Push-to-talk coordination
 - STT with Faster-Whisper
-- TTS with Piper
+    - TTS with Kokoro
 - Language detection and routing
 """
 
@@ -170,10 +170,10 @@ class VoiceManager:
             if not self._stt.load_model():
                 logger.warning("STT model failed to load")
             
-            # Initialize TTS (Piper)
+            # Initialize TTS (Kokoro)
             self._tts_manager = get_tts_manager()
             self._tts_manager.initialize(
-                engine="piper",
+                engine="kokoro",
                 device=self.config.tts_device,
                 voice_name=self.config.tts_voice_en,
             )
@@ -324,7 +324,7 @@ class VoiceManager:
         lang: Optional[str] = None,
     ) -> None:
         """
-        Speak text once the stream completes (Piper does not support streaming).
+        Speak text once the stream completes (Kokoro does not support streaming).
         
         Args:
             text_stream: Generator yielding text tokens
@@ -504,18 +504,18 @@ def voice_doctor() -> dict:
             "message": "pip install faster-whisper"
         })
     
-    piper_bin = shutil.which("piper") or shutil.which("piper-tts")
-    if piper_bin:
+    try:
+        import kokoro
         results["checks"].append({
-            "name": "piper",
+            "name": "kokoro",
             "status": "ok",
-            "message": f"TTS engine available ({piper_bin})"
+            "message": "TTS engine available"
         })
-    else:
+    except ImportError:
         results["checks"].append({
-            "name": "piper",
+            "name": "kokoro",
             "status": "warning",
-            "message": "Install piper (piper-tts) for TTS output"
+            "message": "Install kokoro for TTS output"
         })
     
     # Check devices

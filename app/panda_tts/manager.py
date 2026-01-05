@@ -9,7 +9,7 @@ Engine Selection Order:
 1. Kokoro (default, lightweight 82M model, CPU-optimized)
 2. Null (fallback - browser TTS will be used via frontend)
 
-Note: Chatterbox and Piper have been removed to save GPU VRAM.
+Note: Chatterbox has been removed to save GPU VRAM.
 Browser-based Web Speech API provides fallback when Kokoro is unavailable.
 """
 
@@ -21,6 +21,20 @@ from typing import Optional, Dict, Any, Literal
 from .base import TTSEngine, detect_language
 
 logger = logging.getLogger(__name__)
+
+
+def _normalize_voice_name(voice_name: Optional[str]) -> str:
+    if not voice_name:
+        return "am_michael"
+
+    normalized = voice_name.strip()
+    legacy = normalized.lower()
+    legacy_map = {
+        "michael": "am_michael",
+        "joe": "am_michael",
+        "km_omega": "am_michael",
+    }
+    return legacy_map.get(legacy, normalized)
 
 
 class TTSManager:
@@ -65,8 +79,7 @@ class TTSManager:
 
         if voice_name is None:
             voice_name = os.environ.get("PANDA_TTS_VOICE", "michael")
-        if voice_name == "michael":
-            voice_name = "am_michael"
+        voice_name = _normalize_voice_name(voice_name)
         self._voice_name = voice_name
 
         if device is None:

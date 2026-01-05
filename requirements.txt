@@ -15,6 +15,7 @@
 pydantic>=2.0.0
 pydantic-settings>=2.0.0
 python-dotenv>=1.0.0  # Required by pydantic-settings for env_file support
+setuptools<81  # Avoid pkg_resources deprecation warning from webrtcvad
 
 # Web Framework
 fastapi>=0.109.0
@@ -32,6 +33,7 @@ urllib3>=2.5.0
 sounddevice>=0.4.6
 soundfile>=0.12.1
 numpy>=1.24.0
+webrtcvad
 
 # STT - Faster-Whisper (NOT openai-whisper)
 faster-whisper>=1.0.0
