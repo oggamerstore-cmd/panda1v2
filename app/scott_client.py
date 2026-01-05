@@ -3,11 +3,16 @@ PANDA.1 SCOTT Client
 ====================
 Client for communicating with SCOTT (Smart Curator Of Today's Topics) news agent.
 
-Version: 0.2.11
+Version: 0.2.12
 
 Network Configuration:
 - SCOTT runs on 192.168.1.18:8000
-- Configure via PANDA_SCOTT_API_URL or PANDA_SCOTT_BASE_URL environment variable
+- Configure via PANDA_SCOTT_BASE_URL environment variable
+
+URL Structure:
+- Health: /health (no /api prefix)
+- Articles: /api/articles/...
+- Topics: /api/topics
 
 Features:
 - Health check with timeout handling
@@ -40,7 +45,7 @@ class ScottClient:
         Initialize SCOTT client.
 
         Args:
-            base_url: SCOTT API base URL (e.g., http://192.168.1.18:8000/api)
+            base_url: SCOTT base URL (e.g., http://192.168.1.18:8000)
             timeout: Request timeout in seconds
             max_retries: Maximum retry attempts for failed requests
         """
@@ -166,7 +171,7 @@ class ScottClient:
                 params["topic"] = topic
 
             response = self._session.get(
-                f"{self.base_url}/articles/top",
+                f"{self.base_url}/api/articles/top",
                 params=params,
                 timeout=self.timeout
             )
@@ -181,11 +186,11 @@ class ScottClient:
                 return []
 
         except requests.exceptions.ConnectionError:
-            logger.warning(f"SCOTT connection error: {self.base_url}/articles/top")
+            logger.warning(f"SCOTT connection error: {self.base_url}/api/articles/top")
             self._record_failure()
             return []
         except requests.exceptions.Timeout:
-            logger.warning(f"SCOTT timeout: {self.base_url}/articles/top")
+            logger.warning(f"SCOTT timeout: {self.base_url}/api/articles/top")
             self._record_failure()
             return []
         except Exception as e:
@@ -205,7 +210,7 @@ class ScottClient:
 
         try:
             response = self._session.get(
-                f"{self.base_url}/topics",
+                f"{self.base_url}/api/topics",
                 timeout=self.timeout
             )
 
@@ -241,7 +246,7 @@ class ScottClient:
 
         try:
             response = self._session.get(
-                f"{self.base_url}/articles/topic/{topic}",
+                f"{self.base_url}/api/articles/topic/{topic}",
                 params={"limit": limit},
                 timeout=self.timeout
             )
@@ -274,7 +279,7 @@ class ScottClient:
 
         try:
             response = self._session.get(
-                f"{self.base_url}/articles/search",
+                f"{self.base_url}/api/articles/search",
                 params={"q": query, "limit": limit},
                 timeout=self.timeout
             )
