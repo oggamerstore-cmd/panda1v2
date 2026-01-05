@@ -270,6 +270,16 @@ Examples:
     return parser
 
 
+def _normalize_cli_args(argv: list[str]) -> list[str]:
+    normalized = []
+    for arg in argv:
+        if arg in ("gui--", "--gui--"):
+            normalized.append("--gui")
+        else:
+            normalized.append(arg)
+    return normalized
+
+
 def check_ollama_health() -> int:
     """
     Check Ollama connectivity and model availability.
@@ -1777,7 +1787,7 @@ def run_tts_prefetch() -> int:
 def main() -> int:
     """Main entry point."""
     parser = create_parser()
-    args = parser.parse_args()
+    args = parser.parse_args(_normalize_cli_args(sys.argv[1:]))
     
     # Setup debug logging
     if args.debug:

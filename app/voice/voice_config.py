@@ -16,6 +16,20 @@ from enum import Enum
 logger = logging.getLogger(__name__)
 
 
+def _normalize_tts_voice(voice: Optional[str]) -> str:
+    if not voice:
+        return "am_michael"
+
+    normalized = voice.strip()
+    legacy = normalized.lower()
+    legacy_map = {
+        "michael": "am_michael",
+        "joe": "am_michael",
+        "km_omega": "am_michael",
+    }
+    return legacy_map.get(legacy, normalized)
+
+
 class LanguageMode(str, Enum):
     """Voice language mode."""
     AUTO = "auto"
@@ -58,8 +72,8 @@ class VoiceConfig:
     tts_speed: float = 1.0  # 0.5 - 2.0
     tts_volume: float = 1.0  # 0.0 - 1.0
     tts_muted: bool = False
-    tts_voice_en: str = "joe"  # English voice
-    tts_voice_ko: str = "km_omega"  # Korean voice
+    tts_voice_en: str = "am_michael"  # English voice (Kokoro)
+    tts_voice_ko: str = "am_michael"  # Korean fallback (Kokoro)
     
     # PTT settings
     ptt_enabled: bool = True
@@ -81,11 +95,14 @@ class VoiceConfig:
         if not self.config_path:
             logger.warning("No config path set, cannot save")
             return False
-        
+
         try:
             path = Path(self.config_path)
             path.parent.mkdir(parents=True, exist_ok=True)
-            
+
+            self.tts_voice_en = _normalize_tts_voice(self.tts_voice_en)
+            self.tts_voice_ko = _normalize_tts_voice(self.tts_voice_ko)
+
             # Convert to dict, excluding paths
             data = asdict(self)
             data.pop("config_path", None)
@@ -126,12 +143,15 @@ class VoiceConfig:
                 for key, value in data.items():
                     if hasattr(config, key):
                         setattr(config, key, value)
-                
+
                 logger.info(f"Voice config loaded from {path}")
                 
             except Exception as e:
                 logger.warning(f"Failed to load voice config: {e}, using defaults")
-        
+
+        config.tts_voice_en = _normalize_tts_voice(config.tts_voice_en)
+        config.tts_voice_ko = _normalize_tts_voice(config.tts_voice_ko)
+
         return config
     
     def to_dict(self) -> dict:

@@ -17,11 +17,11 @@ Wake Phrases:
 Uses:
 - Faster-Whisper for ALL speech recognition (wake and command)
 - webrtcvad for Voice Activity Detection (reduces CPU)
-- Piper TTS for speech output (v0.2.10)
+- Kokoro TTS for speech output (v0.2.10)
 
 v0.2.10 Changes:
 - Switched from openai-whisper to faster-whisper (3-4x faster)
-- Updated for Piper TTS support
+- Updated for Kokoro TTS support
 - Korean language support improved
 """
 
@@ -63,7 +63,7 @@ class VoiceAssistant:
     - Configurable wake phrases
     - Auto-sleep after timeout (5 minutes default)
     - Korean + English support
-    - Chatterbox/Piper TTS output
+    - Kokoro TTS output
     - Audio input device selection (v0.2.10)
     - GUI integration callbacks (v0.2.10)
     """
