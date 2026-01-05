@@ -470,6 +470,18 @@ class PandaConfig(BaseSettings):
         if not v.startswith(('http://', 'https://')):
             v = f"http://{v}"
         return v.rstrip('/')
+
+    @field_validator('sensei_api_url')
+    @classmethod
+    def validate_sensei_api_url(cls, v: str) -> str:
+        """Ensure SENSEI base URL has proper format."""
+        v = v.strip()
+        if not v.startswith(('http://', 'https://')):
+            v = f"http://{v}"
+        v = v.rstrip('/')
+        if v.endswith('/api'):
+            v = v[:-4]
+        return v
     
     @field_validator('language_mode')
     @classmethod
