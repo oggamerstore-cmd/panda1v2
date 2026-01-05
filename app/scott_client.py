@@ -3,7 +3,7 @@ PANDA.1 SCOTT Client
 ====================
 Client for communicating with SCOTT (Smart Curator Of Today's Topics) news agent.
 
-Version: 0.2.12
+Version: 0.2.11
 
 Network Configuration:
 - SCOTT runs on 192.168.1.18:8000

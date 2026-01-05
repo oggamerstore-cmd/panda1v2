@@ -3,7 +3,7 @@ PANDA.1 Configuration
 =====================
 Central configuration for all PANDA.1 components.
 
-Version: 0.2.10
+Version: 0.2.11
 
 Network Configuration:
 - Ollama host: PANDA_OLLAMA_HOST (default: http://localhost:11434)
@@ -522,7 +522,7 @@ class PandaConfig(BaseSettings):
     def to_display_dict(self) -> dict:
         """Return config as dict for display (no sensitive data)."""
         return {
-            "Version": "0.2.10",
+            "Version": "0.2.11",
             "Ollama Host": self.ollama_host,
             "LLM Model": self.llm_model,
             "Fallback Model": self.llm_fallback_model,

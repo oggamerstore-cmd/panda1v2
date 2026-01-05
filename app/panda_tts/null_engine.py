@@ -3,7 +3,7 @@ PANDA.1 Null TTS Engine
 =======================
 No-op TTS engine - text responses work, no audio.
 
-Version: 0.2.6
+Version: 0.2.11
 
 This is the last-resort fallback when no TTS is available.
 PANDA.1 continues to function with text-only responses.

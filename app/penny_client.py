@@ -3,7 +3,7 @@ PANDA.1 PENNY Client
 ====================
 Client for communicating with PENNY (Personal ENterprise financialNY advisor) finance agent.
 
-Version: 0.2.4
+Version: 0.2.11
 
 Network Configuration:
 - PENNY runs on localhost:8003 by default

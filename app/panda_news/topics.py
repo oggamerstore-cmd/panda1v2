@@ -3,7 +3,7 @@ PANDA.1 Topic Resolution for SCOTT
 ==================================
 Maps user input to SCOTT topic slugs.
 
-Version: 0.2.3
+Version: 0.2.11
 """
 
 import re

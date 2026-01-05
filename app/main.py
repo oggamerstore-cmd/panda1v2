@@ -4,7 +4,7 @@ PANDA.1 - Personal AI Navigator & Digital Assistant
 ===================================================
 BOS Personal Edition
 
-Version: 0.2.10
+Version: 0.2.11
 
 CLI Usage:
   panda                    Launch GUI (default)
@@ -51,7 +51,7 @@ import argparse
 from typing import Optional
 
 # Version info
-__version__ = "0.2.10"
+__version__ = "0.2.11"
 __author__ = "BOS"
 
 # TTS state (can be toggled with /voice)

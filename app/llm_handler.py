@@ -3,7 +3,7 @@ PANDA.1 LLM Handler
 ===================
 Handles communication with Ollama for local LLM inference.
 
-Version: 0.2.3
+Version: 0.2.11
 
 Features:
 - Configurable Ollama endpoint (supports localhost and remote)
