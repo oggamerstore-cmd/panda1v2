@@ -136,10 +136,10 @@ class PandaCore:
             try:
                 from scott_client import ScottClient
                 self.scott_client = ScottClient(
-                    base_url=self.config.scott_api_url,
+                    base_url=self.config.scott_base_url,
                     timeout=self.config.scott_timeout
                 )
-                logger.info(f"SCOTT client initialized: {self.config.scott_api_url}")
+                logger.info(f"SCOTT client initialized: {self.config.scott_base_url}")
             except ImportError:
                 pass
         
@@ -191,7 +191,7 @@ class PandaCore:
         # System prompt - BOS-specific
         self.system_prompt = self._build_system_prompt()
         
-        logger.info("PANDA.1 Core v0.2.11 initialized")
+        logger.info("PANDA.1 Core v0.2.12 initialized")
     
     def _build_system_prompt(self) -> str:
         """Build the BOS-specific system prompt for the LLM."""
