@@ -178,6 +178,11 @@ def get_default_intent_paths() -> List[Path]:
     """Get default paths to look for intent files."""
     
     paths = []
+
+    repo_root = Path(__file__).resolve().parents[1]
+    repo_intents = repo_root / "intents"
+    if repo_intents.exists():
+        paths.append(repo_intents)
     
     # Check installation directory
     install_dir = Path.home() / ".local" / "share" / "panda1" / "intents"
