@@ -3,7 +3,7 @@ PANDA.1 OpenAI Client
 =====================
 OpenAI API integration for research and latest information queries.
 
-Version: 0.2.5
+Version: 0.2.11
 
 Used for:
 - Research queries

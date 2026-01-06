@@ -203,7 +203,6 @@
 
 ### Changed
 - Migrated from ElevenLabs to offline Chatterbox TTS
-- Added Piper as lightweight fallback TTS
 - Removed all ElevenLabs dependencies and API calls
 
 ### Added

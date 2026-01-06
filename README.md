@@ -1,10 +1,10 @@
-# PANDA.1 v0.2.10 — Vision Upgrade
+# PANDA.1 v0.2.11 — Production Enhancement
 
 **Personal AI Navigator & Digital Assistant** for BOS.
 
 A local-first AI assistant with voice interaction, news integration, and business tools.
 
-## What's New in v0.2.10
+## What's New in v0.2.11
 
 ### 🎤 Complete Voice System Rewrite
 - **Faster-Whisper STT**: Fast, accurate speech recognition (EN + KO + AUTO)
@@ -33,8 +33,8 @@ A local-first AI assistant with voice interaction, news integration, and busines
 
 ```bash
 cd ~/.panda1
-unzip panda1_v0.2.10.zip
-cd panda1_v0.2.10
+unzip panda1_v0.2.11.zip
+cd panda1_v0.2.11
 ./install.sh
 ```
 
@@ -129,4 +129,4 @@ panda --audio-devices     # List devices
 
 ---
 
-**PANDA.1 v0.2.10** — Vision Upgrade
+**PANDA.1 v0.2.11** — Production Enhancement

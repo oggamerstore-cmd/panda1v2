@@ -3,7 +3,7 @@ PANDA.1 Web GUI Server
 ======================
 FastAPI-based web GUI for PANDA.1.
 
-Version: 0.2.10
+Version: 0.2.11
 
 Features:
 - Web-based GUI served locally or on LAN
@@ -81,7 +81,7 @@ except ImportError:
 
 
 # Version
-__version__ = "0.2.10"
+__version__ = "0.2.11"
 
 
 # Import TTS for voice functionality

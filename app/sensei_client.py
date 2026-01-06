@@ -4,7 +4,7 @@ PANDA.1 SENSEI Client
 Client for communicating with SENSEI (Smart Educational Network for
 Systematic Enlightenment & Intelligence) learning hub.
 
-Version: 0.2.12
+Version: 0.2.11
 
 Network Configuration:
 - SENSEI runs on 192.168.1.19:8002
@@ -75,7 +75,7 @@ class SenseiClient:
         adapter = HTTPAdapter(max_retries=retry_strategy)
         self._session.mount("http://", adapter)
         self._session.mount("https://", adapter)
-        self._session.headers["User-Agent"] = "PANDA.1/0.2.12"
+        self._session.headers["User-Agent"] = "PANDA.1/0.2.11"
 
         if api_key:
             self._session.headers["Authorization"] = f"Bearer {api_key}"

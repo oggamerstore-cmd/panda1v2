@@ -39,4 +39,4 @@ __all__ = [
     "open_url_safe",
 ]
 
-__version__ = "0.2.10"
+__version__ = "0.2.11"

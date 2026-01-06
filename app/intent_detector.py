@@ -3,7 +3,7 @@ PANDA.1 Intent Detector
 =======================
 Detects user intent for routing to appropriate handlers.
 
-Version: 0.2.3
+Version: 0.2.11
 
 Supported intents:
 - news: News-related queries (routes to SCOTT)

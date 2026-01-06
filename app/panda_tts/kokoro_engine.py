@@ -3,7 +3,7 @@ PANDA.1 Kokoro TTS Engine
 =========================
 Lightweight TTS using Kokoro-82M (hexgrad/Kokoro-82M).
 
-Version: 0.3.0
+Version: 0.2.11
 
 Features:
 - 82M parameter model (~80MB) - very lightweight
