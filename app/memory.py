@@ -17,7 +17,7 @@ from typing import List, Dict, Optional, Any
 from datetime import datetime
 import uuid
 
-from config import get_config
+from .config import get_config
 
 logger = logging.getLogger(__name__)
 

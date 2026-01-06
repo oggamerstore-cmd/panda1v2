@@ -3,7 +3,7 @@
 # =============================================================================
 #
 # CHANGELOG (Optimization):
-# - Removed unused dependencies: httpx, aiosqlite, aiofiles, pyjwt, psutil,
+# - Removed unused dependencies: aiosqlite, aiofiles, pyjwt, psutil,
 #   python-multipart, websockets, cryptography
 # - Kept python-dotenv (required by pydantic-settings for env_file support)
 # - Added urllib3>=2.5.0 to fix CVE-2025-50182, CVE-2025-50181 (4 CVEs total)
@@ -22,6 +22,7 @@ rapidfuzz>=3.0.0
 fastapi>=0.109.0
 uvicorn[standard]>=0.27.0
 requests>=2.31.0
+httpx>=0.26.0
 
 # Database / Memory
 chromadb>=0.4.22

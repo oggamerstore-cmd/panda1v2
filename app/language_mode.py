@@ -199,7 +199,7 @@ def get_language_manager() -> LanguageModeManager:
     """Get the global language mode manager."""
     global _language_manager
     if _language_manager is None:
-        from config import get_config
+        from .config import get_config
         config = get_config()
         _language_manager = LanguageModeManager(initial_mode=config.language_mode)
     return _language_manager

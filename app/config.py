@@ -23,13 +23,13 @@ OpenAI Fallback (NEW in v0.2.10):
 
 HTTPS Configuration (NEW in v0.2.10):
 - PANDA_ENABLE_HTTPS: Enable HTTPS for non-localhost access
-- PANDA_HTTPS_PORT: HTTPS port (default: 7861)
+- PANDA_HTTPS_PORT: HTTPS port (default: 7860)
 
 All settings can be overridden via environment variables with PANDA_ prefix.
 """
 
 from pydantic_settings import BaseSettings
-from pydantic import Field, field_validator
+from pydantic import Field, field_validator, AliasChoices
 from pathlib import Path
 from typing import Optional, List
 import os
@@ -140,13 +140,19 @@ class PandaConfig(BaseSettings):
     # =========================================================================
     
     # SCOTT News Agent (v0.2.10 - LAN HTTP)
-    scott_enabled: bool = Field(default=True, description="Enable SCOTT news integration")
+    scott_enabled: bool = Field(
+        default=True,
+        validation_alias=AliasChoices("PANDA_SCOTT_ENABLED", "SCOTT_ENABLED"),
+        description="Enable SCOTT news integration"
+    )
     scott_base_url: str = Field(
         default="http://192.168.1.18:8000",
+        validation_alias=AliasChoices("PANDA_SCOTT_BASE_URL", "SCOTT_BASE_URL", "PANDA_SCOTT_API_URL", "SCOTT_API_URL"),
         description="SCOTT news agent base URL (LAN HTTP)"
     )
     scott_api_key: str = Field(
         default="",
+        validation_alias=AliasChoices("PANDA_SCOTT_API_KEY", "SCOTT_API_KEY"),
         description="SCOTT API key for authentication"
     )
     scott_timeout: int = Field(default=8, description="SCOTT request timeout in seconds")
@@ -167,9 +173,14 @@ class PandaConfig(BaseSettings):
     penny_timeout: int = Field(default=20, description="PENNY request timeout in seconds")
     
     # SENSEI Learning Hub
-    sensei_enabled: bool = Field(default=True, description="Enable SENSEI learning hub integration")
+    sensei_enabled: bool = Field(
+        default=True,
+        validation_alias=AliasChoices("PANDA_SENSEI_ENABLED", "SENSEI_ENABLED"),
+        description="Enable SENSEI learning hub integration"
+    )
     sensei_api_url: str = Field(
         default="http://192.168.1.19:8002",
+        validation_alias=AliasChoices("PANDA_SENSEI_API_URL", "SENSEI_API_URL", "SENSEI_BASE_URL"),
         description="SENSEI learning hub API URL"
     )
     sensei_timeout: int = Field(default=30, description="SENSEI request timeout in seconds")
@@ -368,7 +379,7 @@ class PandaConfig(BaseSettings):
         description="Enable HTTPS (required for mic on non-localhost)"
     )
     https_port: int = Field(
-        default=7861,
+        default=7860,
         description="HTTPS port number"
     )
     https_cert_dir: Optional[str] = Field(
@@ -475,6 +486,18 @@ class PandaConfig(BaseSettings):
     @classmethod
     def validate_sensei_api_url(cls, v: str) -> str:
         """Ensure SENSEI base URL has proper format."""
+        v = v.strip()
+        if not v.startswith(('http://', 'https://')):
+            v = f"http://{v}"
+        v = v.rstrip('/')
+        if v.endswith('/api'):
+            v = v[:-4]
+        return v
+
+    @field_validator('scott_base_url')
+    @classmethod
+    def validate_scott_base_url(cls, v: str) -> str:
+        """Ensure SCOTT base URL has proper format."""
         v = v.strip()
         if not v.startswith(('http://', 'https://')):
             v = f"http://{v}"

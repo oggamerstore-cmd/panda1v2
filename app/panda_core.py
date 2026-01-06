@@ -29,7 +29,7 @@ from datetime import datetime, timezone
 from typing import Optional, Dict, Any, Generator, Tuple
 from pathlib import Path
 
-from config import get_config
+from .config import get_config
 
 # Configure logging
 logging.basicConfig(
@@ -61,7 +61,7 @@ class PandaCore:
         self.config = get_config()
         
         # Initialize LLM handler (Ollama)
-        from llm_handler import LLMHandler
+        from .llm_handler import LLMHandler
         self.llm = LLMHandler()
         logger.info(f"LLM initialized: {self.config.llm_model}")
         
@@ -69,7 +69,7 @@ class PandaCore:
         self.openai_client = None
         if self.config.cloud_llm_enabled:
             try:
-                from openai_client import OpenAIClient
+                from .openai_client import OpenAIClient
                 self.openai_client = OpenAIClient()
                 if self.openai_client.is_available():
                     logger.info(f"OpenAI client initialized: {self.config.openai_model}")
@@ -83,7 +83,7 @@ class PandaCore:
         self.memory = None
         if self.config.enable_memory:
             try:
-                from memory import MemorySystem
+                from .memory import MemorySystem
                 self.memory = MemorySystem()
                 if self.memory.is_available:
                     logger.info("Memory system initialized")
@@ -93,20 +93,20 @@ class PandaCore:
         # Initialize mood system (optional)
         self.mood = None
         try:
-            from mood_system import MoodSystem
+            from .mood_system import MoodSystem
             self.mood = MoodSystem()
             logger.info("Mood system initialized")
         except ImportError:
             pass
         
         # Initialize language mode manager
-        from language_mode import get_language_manager
+        from .language_mode import get_language_manager
         self.lang_manager = get_language_manager()
         logger.info(f"Language mode: {self.lang_manager.mode}")
 
         # Initialize news topic resolver
         try:
-            from panda_news import TopicResolver
+            from .panda_news import TopicResolver
             self.topic_resolver = TopicResolver()
         except Exception:
             self.topic_resolver = None
@@ -115,7 +115,7 @@ class PandaCore:
         self.intent_detector = None
         if self.config.enable_intent_detection:
             try:
-                from intent_detector import IntentDetector
+                from .intent_detector import IntentDetector
                 self.intent_detector = IntentDetector()
                 logger.info("Intent detector initialized")
             except ImportError:
@@ -124,7 +124,7 @@ class PandaCore:
         # Initialize example-based intent matcher (optional)
         self.intent_matcher = None
         try:
-            from example_intent_matcher import get_intent_matcher
+            from .example_intent_matcher import get_intent_matcher
             self.intent_matcher = get_intent_matcher()
             status = self.intent_matcher.get_status()
             logger.info(f"Intent matcher initialized: {status['total_examples']} examples")
@@ -135,7 +135,7 @@ class PandaCore:
         self.scott_client = None
         if self.config.scott_enabled:
             try:
-                from scott_client import ScottClient
+                from .scott_client import ScottClient
                 self.scott_client = ScottClient(
                     base_url=self.config.scott_base_url,
                     timeout=self.config.scott_timeout
@@ -148,7 +148,7 @@ class PandaCore:
         self.penny_client = None
         if self.config.penny_enabled:
             try:
-                from penny_client import PennyClient
+                from .penny_client import PennyClient
                 self.penny_client = PennyClient(
                     base_url=self.config.penny_api_url,
                     timeout=self.config.penny_timeout
@@ -161,7 +161,7 @@ class PandaCore:
         self.sensei_client = None
         if self.config.sensei_enabled:
             try:
-                from sensei_client import SenseiClient
+                from .sensei_client import SenseiClient
                 self.sensei_client = SenseiClient(
                     base_url=self.config.sensei_api_url,
                     timeout=self.config.sensei_timeout
@@ -174,7 +174,7 @@ class PandaCore:
         self.echo_client = None
         if self.config.echo_enabled:
             try:
-                from echo_client import EchoClient
+                from .echo_client import EchoClient
                 api_key = self.config.echo_api_key or None
                 self.echo_client = EchoClient(
                     base_url=self.config.echo_base_url,
@@ -225,7 +225,7 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
     
     def _is_research_query(self, text: str) -> bool:
         """Check if this needs OpenAI for research/latest info."""
-        from openai_client import (
+        from .openai_client import (
             is_research_query,
             is_time_sensitive_query,
             is_post_oct_2023_timeline_query,
@@ -238,7 +238,7 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
 
     def _is_learning_command(self, text: str) -> bool:
         """Check if this is a learning command (should go to SENSEI)."""
-        from sensei_client import is_learning_command
+        from .sensei_client import is_learning_command
         return is_learning_command(text)
 
     def _get_routing_target(self, user_input: str) -> Tuple[str, float]:
@@ -277,7 +277,7 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
 
         # Try example-based matching
         if self.intent_matcher:
-            from example_intent_matcher import match_intent
+            from .example_intent_matcher import match_intent
             result = match_intent(user_input)
             
             if result.confidence >= self.config.intent_confidence_threshold:
@@ -292,7 +292,7 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
         
         # Check for finance patterns
         if self.penny_client:
-            from penny_client import is_finance_query
+            from .penny_client import is_finance_query
             if is_finance_query(user_input):
                 return "penny", 0.7
         
@@ -314,7 +314,7 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
         
         try:
             # Check for language switch command
-            from language_mode import process_language_command
+            from .language_mode import process_language_command
             is_switch, ack = process_language_command(user_input)
             if is_switch and ack:
                 # Update system prompt
@@ -388,7 +388,7 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
         
         try:
             # Check for language switch
-            from language_mode import process_language_command
+            from .language_mode import process_language_command
             is_switch, ack = process_language_command(user_input)
             if is_switch and ack:
                 self.system_prompt = self._build_system_prompt()
