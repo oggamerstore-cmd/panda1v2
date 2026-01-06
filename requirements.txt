@@ -16,6 +16,7 @@ pydantic>=2.0.0
 pydantic-settings>=2.0.0
 python-dotenv>=1.0.0  # Required by pydantic-settings for env_file support
 setuptools<81  # Avoid pkg_resources deprecation warning from webrtcvad
+rapidfuzz>=3.0.0
 
 # Web Framework
 fastapi>=0.109.0

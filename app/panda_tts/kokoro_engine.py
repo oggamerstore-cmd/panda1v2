@@ -15,6 +15,7 @@ Features:
 """
 
 import os
+import inspect
 import logging
 import time
 import threading
@@ -93,17 +94,9 @@ class KokoroEngine(TTSEngine):
         try:
             logger.info("Warming up Kokoro TTS...")
 
-            # Import kokoro
-            try:
-                from kokoro import KPipeline
-            except ImportError as e:
-                logger.error(f"Kokoro not installed: {e}")
-                logger.info("Install with: pip install kokoro soundfile")
-                return False
-
             # Initialize pipeline for American English
             # 'a' = American English
-            self._pipeline = KPipeline(lang_code='a')
+            self._pipeline = self._create_pipeline(lang_code='a')
 
             # Verify voice is available by doing a quick test synthesis
             logger.info(f"Testing voice: {self._voice}")
@@ -118,8 +111,18 @@ class KokoroEngine(TTSEngine):
             logger.error("Kokoro warmup failed - no audio generated")
             return False
 
-        except Exception as e:
+        except RuntimeError as e:
+            if self._should_retry_on_cpu(e):
+                return self._retry_on_cpu("warmup")
             logger.error(f"Kokoro warmup failed: {e}")
+            self._is_warmed_up = False
+            return False
+        except Exception as e:
+            if isinstance(e, ModuleNotFoundError) and e.name == "kokoro":
+                logger.error(f"Kokoro not installed: {e}")
+                logger.info("Install with: pip install kokoro soundfile")
+            else:
+                logger.error(f"Kokoro warmup failed: {e}")
             self._is_warmed_up = False
             return False
 
@@ -183,6 +186,12 @@ class KokoroEngine(TTSEngine):
             logger.debug(f"Audio saved: {output_path}")
             return output_path
 
+        except RuntimeError as e:
+            if self._should_retry_on_cpu(e):
+                if self._retry_on_cpu("synthesis"):
+                    return self.synthesize(text, lang, output_path)
+            logger.error(f"Kokoro synthesis failed: {e}")
+            return None
         except Exception as e:
             logger.error(f"Kokoro synthesis failed: {e}")
             return None
@@ -220,6 +229,31 @@ class KokoroEngine(TTSEngine):
                 success = False
 
         return success
+
+    def _create_pipeline(self, lang_code: str):
+        """Initialize Kokoro pipeline with device handling."""
+        from kokoro import KPipeline
+
+        try:
+            params = inspect.signature(KPipeline).parameters
+        except (TypeError, ValueError):
+            params = {}
+
+        if "device" in params:
+            return KPipeline(lang_code=lang_code, device=self._device)
+
+        return KPipeline(lang_code=lang_code)
+
+    def _should_retry_on_cpu(self, error: Exception) -> bool:
+        if self._device == "cpu":
+            return False
+        return "cuda out of memory" in str(error).lower()
+
+    def _retry_on_cpu(self, phase: str) -> bool:
+        logger.warning("Kokoro %s hit CUDA OOM; retrying on CPU", phase)
+        self._device = "cpu"
+        self._pipeline = None
+        return self.warmup()
 
     def _speak_async(self, text: str, lang: str) -> bool:
         """Asynchronous speak in background thread."""
