@@ -98,7 +98,7 @@
 - `PANDA_OPENAI_FALLBACK_ENABLED=false` - Enable GPT-4 fallback
 - `PANDA_OPENAI_CONFIDENCE_THRESHOLD=0.75` - Fallback trigger
 - `PANDA_ENABLE_HTTPS=false` - Enable HTTPS mode
-- `PANDA_HTTPS_PORT=7861` - HTTPS port
+- `PANDA_HTTPS_PORT=7860` - HTTPS port
 - `SCOTT_BASE_URL=http://192.168.1.18:8000` - SCOTT URL
 - `SCOTT_API_KEY=` - SCOTT authentication
 
