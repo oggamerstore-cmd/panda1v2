@@ -25,6 +25,7 @@ Routing Rules:
 
 import logging
 import re
+from datetime import datetime, timezone
 from typing import Optional, Dict, Any, Generator, Tuple
 from pathlib import Path
 
@@ -187,6 +188,9 @@ class PandaCore:
         # Conversation history
         self.conversation_history = []
         self.max_history = 10
+
+        # Time base captured at startup
+        self.time_base = datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
         
         # System prompt - BOS-specific
         self.system_prompt = self._build_system_prompt()
@@ -199,6 +203,9 @@ class PandaCore:
 BOS runs JNJ FOODS LLC with brands: Mama Kim's Kimchi, Mama Kim's Korean BBQ, Moka's Matcha.
 Follow BOS's preferences for concise, practical answers with clear next actions.
 You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
+
+        base_prompt += f"\nCurrent time base: {self.time_base}. Use this as the base reference for time."
+        base_prompt += "\nFor any questions involving timelines after October 1, 2023, always use ChatGPT (OpenAI)."
         
         # Add language instruction
         base_prompt += self.lang_manager.get_system_prompt_suffix()
@@ -218,8 +225,16 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
     
     def _is_research_query(self, text: str) -> bool:
         """Check if this needs OpenAI for research/latest info."""
-        from openai_client import is_research_query, is_time_sensitive_query
-        return is_research_query(text) or is_time_sensitive_query(text)
+        from openai_client import (
+            is_research_query,
+            is_time_sensitive_query,
+            is_post_oct_2023_timeline_query,
+        )
+        return (
+            is_research_query(text)
+            or is_time_sensitive_query(text)
+            or is_post_oct_2023_timeline_query(text)
+        )
 
     def _is_learning_command(self, text: str) -> bool:
         """Check if this is a learning command (should go to SENSEI)."""
