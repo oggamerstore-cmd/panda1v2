@@ -16,7 +16,7 @@ Features:
 - Works with pandagui launcher for fullscreen kiosk mode
 
 v0.2.10 Changes:
-- HTTPS support for microphone access on LAN (192.168.1.17:7861)
+- HTTPS support for microphone access on LAN (192.168.1.17:7860)
 - Auto TTS for all PANDA.1 messages (reads only PANDA responses)
 - Dual language TTS: English (default) / Korean with voice commands
 - Browser-based STT using MediaRecorder API + Faster-Whisper
@@ -65,7 +65,8 @@ if str(APP_DIR) not in sys.path:
     sys.path.insert(0, str(APP_DIR))
 
 # Import config - needed for get_config() used throughout
-from config import get_config
+from .config import get_config
+from .services.scott_client import ScottClient
 
 try:
     from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Request
@@ -1639,6 +1640,7 @@ if FASTAPI_AVAILABLE:
     connections_lock = threading.Lock()
     voice_state = {"mic": "SLEEPING", "transcript": "", "speaking": False}
     scott_status = {"online": None, "last_check": 0}
+    scott_proxy = ScottClient()
 
     # TTS state (v0.2.11)
     tts_language = "en"  # Current TTS language: "en" or "ko"
@@ -1661,9 +1663,33 @@ if FASTAPI_AVAILABLE:
         """Get or create PandaCore instance."""
         global panda_core
         if panda_core is None:
-            from panda_core import PandaCore
+            from .panda_core import PandaCore
             panda_core = PandaCore()
         return panda_core
+
+
+    @app.get("/api/scott/health")
+    async def scott_health():
+        try:
+            return await scott_proxy.ahealth()
+        except Exception as e:
+            raise HTTPException(status_code=502, detail=str(e))
+
+
+    @app.get("/api/scott/topics")
+    async def scott_topics():
+        try:
+            return await scott_proxy.atopics()
+        except Exception as e:
+            raise HTTPException(status_code=502, detail=str(e))
+
+
+    @app.get("/api/scott/news/{topic}")
+    async def scott_news(topic: str):
+        try:
+            return await scott_proxy.anews(topic)
+        except Exception as e:
+            raise HTTPException(status_code=502, detail=str(e))
     
     
     async def broadcast_to_clients(message: dict):
@@ -1733,7 +1759,7 @@ if FASTAPI_AVAILABLE:
             
             import requests
             response = requests.get(
-                f"{config.scott_api_url}/health",
+                f"{config.scott_base_url}/health",
                 timeout=3
             )
             scott_status["online"] = response.status_code == 200

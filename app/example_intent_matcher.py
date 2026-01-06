@@ -316,7 +316,7 @@ def get_intent_matcher() -> ExampleIntentMatcher:
     global _matcher
     
     if _matcher is None:
-        from config import get_config
+        from .config import get_config
         config = get_config()
         _matcher = ExampleIntentMatcher(
             confidence_threshold=config.intent_confidence_threshold

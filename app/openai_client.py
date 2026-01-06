@@ -45,7 +45,7 @@ class OpenAIClient:
             enable_web_search: Enable web search tool
             timeout: Request timeout in seconds
         """
-        from config import get_config
+        from .config import get_config
         config = get_config()
         
         self.api_key = api_key or config.openai_api_key

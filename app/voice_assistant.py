@@ -94,7 +94,7 @@ class VoiceAssistant:
             on_state_change: Callback when state changes
             on_transcript: Callback for live transcript updates
         """
-        from config import get_config
+        from .config import get_config
         config = get_config()
         
         self.wake_phrases = wake_phrases or config.wake_phrase_list

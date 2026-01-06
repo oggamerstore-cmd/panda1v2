@@ -26,6 +26,7 @@ CLI Usage:
 
 Agent Commands (v0.2.10):
   panda --scott-doctor     SCOTT news agent diagnostics
+  panda --scott-test       Quick SCOTT connectivity test
   panda --penny-doctor     PENNY finance agent diagnostics
   panda --sensei-doctor    SENSEI learning hub diagnostics
   panda --echo-doctor      ECHO context hub diagnostics
@@ -49,6 +50,10 @@ import sys
 import os
 import argparse
 from typing import Optional
+
+from .config import get_config
+from .panda_core import PandaCore
+from .services.scott_client import ScottClient
 
 # Version info
 __version__ = "0.2.11"
@@ -221,6 +226,11 @@ Examples:
         '--scott-doctor',
         action='store_true',
         help='Run SCOTT news agent diagnostics'
+    )
+    parser.add_argument(
+        '--scott-test',
+        action='store_true',
+        help='Quick SCOTT connectivity test (health/topics/news)'
     )
     parser.add_argument(
         '--penny-doctor',
@@ -1104,11 +1114,12 @@ def run_gui_doctor() -> int:
     if config and config.scott_enabled:
         try:
             from .scott_client import ScottClient
-            scott = ScottClient()
-            if scott.health_check():
-                print(f"  ✓ Connected to {config.scott_api_url}")
+            scott = ScottClient(base_url=config.scott_base_url, timeout=config.scott_timeout)
+            scott_health = scott.health_check()
+            if scott_health.get("healthy"):
+                print(f"  ✓ Connected to {config.scott_base_url}")
             else:
-                print(f"  ○ SCOTT offline at {config.scott_api_url}")
+                print(f"  ○ SCOTT offline at {config.scott_base_url}")
                 print("    (This is OK - GUI works without SCOTT)")
         except Exception as e:
             print(f"  ○ SCOTT not reachable: {e}")
@@ -1360,6 +1371,30 @@ def run_scott_doctor() -> int:
         return 1
     except Exception as e:
         print(f"Error running SCOTT diagnostics: {e}")
+        return 1
+
+
+def run_scott_test() -> int:
+    """Run a quick SCOTT connectivity test."""
+    print()
+    print("═" * 60)
+    print("  PANDA.1 SCOTT Quick Test")
+    print("═" * 60)
+    print()
+    try:
+        scott = ScottClient()
+        print("Health:")
+        print(scott.health())
+        print()
+        print("Topics:")
+        print(scott.topics())
+        print()
+        print("News (tech):")
+        print(scott.news("tech"))
+        print()
+        return 0
+    except Exception as e:
+        print(f"Error: {e}")
         return 1
 
 
@@ -1825,6 +1860,8 @@ def main() -> int:
     # Agent diagnostics (v0.2.10)
     if args.scott_doctor:
         return run_scott_doctor()
+    if args.scott_test:
+        return run_scott_test()
 
     if args.penny_doctor:
         return run_penny_doctor()

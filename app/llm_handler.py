@@ -24,7 +24,7 @@ import requests
 import json
 from typing import List, Dict, Optional, Generator, Any
 
-from config import get_config
+from .config import get_config
 
 logger = logging.getLogger(__name__)
 
