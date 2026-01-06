@@ -1486,16 +1486,14 @@ def run_sensei_doctor() -> int:
         from .sensei_client import SenseiClient
         client = SenseiClient(
             base_url=config.sensei_api_url,
-            timeout=config.sensei_timeout
+            timeout=config.sensei_http_timeout_seconds
         )
 
-        health = client.health_check()
+        connected, detail = client.ping()
 
-        if health.get("healthy"):
+        if connected:
             print(f"\n  TCP/HTTP: Connected")
-            print(f"  Health check: OK")
-            if health.get("data"):
-                print(f"  Server info: {health.get('data')}")
+            print(f"  Health check: OK ({detail})")
 
             # Try to get categories
             categories = client.get_categories()
@@ -1513,9 +1511,9 @@ def run_sensei_doctor() -> int:
             print("  Overall: OK")
         else:
             print(f"\n  Health check: FAILED")
-            print(f"  Error: {health.get('error', 'Unknown')}")
+            print(f"  Error: {detail}")
             print("\n  Common fixes:")
-            print("  - Ensure SENSEI is running on 192.168.1.19:8002")
+            print("  - Ensure SENSEI is running on 192.168.1.19:5000")
             print(f"  - Check if {config.sensei_api_url} is reachable")
             print("  - Verify LAN connectivity")
             print("\n" + "=" * 60)
@@ -1638,13 +1636,16 @@ def run_agents_doctor() -> int:
         config = get_config()
         if config.sensei_enabled:
             from .sensei_client import SenseiClient
-            client = SenseiClient(base_url=config.sensei_api_url, timeout=config.sensei_timeout)
-            health = client.health_check()
-            if health.get("healthy"):
+            client = SenseiClient(
+                base_url=config.sensei_api_url,
+                timeout=config.sensei_http_timeout_seconds,
+            )
+            connected, detail = client.ping()
+            if connected:
                 print(f"  Connected to {config.sensei_api_url}")
                 results.append(("SENSEI", "ok"))
             else:
-                print(f"  Offline: {health.get('error', 'Unknown')}")
+                print(f"  Offline: {detail}")
                 results.append(("SENSEI", "error"))
         else:
             print("  Disabled")

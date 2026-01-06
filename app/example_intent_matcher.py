@@ -74,6 +74,7 @@ class ExampleIntentMatcher:
         "system": "local",
         "tasks": "local",
         "docs": "local",
+        "sensei": "sensei",
         # General
         "general_meta": "llm",
         "general": "llm",
@@ -89,6 +90,8 @@ class ExampleIntentMatcher:
         "system.": "local",
         "assistant.": "llm",
         "docs.": "local",
+        "sensei.": "sensei",
+        "panda_learn": "sensei",
     }
     
     def __init__(self, confidence_threshold: float = 0.65):

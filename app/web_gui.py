@@ -2165,6 +2165,9 @@ if FASTAPI_AVAILABLE:
         
         # Start voice assistant in background thread
         threading.Thread(target=start_voice_assistant, daemon=True).start()
+
+        # Initialize core (starts background integrations)
+        get_panda()
         
         # Initial SCOTT check
         threading.Thread(target=check_scott_status, daemon=True).start()

@@ -25,6 +25,8 @@ Routing Rules:
 
 import logging
 import re
+import threading
+import time
 from datetime import datetime, timezone
 from typing import Optional, Dict, Any, Generator, Tuple
 from pathlib import Path
@@ -59,6 +61,9 @@ class PandaCore:
     def __init__(self):
         """Initialize PANDA.1 core."""
         self.config = get_config()
+        self.sensei_connected = False
+        self.sensei_last_seen: Optional[str] = None
+        self._sensei_sync_thread: Optional[threading.Thread] = None
         
         # Initialize LLM handler (Ollama)
         from .llm_handler import LLMHandler
@@ -164,11 +169,21 @@ class PandaCore:
                 from .sensei_client import SenseiClient
                 self.sensei_client = SenseiClient(
                     base_url=self.config.sensei_api_url,
-                    timeout=self.config.sensei_timeout
+                    timeout=self.config.sensei_http_timeout_seconds
                 )
                 logger.info(f"SENSEI client initialized: {self.config.sensei_api_url}")
             except ImportError:
                 pass
+
+        # Initialize SENSEI vector memory (optional)
+        self.sensei_memory = None
+        if self.config.sensei_enabled:
+            try:
+                from .memory import SenseiVectorMemory
+                self.sensei_memory = SenseiVectorMemory()
+                logger.info("SENSEI vector memory initialized")
+            except Exception as e:
+                logger.warning(f"SENSEI vector memory unavailable: {e}")
 
         # Initialize ECHO client (optional)
         self.echo_client = None
@@ -195,6 +210,9 @@ class PandaCore:
         # System prompt - BOS-specific
         self.system_prompt = self._build_system_prompt()
         
+        # Background SENSEI sync
+        self._start_sensei_background_sync()
+
         logger.info("PANDA.1 Core v0.2.11 initialized")
     
     def _build_system_prompt(self) -> str:
@@ -240,6 +258,51 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
         """Check if this is a learning command (should go to SENSEI)."""
         from .sensei_client import is_learning_command
         return is_learning_command(text)
+
+    def _start_sensei_background_sync(self) -> None:
+        """Start background ping/sync loop for SENSEI."""
+        if not self.config.sensei_enabled or not self.sensei_client or self._sensei_sync_thread:
+            return
+
+        def loop() -> None:
+            ping_interval = max(1, self.config.sensei_ping_interval_seconds)
+            sync_interval = max(10, self.config.sensei_sync_interval_seconds)
+            next_ping = 0.0
+            next_sync = 0.0
+
+            while True:
+                now = time.monotonic()
+                try:
+                    if now >= next_ping:
+                        connected, detail = self.sensei_client.ping()
+                        self.sensei_connected = connected
+                        if connected:
+                            self.sensei_last_seen = datetime.now(timezone.utc).isoformat()
+                        logger.info(
+                            "SENSEI ping status",
+                            extra={"connected": connected, "detail": detail},
+                        )
+                        next_ping = now + ping_interval
+
+                    if now >= next_sync and self.sensei_connected:
+                        result = self.sensei_client.download_knowledge_jsonl()
+                        if result.get("downloaded"):
+                            docs = []
+                            if result.get("local_path"):
+                                from .memory import parse_sensei_jsonl
+                                docs = parse_sensei_jsonl(Path(result["local_path"]))
+                            if docs and self.sensei_memory:
+                                ingest = self.sensei_memory.ingest_docs(docs)
+                                logger.info("SENSEI auto-sync ingest", extra=ingest)
+                        next_sync = now + sync_interval
+
+                except Exception as exc:
+                    logger.warning("SENSEI background sync error: %s", exc)
+
+                time.sleep(1)
+
+        self._sensei_sync_thread = threading.Thread(target=loop, daemon=True)
+        self._sensei_sync_thread.start()
 
     def _get_routing_target(self, user_input: str) -> Tuple[str, float]:
         """
@@ -289,6 +352,8 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
             
             if intent == "news" and self.scott_client:
                 return "scott", 0.8
+            if intent == "panda_learn" and self.sensei_client:
+                return "sensei", 0.85
         
         # Check for finance patterns
         if self.penny_client:
@@ -472,6 +537,20 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
                 if relevant:
                     context = "\n".join([f"- {m['content']}" for m in relevant])
                     messages[0]["content"] += f"\n\nRelevant memories:\n{context}"
+            except Exception:
+                pass
+
+        # Add SENSEI vector memory context (persisted)
+        if self.sensei_memory and not self._is_learning_command(user_input) and not user_input.startswith("/"):
+            try:
+                sensei_results = self.sensei_memory.search(user_input, top_k=5)
+                if sensei_results:
+                    sensei_lines = []
+                    for item in sensei_results:
+                        sensei_lines.append(
+                            f"- [{item['injection_id']}] {item['title']}\n  {item['snippet']}"
+                        )
+                    messages[0]["content"] += "\n\nSENSEI MEMORY (persisted)\n" + "\n".join(sensei_lines)
             except Exception:
                 pass
 
@@ -702,74 +781,52 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
 
         Downloads knowledge from SENSEI and stores it in memory.
         """
-        if not self.sensei_client:
+        if not self.sensei_client or not self.sensei_memory:
             if self.lang_manager.mode == "ko":
                 return "학습 기능(SENSEI)이 설정되어 있지 않습니다."
             return "Learning feature (SENSEI) is not configured."
 
         try:
-            # Check SENSEI health first
-            if not self.sensei_client.is_healthy():
+            connected, detail = self.sensei_client.ping()
+            self.sensei_connected = connected
+            if connected:
+                self.sensei_last_seen = datetime.now(timezone.utc).isoformat()
+
+            if not connected:
                 if self.lang_manager.mode == "ko":
-                    return "SENSEI에 연결할 수 없습니다. 나중에 다시 시도해주세요."
-                return "Cannot connect to SENSEI. Please try again later."
+                    return f"SENSEI에 연결할 수 없습니다. ({detail})"
+                return f"SENSEI is unreachable. ({detail})"
 
-            # Extract topic if specified
-            topic = None
-            topic_keywords = ["about", "on", "regarding", "for"]
-            input_lower = user_input.lower()
-            for kw in topic_keywords:
-                if kw in input_lower:
-                    parts = input_lower.split(kw)
-                    if len(parts) > 1:
-                        topic = parts[-1].strip()
-                        break
+            download = self.sensei_client.download_knowledge_jsonl()
+            local_path = download.get("local_path")
+            docs = []
+            if local_path:
+                from .memory import parse_sensei_jsonl
+                docs = parse_sensei_jsonl(Path(local_path))
 
-            # Download knowledge from SENSEI
-            result = self.sensei_client.download_knowledge(topic=topic)
+            ingest = self.sensei_memory.ingest_docs(docs)
 
-            if not result.get("success"):
-                error = result.get("error", "Unknown error")
-                if self.lang_manager.mode == "ko":
-                    return f"SENSEI에서 지식을 다운로드할 수 없습니다: {error}"
-                return f"Could not download knowledge from SENSEI: {error}"
+            bytes_info = f"{download.get('bytes')} bytes" if download.get("downloaded") else "n/a"
+            sha_info = download.get("sha256") if download.get("downloaded") else None
 
-            knowledge_items = result.get("knowledge", [])
-            count = result.get("count", 0)
+            lines = [
+                "SENSEI learning sync complete:",
+                f"- sensei_connected: {connected}",
+                f"- downloaded: {download.get('downloaded')}",
+                f"- bytes: {bytes_info}",
+            ]
+            if sha_info:
+                lines.append(f"- sha256: {sha_info}")
+            lines.extend(
+                [
+                    f"- ingested_new_count: {ingest.get('inserted', 0)}",
+                    f"- updated_count: {ingest.get('updated', 0)}",
+                    f"- skipped_count: {ingest.get('skipped', 0)}",
+                    f"- total_docs_in_store: {ingest.get('total', 0)}",
+                ]
+            )
 
-            if count == 0:
-                if self.lang_manager.mode == "ko":
-                    return "SENSEI에 학습할 새로운 내용이 없습니다."
-                return "No new lessons available from SENSEI."
-
-            # Store knowledge in memory
-            stored_count = 0
-            if self.memory and self.memory.is_available:
-                for item in knowledge_items:
-                    content = item.get("content", item) if isinstance(item, dict) else str(item)
-                    category = item.get("category", "sensei") if isinstance(item, dict) else "sensei"
-
-                    if content:
-                        self.memory.store(
-                            content=content,
-                            memory_type="fact",
-                            metadata={
-                                "source": "sensei",
-                                "category": category,
-                                "topic": topic or "general"
-                            }
-                        )
-                        stored_count += 1
-
-                logger.info(f"Stored {stored_count} knowledge items from SENSEI")
-
-                if self.lang_manager.mode == "ko":
-                    return f"SENSEI에서 {stored_count}개의 지식을 학습했습니다, BOS!"
-                return f"Learned {stored_count} knowledge items from SENSEI, BOS!"
-            else:
-                if self.lang_manager.mode == "ko":
-                    return f"SENSEI에서 {count}개의 항목을 받았지만 메모리 시스템이 비활성화되어 있습니다."
-                return f"Received {count} items from SENSEI but memory system is not available."
+            return "\n".join(lines)
 
         except Exception as e:
             logger.error(f"SENSEI learning error: {e}")
@@ -806,6 +863,8 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
 
         if self.sensei_client:
             status["sensei"] = self.sensei_client.health_check()
+            status["sensei"]["connected"] = self.sensei_connected
+            status["sensei"]["last_seen"] = self.sensei_last_seen
 
         if self.echo_client:
             status["echo"] = self.echo_client.health_check()

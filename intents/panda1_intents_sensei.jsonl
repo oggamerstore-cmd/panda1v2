@@ -1,4 +1,7 @@
 {"utterance":"Learn panda","intent":"sensei.learn","category":"sensei"}
+{"utterance":"panda learn","intent":"panda_learn","category":"sensei"}
+{"utterance":"panda learn now","intent":"panda_learn","category":"sensei"}
+{"utterance":"panda, learn","intent":"panda_learn","category":"sensei"}
 {"utterance":"Learn from sensei","intent":"sensei.learn","category":"sensei"}
 {"utterance":"Download lessons from SENSEI","intent":"sensei.learn","category":"sensei"}
 {"utterance":"Get lessons from SENSEI","intent":"sensei.learn","category":"sensei"}

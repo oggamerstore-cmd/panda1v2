@@ -66,11 +66,18 @@ class PandaConfig(BaseSettings):
     
     ollama_host: str = Field(
         default="http://localhost:11434",
+        validation_alias=AliasChoices("PANDA_OLLAMA_HOST", "OLLAMA_BASE_URL"),
         description=(
             "Ollama server URL. Default is localhost for local usage. "
             "For remote access, Ollama must be configured to bind to 0.0.0.0. "
             "See docs/NETWORKING.md for details."
         )
+    )
+
+    ollama_embed_model: str = Field(
+        default="nomic-embed-text",
+        validation_alias=AliasChoices("PANDA_OLLAMA_EMBED_MODEL", "OLLAMA_EMBED_MODEL"),
+        description="Embedding model to use with Ollama for vector memory."
     )
     
     llm_model: str = Field(
@@ -179,11 +186,31 @@ class PandaConfig(BaseSettings):
         description="Enable SENSEI learning hub integration"
     )
     sensei_api_url: str = Field(
-        default="http://192.168.1.19:8002",
+        default="http://192.168.1.19:5000",
         validation_alias=AliasChoices("PANDA_SENSEI_API_URL", "SENSEI_API_URL", "SENSEI_BASE_URL"),
-        description="SENSEI learning hub API URL"
+        description="SENSEI learning hub base URL (LAN HTTP)"
     )
     sensei_timeout: int = Field(default=30, description="SENSEI request timeout in seconds")
+    sensei_http_timeout_seconds: int = Field(
+        default=10,
+        validation_alias=AliasChoices("PANDA_SENSEI_HTTP_TIMEOUT_SECONDS", "SENSEI_HTTP_TIMEOUT_SECONDS"),
+        description="SENSEI HTTP timeout for ping/download requests"
+    )
+    sensei_sync_interval_seconds: int = Field(
+        default=600,
+        validation_alias=AliasChoices("PANDA_SENSEI_SYNC_INTERVAL_SECONDS", "SENSEI_SYNC_INTERVAL_SECONDS"),
+        description="SENSEI auto-sync interval (seconds)"
+    )
+    sensei_ping_interval_seconds: int = Field(
+        default=10,
+        validation_alias=AliasChoices("PANDA_SENSEI_PING_INTERVAL_SECONDS", "SENSEI_PING_INTERVAL_SECONDS"),
+        description="SENSEI ping interval (seconds)"
+    )
+    sensei_max_download_mb: int = Field(
+        default=50,
+        validation_alias=AliasChoices("PANDA_SENSEI_MAX_DOWNLOAD_MB", "SENSEI_MAX_DOWNLOAD_MB"),
+        description="Maximum SENSEI JSONL download size in MB"
+    )
 
     # ECHO Context Hub (Database PC)
     echo_enabled: bool = Field(default=True, description="Enable ECHO context hub integration")
@@ -557,6 +584,8 @@ class PandaConfig(BaseSettings):
             "SCOTT URL": self.scott_base_url if self.scott_enabled else "disabled",
             "PENNY Enabled": self.penny_enabled,
             "PENNY URL": self.penny_api_url if self.penny_enabled else "disabled",
+            "SENSEI Enabled": self.sensei_enabled,
+            "SENSEI URL": self.sensei_api_url if self.sensei_enabled else "disabled",
             "ECHO Enabled": self.echo_enabled,
             "ECHO URL": self.echo_base_url if self.echo_enabled else "disabled",
             "Memory Enabled": self.enable_memory,
