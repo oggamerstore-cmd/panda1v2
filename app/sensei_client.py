@@ -7,13 +7,12 @@ Systematic Enlightenment & Intelligence) learning hub.
 Version: 0.2.11
 
 Network Configuration:
-- SENSEI runs on 192.168.1.19:8002
-- Configure via PANDA_SENSEI_API_URL environment variable
+- SENSEI runs on 192.168.1.19:5000
+- Configure via SENSEI_BASE_URL or PANDA_SENSEI_API_URL
 
 URL Structure:
-- Health: /health (no /api prefix)
-- Lessons: /api/lessons
-- Knowledge: /api/knowledge/download
+- Health: /api/health or /health
+- Knowledge injections: /api/knowledge_injections.jsonl
 
 Features:
 - Download lesson data from SENSEI
@@ -22,13 +21,17 @@ Features:
 - Connection pooling with retry strategy
 """
 
+import hashlib
 import logging
+import os
 import time
-from typing import List, Dict, Optional, Any
+from typing import List, Dict, Optional, Any, Tuple
 
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+
+from .config import get_config
 
 logger = logging.getLogger(__name__)
 
@@ -58,6 +61,8 @@ class SenseiClient:
         self._last_error_time = 0
         self._consecutive_failures = 0
         self._throttle_interval = 60  # seconds to wait after 3 consecutive failures
+        self._knowledge_etag: Optional[str] = None
+        self._knowledge_last_modified: Optional[str] = None
 
         # Create session with retry strategy
         self._session = requests.Session()
@@ -79,6 +84,11 @@ class SenseiClient:
 
         if api_key:
             self._session.headers["Authorization"] = f"Bearer {api_key}"
+
+        self._public_session = requests.Session()
+        self._public_session.mount("http://", adapter)
+        self._public_session.mount("https://", adapter)
+        self._public_session.headers["User-Agent"] = "PANDA.1/0.2.11"
 
         logger.info(f"SENSEI client initialized: {self.base_url}")
 
@@ -108,6 +118,189 @@ class SenseiClient:
         if self.api_key:
             headers["Authorization"] = f"Bearer {self.api_key}"
         return headers
+
+    def ping(self) -> Tuple[bool, str]:
+        """
+        Ping SENSEI health endpoints.
+
+        Tries /api/health then /health with no auth headers.
+
+        Returns:
+            Tuple of (connected, detail)
+        """
+        if self.is_throttled:
+            return False, f"SENSEI temporarily unavailable (retry in {self._throttle_interval}s)"
+
+        endpoints = ["/api/health", "/health"]
+        timeout = self.timeout
+        last_error = ""
+
+        for endpoint in endpoints:
+            url = f"{self.base_url}{endpoint}"
+            try:
+                response = self._public_session.get(url, timeout=timeout)
+                if response.status_code == 200:
+                    self._record_success()
+                    logger.info("SENSEI ping success", extra={"endpoint": endpoint})
+                    return True, f"ok ({endpoint})"
+                last_error = f"Status {response.status_code} ({endpoint})"
+                logger.warning("SENSEI ping failed", extra={"endpoint": endpoint, "status": response.status_code})
+                self._record_failure()
+            except requests.exceptions.Timeout:
+                last_error = f"Timeout ({timeout}s) ({endpoint})"
+                logger.warning("SENSEI ping timeout", extra={"endpoint": endpoint})
+                self._record_failure()
+            except requests.exceptions.ConnectionError:
+                last_error = f"Cannot connect ({endpoint})"
+                logger.warning("SENSEI ping connection error", extra={"endpoint": endpoint})
+                self._record_failure()
+            except Exception as exc:
+                last_error = str(exc)
+                logger.warning("SENSEI ping error", extra={"endpoint": endpoint, "error": str(exc)})
+                self._record_failure()
+
+        return False, last_error
+
+    def download_knowledge_jsonl(self) -> Dict[str, Any]:
+        """
+        Download SENSEI knowledge_injections.jsonl with caching and size limits.
+
+        Requires SENSEI to expose:
+        GET /api/knowledge_injections.jsonl (FileResponse, no auth)
+
+        Returns:
+            Dict with downloaded status, metadata, and local_path.
+        """
+        config = get_config()
+        cache_dir = config.base_dir / "cache" / "sensei"
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        local_path = cache_dir / "knowledge_injections.jsonl"
+        tmp_path = cache_dir / "knowledge_injections.jsonl.tmp"
+
+        headers: Dict[str, str] = {}
+        if self._knowledge_etag:
+            headers["If-None-Match"] = self._knowledge_etag
+
+        endpoints = ["/api/knowledge_injections.jsonl", "/knowledge_injections.jsonl"]
+        max_bytes = int(config.sensei_max_download_mb) * 1024 * 1024
+        backoffs = [0.5, 1.5]
+
+        last_error = None
+        api_404 = False
+
+        for endpoint in endpoints:
+            url = f"{self.base_url}{endpoint}"
+            for attempt in range(len(backoffs) + 1):
+                try:
+                    logger.info("SENSEI download start", extra={"endpoint": endpoint, "attempt": attempt + 1})
+                    response = self._public_session.get(
+                        url,
+                        headers=headers,
+                        timeout=self.timeout,
+                        stream=True,
+                    )
+
+                    if response.status_code == 404:
+                        if endpoint.startswith("/api/"):
+                            api_404 = True
+                        last_error = f"Status 404 ({endpoint})"
+                        logger.warning("SENSEI download 404", extra={"endpoint": endpoint})
+                        break
+
+                    if response.status_code == 304:
+                        self._knowledge_etag = response.headers.get("ETag", self._knowledge_etag)
+                        self._knowledge_last_modified = response.headers.get(
+                            "Last-Modified",
+                            self._knowledge_last_modified,
+                        )
+                        logger.info("SENSEI download not modified", extra={"endpoint": endpoint})
+                        return {
+                            "downloaded": False,
+                            "bytes": 0,
+                            "sha256": None,
+                            "etag": self._knowledge_etag,
+                            "last_modified": self._knowledge_last_modified,
+                            "local_path": str(local_path),
+                        }
+
+                    if response.status_code >= 500:
+                        last_error = f"Status {response.status_code} ({endpoint})"
+                        logger.warning("SENSEI download server error", extra={"endpoint": endpoint, "status": response.status_code})
+                        if attempt < len(backoffs):
+                            time.sleep(backoffs[attempt])
+                            continue
+                        break
+
+                    if response.status_code != 200:
+                        last_error = f"Status {response.status_code} ({endpoint})"
+                        logger.warning("SENSEI download failed", extra={"endpoint": endpoint, "status": response.status_code})
+                        break
+
+                    downloaded_bytes = 0
+                    sha256 = hashlib.sha256()
+                    with open(tmp_path, "wb") as handle:
+                        for chunk in response.iter_content(chunk_size=1024 * 1024):
+                            if not chunk:
+                                continue
+                            downloaded_bytes += len(chunk)
+                            if downloaded_bytes > max_bytes:
+                                raise ValueError(
+                                    f"SENSEI download exceeds {config.sensei_max_download_mb} MB limit"
+                                )
+                            sha256.update(chunk)
+                            handle.write(chunk)
+
+                    os.replace(tmp_path, local_path)
+
+                    self._knowledge_etag = response.headers.get("ETag", self._knowledge_etag)
+                    self._knowledge_last_modified = response.headers.get(
+                        "Last-Modified",
+                        self._knowledge_last_modified,
+                    )
+
+                    logger.info(
+                        "SENSEI download complete",
+                        extra={
+                            "endpoint": endpoint,
+                            "bytes": downloaded_bytes,
+                            "etag": self._knowledge_etag,
+                        },
+                    )
+
+                    return {
+                        "downloaded": True,
+                        "bytes": downloaded_bytes,
+                        "sha256": sha256.hexdigest(),
+                        "etag": self._knowledge_etag,
+                        "last_modified": self._knowledge_last_modified,
+                        "local_path": str(local_path),
+                    }
+
+                except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as exc:
+                    last_error = str(exc)
+                    logger.warning("SENSEI download transient error", extra={"endpoint": endpoint, "error": str(exc)})
+                    if attempt < len(backoffs):
+                        time.sleep(backoffs[attempt])
+                        continue
+                    break
+                except Exception as exc:
+                    last_error = str(exc)
+                    logger.warning("SENSEI download failed", extra={"endpoint": endpoint, "error": str(exc)})
+                    break
+                finally:
+                    if tmp_path.exists():
+                        try:
+                            tmp_path.unlink()
+                        except Exception:
+                            pass
+
+            if last_error and endpoint != endpoints[-1]:
+                continue
+
+        if api_404:
+            raise RuntimeError("SENSEI must expose GET /api/knowledge_injections.jsonl (FileResponse).")
+
+        raise RuntimeError(last_error or "Failed to download SENSEI knowledge_injections.jsonl")
 
     def health_check(self) -> Dict[str, Any]:
         """
@@ -417,6 +610,13 @@ def is_learning_command(text: str) -> bool:
         True if this is a learning command
     """
     text_lower = text.lower().strip()
+
+    if text_lower == "panda learn":
+        return True
+    if text_lower.startswith("panda learn "):
+        return True
+    if text_lower.startswith("panda, learn"):
+        return True
 
     learning_patterns = [
         # Primary commands

@@ -80,6 +80,39 @@ SCOTT_API_KEY=your_secret
 
 Test: `panda --scott-doctor`
 
+## SENSEI Integration
+
+PANDA.1 can sync learned docs from SENSEI and store them in a persistent local
+vector memory for RAG. This runs automatically in the background when enabled,
+and can be triggered manually with the **"panda learn"** command.
+
+Configure in `~/.panda1/.env`:
+
+```bash
+SENSEI_BASE_URL=http://192.168.1.19:5000
+SENSEI_ENABLED=true
+SENSEI_HTTP_TIMEOUT_SECONDS=10
+SENSEI_SYNC_INTERVAL_SECONDS=600
+SENSEI_PING_INTERVAL_SECONDS=10
+SENSEI_MAX_DOWNLOAD_MB=50
+OLLAMA_EMBED_MODEL=nomic-embed-text
+```
+
+Storage paths on PANDA.1:
+
+- Cache download: `~/.panda1/cache/sensei/knowledge_injections.jsonl`
+- Vector memory DB: `~/.panda1/memory/sensei/index.sqlite`
+
+Required SENSEI endpoint (no auth, LAN HTTP):
+
+```
+GET /api/knowledge_injections.jsonl
+-> FileResponse("/home/bos/.sensei/out/knowledge_injections.jsonl")
+```
+
+If that endpoint is missing, PANDA.1 will report:
+“SENSEI must expose GET /api/knowledge_injections.jsonl (FileResponse).”
+
 ## ECHO Context Hub (Database PC)
 
 `install.sh` now runs `install_echo.sh` automatically to set up the ECHO vector

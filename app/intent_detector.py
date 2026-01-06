@@ -31,6 +31,10 @@ class IntentDetector:
     
     # Intent patterns (compiled for performance)
     PATTERNS = {
+        "panda_learn": [
+            r"^panda learn\b",
+            r"^panda,\s*learn\b",
+        ],
         "news": [
             r"\bnews\b",
             r"\bheadlines?\b",
