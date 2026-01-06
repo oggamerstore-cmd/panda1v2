@@ -17,6 +17,7 @@ NOT used for:
 """
 
 import logging
+import re
 from typing import Optional, Generator, Dict, Any, List
 
 logger = logging.getLogger(__name__)
@@ -260,6 +261,67 @@ def is_research_query(text: str) -> bool:
     
     # Check for research keywords
     return any(kw in text_lower for kw in research_keywords)
+
+
+def is_post_oct_2023_timeline_query(text: str) -> bool:
+    """
+    Determine if a query involves timelines after October 1, 2023.
+
+    Args:
+        text: User query
+
+    Returns:
+        True if the query references dates after 2023-10-01
+    """
+    text_lower = text.lower()
+
+    # Any explicit year >= 2024 should be routed to OpenAI
+    for match in re.findall(r"\b(20\d{2})\b", text_lower):
+        try:
+            year = int(match)
+        except ValueError:
+            continue
+        if year >= 2024:
+            return True
+
+    # Match explicit 2023-10-01 and beyond (ISO / slash / dash)
+    if re.search(r"\b2023[-/](1[0-2]|0[1-9])[-/](\d{1,2})\b", text_lower):
+        month_match = re.search(r"\b2023[-/](1[0-2]|0[1-9])[-/](\d{1,2})\b", text_lower)
+        if month_match:
+            month = int(month_match.group(1))
+            day = int(month_match.group(2))
+            if month > 10 or (month == 10 and day >= 1):
+                return True
+
+    if re.search(r"\b(1[0-2]|0[1-9])[-/](\d{1,2})[-/]2023\b", text_lower):
+        month_match = re.search(r"\b(1[0-2]|0[1-9])[-/](\d{1,2})[-/]2023\b", text_lower)
+        if month_match:
+            month = int(month_match.group(1))
+            day = int(month_match.group(2))
+            if month > 10 or (month == 10 and day >= 1):
+                return True
+
+    # Month name references in late 2023
+    month_map = {
+        "january": 1, "jan": 1,
+        "february": 2, "feb": 2,
+        "march": 3, "mar": 3,
+        "april": 4, "apr": 4,
+        "may": 5,
+        "june": 6, "jun": 6,
+        "july": 7, "jul": 7,
+        "august": 8, "aug": 8,
+        "september": 9, "sep": 9, "sept": 9,
+        "october": 10, "oct": 10,
+        "november": 11, "nov": 11,
+        "december": 12, "dec": 12,
+    }
+    for name, month in month_map.items():
+        if month >= 10 and re.search(rf"\\b{name}\\b", text_lower):
+            if re.search(r"\b2023\b", text_lower):
+                return True
+
+    return False
 
 
 def is_time_sensitive_query(text: str) -> bool:

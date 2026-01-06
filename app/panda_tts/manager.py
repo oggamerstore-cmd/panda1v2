@@ -15,6 +15,7 @@ Browser-based Web Speech API provides fallback when Kokoro is unavailable.
 
 import os
 import logging
+import re
 from pathlib import Path
 from typing import Optional, Dict, Any, Literal
 
@@ -191,11 +192,18 @@ class TTSManager:
             logger.error("TTS not initialized")
             return False
 
+        text = self._normalize_pronunciations(text)
+
         # Auto-detect language if not specified
         if lang is None:
             lang = detect_language(text)
 
         return self._engine.speak(text, lang, blocking)
+
+    @staticmethod
+    def _normalize_pronunciations(text: str) -> str:
+        """Normalize tokens for desired pronunciations in TTS output."""
+        return re.sub(r"\bBOS\b", "BOSS", text)
 
     def stop(self) -> None:
         """Stop current speech."""

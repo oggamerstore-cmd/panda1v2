@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================================
-# PANDA.1 v0.2.10 - Autostart Setup
+# PANDA.1 v0.2.11 - Autostart Setup
 # ============================================================================
 # Configures PANDA.1 to start automatically on PC boot.
 # Creates systemd user service and optional desktop autostart.

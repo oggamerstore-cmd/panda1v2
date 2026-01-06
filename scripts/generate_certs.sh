@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================================
-# PANDA.1 v0.2.10 - HTTPS Certificate Generator
+# PANDA.1 v0.2.11 - HTTPS Certificate Generator
 # ============================================================================
 # Generates self-signed certificates for HTTPS mode.
 # Required when accessing GUI from LAN IP (microphone permissions).

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PANDA.1 v0.2.10 Test Suite
+PANDA.1 v0.2.11 Test Suite
 =========================
 
 Tests for GUI voice integration and bug fixes.
@@ -309,22 +309,22 @@ class TestVersionConsistency:
     """Test version strings are consistent."""
     
     def test_main_version(self):
-        """main.py should have v0.2.10."""
+        """main.py should have v0.2.11."""
         from app.main import __version__
-        assert __version__ == "0.2.10"
+        assert __version__ == "0.2.11"
     
     def test_web_gui_version(self):
-        """web_gui.py should have v0.2.10."""
+        """web_gui.py should have v0.2.11."""
         from app.web_gui import __version__
-        assert __version__ == "0.2.10"
+        assert __version__ == "0.2.11"
     
     def test_config_version(self):
-        """Config display should show v0.2.10."""
+        """Config display should show v0.2.11."""
         from app.config import get_config
         
         config = get_config()
         display = config.to_display_dict()
-        assert "0.2.10" in display.get("Version", "")
+        assert "0.2.11" in display.get("Version", "")
 
 
 # =============================================================================
