@@ -3,7 +3,7 @@ PANDA.1 Language Mode Manager
 =============================
 Handles language mode switching between English and Korean.
 
-Version: 0.2.11
+Version: 2.0
 
 Supports:
 - English commands: "Panda, speak Korean", "Panda, speak English"

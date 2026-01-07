@@ -3,7 +3,7 @@ PANDA.1 TTS Engine Base Class
 =============================
 Abstract base class for all TTS engines.
 
-Version: 0.2.11
+Version: 2.0
 """
 
 import logging

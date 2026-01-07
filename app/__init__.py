@@ -3,7 +3,7 @@ PANDA.1 - Personal AI Navigator & Digital Assistant
 ====================================================
 BOS's local-first AI assistant with voice, news, and business tools.
 
-Version: 0.2.11 (Production Enhancement)
+Version: 2.0 (Production Enhancement)
 
 New in v0.2.10:
 - Complete voice subsystem rewrite (PTT + Faster-Whisper + Kokoro)
@@ -17,6 +17,6 @@ New in v0.2.10:
 - Autostart kiosk mode
 """
 
-__version__ = "0.2.11"
+__version__ = "2.0"
 __codename__ = "Production Enhancement"
 __author__ = "BOS"

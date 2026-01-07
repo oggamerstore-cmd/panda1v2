@@ -3,7 +3,7 @@ PANDA.1 Faster-Whisper STT
 ==========================
 Speech-to-text using Faster-Whisper for fast, accurate transcription.
 
-Version: 0.2.11
+Version: 2.0
 
 Features:
 - Multi-language support (EN, KO, auto-detect)

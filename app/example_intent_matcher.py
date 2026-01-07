@@ -3,7 +3,7 @@ PANDA.1 Example Intent Matcher
 ==============================
 Matches user input against intent examples using fuzzy string matching.
 
-Version: 0.2.11
+Version: 2.0
 
 Uses rapidfuzz for fast fuzzy string matching.
 Falls back to basic matching if rapidfuzz not installed.

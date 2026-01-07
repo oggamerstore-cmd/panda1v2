@@ -1,4 +1,4 @@
-# PANDA.1 v0.2.11 Production - Complete Enhancement Package
+# PANDA.1 v2.0 Production - Complete Enhancement Package
 
 ## 🎉 What's Included
 
@@ -47,7 +47,7 @@ This is a fully tested, production-ready version of PANDA.1 with all code qualit
 
 ```bash
 # Extract package
-tar -xzf panda1-v0.2.11-production.tar.gz
+tar -xzf panda1-v2.0-production.tar.gz
 cd panda1-production
 
 # Install
@@ -96,7 +96,7 @@ panda --mic-test
 panda --tts-test "Hello from PANDA point one"
 
 # Test GUI
-panda  # Should launch GUI at http://192.168.1.17:7860
+panda  # Should launch GUI at http://192.168.0.117:7860
 
 # Test agents
 panda --scott-doctor
@@ -116,7 +116,7 @@ tail -f ~/.panda1/data/logs/panda1.log
 ### Key Documents
 
 1. **ENHANCEMENT_DETAILS.md** - Complete list of all fixes and improvements
-2. **UPGRADE_TO_v0.2.11.md** - Detailed upgrade guide
+2. **UPGRADE_TO_v2.0.md** - Detailed upgrade guide
 3. **CHANGELOG.md** - Full version history
 4. **README.md** - General project documentation
 
@@ -136,7 +136,7 @@ If you need to rollback to v0.2.10:
 pkill -f "python.*panda"
 
 # Restore backup
-mv ~/.panda1 ~/.panda1.v0.2.11
+mv ~/.panda1 ~/.panda1.v2.0
 mv ~/.panda1.backup.YYYYMMDD ~/.panda1
 
 # Restart with old version
@@ -155,7 +155,7 @@ except:
     return False  # What went wrong? 🤷
 ```
 
-**After (v0.2.11)**:
+**After (v2.0)**:
 ```python
 try:
     response = requests.get(url)
@@ -171,7 +171,7 @@ print(f"Error: {error}")
 print(f"DEBUG: value = {value}")
 ```
 
-**After (v0.2.11)**:
+**After (v2.0)**:
 ```python
 logging.error(f"Error: {error}")
 logging.debug(f"Value = {value}")
@@ -189,7 +189,7 @@ Now you can:
 raise Exception("Connection failed")
 ```
 
-**After (v0.2.11)**:
+**After (v2.0)**:
 ```python
 raise RuntimeError("[scott_client] Connection failed: timeout after 8s")
 ```
@@ -214,7 +214,7 @@ raise RuntimeError("[scott_client] Connection failed: timeout after 8s")
 
 ## 📊 Performance
 
-| Metric | v0.2.10 | v0.2.11 | Change |
+| Metric | v0.2.10 | v2.0 | Change |
 |--------|---------|---------|--------|
 | Startup time | ~2.5s | ~2.5s | ➡️ Same |
 | Memory usage | ~800MB | ~800MB | ➡️ Same |
@@ -249,7 +249,7 @@ panda --audio-devices
 panda --scott-doctor
 
 # Verify network
-ping 192.168.1.18
+ping 192.168.0.118
 ```
 
 ## 📞 Support
@@ -305,7 +305,7 @@ python3 -m py_compile app/**/*.py
 Before deploying to production:
 
 - [ ] Backup current installation
-- [ ] Read UPGRADE_TO_v0.2.11.md
+- [ ] Read UPGRADE_TO_v2.0.md
 - [ ] Extract package to deployment location
 - [ ] Run install.sh
 - [ ] Verify with `panda --status`
@@ -317,7 +317,7 @@ Before deploying to production:
 
 ## 📝 Version Information
 
-**Version**: 0.2.11-production
+**Version**: 2.0-production
 **Release Date**: 2025-01-01
 **Previous Version**: 0.2.10
 **Python**: 3.10+

@@ -3,10 +3,10 @@ PANDA.1 ECHO Client
 ===================
 Client for communicating with ECHO (External Context Hub Orchestrator).
 
-Version: 0.2.11
+Version: 2.0
 
 Network Configuration:
-- ECHO runs on a dedicated Database PC (default: http://192.168.1.20:9010)
+- ECHO runs on a dedicated Database PC (default: http://192.168.0.115:9010)
 - Configure via PANDA_ECHO_BASE_URL and PANDA_ECHO_API_KEY
 
 Features:
@@ -59,7 +59,7 @@ class EchoClient:
         adapter = HTTPAdapter(max_retries=retry_strategy)
         self._session.mount("http://", adapter)
         self._session.mount("https://", adapter)
-        self._session.headers["User-Agent"] = "PANDA.1/0.2.11"
+        self._session.headers["User-Agent"] = "PANDA.1/2.0"
         if self.api_key:
             self._session.headers["Authorization"] = f"Bearer {self.api_key}"
 

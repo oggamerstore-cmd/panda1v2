@@ -3,7 +3,7 @@ PANDA.1 OpenAI Fallback Client
 ==============================
 Confidence-gated GPT-4 fallback for low-confidence local responses.
 
-Version: 0.2.11
+Version: 2.0
 
 Configuration:
 - OPENAI_FALLBACK_ENABLED: Enable fallback (default: 0)

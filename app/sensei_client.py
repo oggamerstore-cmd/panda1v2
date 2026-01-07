@@ -4,10 +4,10 @@ PANDA.1 SENSEI Client
 Client for communicating with SENSEI (Smart Educational Network for
 Systematic Enlightenment & Intelligence) learning hub.
 
-Version: 0.2.11
+Version: 2.0
 
 Network Configuration:
-- SENSEI runs on 192.168.1.19:5000
+- SENSEI runs on 192.168.0.120:5000
 - Configure via SENSEI_BASE_URL or PANDA_SENSEI_API_URL
 
 URL Structure:
@@ -49,7 +49,7 @@ class SenseiClient:
         Initialize SENSEI client.
 
         Args:
-            base_url: SENSEI base URL (e.g., http://192.168.1.19:8002)
+            base_url: SENSEI base URL (e.g., http://192.168.0.120:8002)
             timeout: Request timeout in seconds
             api_key: Optional API key for authentication
             max_retries: Maximum retry attempts for failed requests
@@ -80,7 +80,7 @@ class SenseiClient:
         adapter = HTTPAdapter(max_retries=retry_strategy)
         self._session.mount("http://", adapter)
         self._session.mount("https://", adapter)
-        self._session.headers["User-Agent"] = "PANDA.1/0.2.11"
+        self._session.headers["User-Agent"] = "PANDA.1/2.0"
 
         if api_key:
             self._session.headers["Authorization"] = f"Bearer {api_key}"
@@ -88,7 +88,7 @@ class SenseiClient:
         self._public_session = requests.Session()
         self._public_session.mount("http://", adapter)
         self._public_session.mount("https://", adapter)
-        self._public_session.headers["User-Agent"] = "PANDA.1/0.2.11"
+        self._public_session.headers["User-Agent"] = "PANDA.1/2.0"
 
         logger.info(f"SENSEI client initialized: {self.base_url}")
 

@@ -3,7 +3,7 @@ PANDA.1 Core Orchestrator
 =========================
 Central hub for coordinating all PANDA.1 components.
 
-Version: 0.2.11
+Version: 2.0
 
 Features:
 - BOS-specific system prompt
@@ -213,7 +213,7 @@ class PandaCore:
         # Background SENSEI sync
         self._start_sensei_background_sync()
 
-        logger.info("PANDA.1 Core v0.2.11 initialized")
+        logger.info("PANDA.1 Core v2.0 initialized")
     
     def _build_system_prompt(self) -> str:
         """Build the BOS-specific system prompt for the LLM."""
@@ -837,7 +837,7 @@ You are PANDA.1, BOS's Personal AI Navigator & Digital Assistant."""
     def get_status(self) -> Dict[str, Any]:
         """Get comprehensive system status."""
         status = {
-            "version": "0.2.11",
+            "version": "2.0",
             "llm": self.llm.health_check(),
             "openai": None,
             "memory": None,

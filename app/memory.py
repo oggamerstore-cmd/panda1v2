@@ -3,7 +3,7 @@ PANDA.1 Memory System
 =====================
 Handles persistent memory storage using ChromaDB for semantic search.
 
-Version: 0.2.11
+Version: 2.0
 
 Features:
 - Semantic search over stored memories

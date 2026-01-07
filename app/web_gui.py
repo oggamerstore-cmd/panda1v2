@@ -3,7 +3,7 @@ PANDA.1 Web GUI Server
 ======================
 FastAPI-based web GUI for PANDA.1.
 
-Version: 0.2.11
+Version: 2.0
 
 Features:
 - Web-based GUI served locally or on LAN
@@ -16,7 +16,7 @@ Features:
 - Works with pandagui launcher for fullscreen kiosk mode
 
 v0.2.10 Changes:
-- HTTPS support for microphone access on LAN (192.168.1.17:7860)
+- HTTPS support for microphone access on LAN (192.168.0.117:7860)
 - Auto TTS for all PANDA.1 messages (reads only PANDA responses)
 - Dual language TTS: English (default) / Korean with voice commands
 - Browser-based STT using MediaRecorder API + Faster-Whisper
@@ -82,7 +82,7 @@ except ImportError:
 
 
 # Version
-__version__ = "0.2.11"
+__version__ = "2.0"
 
 
 # Import TTS for voice functionality
@@ -709,7 +709,7 @@ GUI_HTML = '''<!DOCTYPE html>
 <body>
     <div class="container">
         <div class="header">
-            <div class="logo">🐼 PANDA.1 <span style="font-size: 0.7em; color: #666;">v0.2.11</span></div>
+            <div class="logo">🐼 PANDA.1 <span style="font-size: 0.7em; color: #666;">v2.0</span></div>
             <div class="status-bar">
                 <div class="status-item">
                     <span class="status-dot" id="llmStatus"></span>
@@ -1642,12 +1642,12 @@ if FASTAPI_AVAILABLE:
     scott_status = {"online": None, "last_check": 0}
     scott_proxy = ScottClient()
 
-    # TTS state (v0.2.11)
+    # TTS state (v2.0)
     tts_language = "en"  # Current TTS language: "en" or "ko"
     tts_auto_enabled = True  # Auto TTS for PANDA.1 messages
     tts_manager = None  # TTS manager instance
 
-    # STT state (v0.2.11 - singleton pattern for performance)
+    # STT state (v2.0 - singleton pattern for performance)
     faster_whisper_stt = None  # Global STT instance to avoid model reload overhead
     
     # Thread-safe broadcast queue for WebSocket events
@@ -2828,7 +2828,7 @@ def run_server(host: Optional[str] = None, port: Optional[int] = None, use_https
             s.close()
         except Exception as e:
             logging.error(f'Exception caught: {e}')
-            local_ip = "192.168.1.17"  # Fallback to PANDA's known IP
+            local_ip = "192.168.0.117"  # Fallback to PANDA's known IP
         logging.info(f"  Local URL:   {protocol}://127.0.0.1:{actual_port}")
         logging.info(f"  LAN URL:     {protocol}://{local_ip}:{actual_port}")
         if use_https:

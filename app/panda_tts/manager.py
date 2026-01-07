@@ -3,7 +3,7 @@ PANDA.1 TTS Engine Manager
 ==========================
 Manages TTS engine selection and fallback.
 
-Version: 0.2.11
+Version: 2.0
 
 Engine Selection Order:
 1. Kokoro (default, lightweight 82M model, CPU-optimized)

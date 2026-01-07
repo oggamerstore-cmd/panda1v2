@@ -3,7 +3,7 @@ PANDA.1 Audio Device Management
 ================================
 Enumerate and select audio input/output devices.
 
-Version: 0.2.11
+Version: 2.0
 
 Supports:
 - sounddevice for cross-platform device enumeration

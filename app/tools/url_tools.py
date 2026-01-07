@@ -3,7 +3,7 @@ PANDA.1 URL Tools
 =================
 Safe URL generation for search and media services.
 
-Version: 0.2.11
+Version: 2.0
 
 Features:
 - YouTube search URL generation

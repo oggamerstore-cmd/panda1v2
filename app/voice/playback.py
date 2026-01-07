@@ -3,7 +3,7 @@ PANDA.1 Audio Playback
 ======================
 Reliable audio output with multiple backend support.
 
-Version: 0.2.11
+Version: 2.0
 
 Features:
 - Primary: sounddevice for cross-platform playback

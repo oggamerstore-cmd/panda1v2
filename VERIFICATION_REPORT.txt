@@ -1,4 +1,4 @@
-🔍 PANDA.1 v0.2.11 Verification Suite
+🔍 PANDA.1 v2.0 Verification Suite
 ================================================================================
 
 📝 Test 1: Syntax Verification

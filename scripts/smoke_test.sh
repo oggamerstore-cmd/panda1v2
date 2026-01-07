@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# PANDA.1 v0.2.11 Smoke Test
+# PANDA.1 v2.0 Smoke Test
 # =============================================================================
 # Quick verification that all components are working.
 # Run after installation to verify setup.
@@ -43,7 +43,7 @@ warn() {
 
 echo ""
 echo "═══════════════════════════════════════════════════════════"
-echo "  PANDA.1 v0.2.11 Smoke Test"
+echo "  PANDA.1 v2.0 Smoke Test"
 echo "═══════════════════════════════════════════════════════════"
 echo ""
 

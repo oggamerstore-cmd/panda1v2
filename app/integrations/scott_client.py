@@ -3,11 +3,11 @@ PANDA.1 SCOTT Integration Client
 =================================
 Robust HTTP client for connecting to SCOTT news agent over LAN.
 
-Version: 0.2.11
+Version: 2.0
 
 Network Configuration:
-- PANDA.1 host: 192.168.1.17
-- SCOTT host: 192.168.1.18:8000
+- PANDA.1 host: 192.168.0.117
+- SCOTT host: 192.168.0.118:8000
 - Uses X-API-Key authentication
 
 Features:
@@ -44,7 +44,7 @@ except ImportError:
 class SCOTTConfig:
     """SCOTT connection configuration."""
     enabled: bool = True
-    base_url: str = "http://192.168.1.18:8000"
+    base_url: str = "http://192.168.0.118:8000"
     api_key: str = ""
     timeout: int = 8
     retry_count: int = 3
@@ -56,7 +56,7 @@ class SCOTTConfig:
         # Support both PANDA_SCOTT_* (preferred) and legacy SCOTT_* env vars
         return cls(
             enabled=os.environ.get("PANDA_SCOTT_ENABLED", os.environ.get("SCOTT_ENABLED", "true")).lower() in ("1", "true", "yes"),
-            base_url=os.environ.get("PANDA_SCOTT_BASE_URL", os.environ.get("SCOTT_BASE_URL", "http://192.168.1.18:8000")),
+            base_url=os.environ.get("PANDA_SCOTT_BASE_URL", os.environ.get("SCOTT_BASE_URL", "http://192.168.0.118:8000")),
             api_key=os.environ.get("PANDA_SCOTT_API_KEY", os.environ.get("SCOTT_API_KEY", "")),
             timeout=int(os.environ.get("PANDA_SCOTT_TIMEOUT", os.environ.get("SCOTT_TIMEOUT_SEC", "8"))),
             retry_count=int(os.environ.get("PANDA_SCOTT_RETRY_COUNT", os.environ.get("SCOTT_RETRY_COUNT", "3"))),
@@ -138,7 +138,7 @@ class SCOTTClient:
             if self.config.api_key:
                 self._session.headers["X-API-Key"] = self.config.api_key
             self._session.headers["Accept"] = "application/json"
-            self._session.headers["User-Agent"] = "PANDA.1/0.2.11"
+            self._session.headers["User-Agent"] = "PANDA.1/2.0"
         
         return self._session
     
@@ -417,7 +417,7 @@ def scott_doctor() -> Dict[str, Any]:
         host = parsed.hostname
         port = parsed.port or 8000
     except Exception:
-        host = "192.168.1.18"
+        host = "192.168.0.118"
         port = 8000
     
     # TCP connectivity check
@@ -529,7 +529,7 @@ def print_scott_doctor() -> None:
     if results["overall"] == "error":
         logging.info("\n  Common fixes:")
         logging.info("  • Ensure SCOTT is running: ssh scott 'pgrep -f uvicorn'")
-        logging.info("  • Check firewall: sudo ufw allow from 192.168.1.17")
+        logging.info("  • Check firewall: sudo ufw allow from 192.168.0.117")
         logging.info("  • Verify API key matches on both servers")
     
     logging.info()

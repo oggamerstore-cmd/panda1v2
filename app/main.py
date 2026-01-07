@@ -4,7 +4,7 @@ PANDA.1 - Personal AI Navigator & Digital Assistant
 ===================================================
 BOS Personal Edition
 
-Version: 0.2.11
+Version: 2.0
 
 CLI Usage:
   panda                    Launch GUI (default)
@@ -56,7 +56,7 @@ from .panda_core import PandaCore
 from .services.scott_client import ScottClient
 
 # Version info
-__version__ = "0.2.11"
+__version__ = "2.0"
 __author__ = "BOS"
 
 # TTS state (can be toggled with /voice)
@@ -975,7 +975,7 @@ def run_gui_doctor() -> int:
     
     print()
     print("═" * 60)
-    print("  PANDA.1 v0.2.11 GUI Doctor")
+    print("  PANDA.1 v2.0 GUI Doctor")
     print("═" * 60)
     print()
     
@@ -1513,7 +1513,7 @@ def run_sensei_doctor() -> int:
             print(f"\n  Health check: FAILED")
             print(f"  Error: {detail}")
             print("\n  Common fixes:")
-            print("  - Ensure SENSEI is running on 192.168.1.19:5000")
+            print("  - Ensure SENSEI is running on 192.168.0.120:5000")
             print(f"  - Check if {config.sensei_api_url} is reachable")
             print("  - Verify LAN connectivity")
             print("\n" + "=" * 60)

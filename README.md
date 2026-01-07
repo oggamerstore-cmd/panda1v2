@@ -1,10 +1,10 @@
-# PANDA.1 v0.2.11 — Production Enhancement
+# PANDA.1 v2.0 — Production Enhancement
 
 **Personal AI Navigator & Digital Assistant** for BOS.
 
 A local-first AI assistant with voice interaction, news integration, and business tools.
 
-## What's New in v0.2.11
+## What's New in v2.0
 
 ### 🎤 Complete Voice System Rewrite
 - **Faster-Whisper STT**: Fast, accurate speech recognition (EN + KO + AUTO)
@@ -33,8 +33,8 @@ A local-first AI assistant with voice interaction, news integration, and busines
 
 ```bash
 cd ~/.panda1
-unzip panda1_v0.2.11.zip
-cd panda1_v0.2.11
+unzip panda1_v2.0.zip
+cd panda1_v2.0
 ./install.sh
 ```
 
@@ -74,7 +74,7 @@ Configure in `~/.panda1/.env`:
 
 ```bash
 SCOTT_ENABLED=1
-SCOTT_BASE_URL=http://192.168.1.18:8000
+SCOTT_BASE_URL=http://192.168.0.118:8000
 SCOTT_API_KEY=your_secret
 ```
 
@@ -89,7 +89,7 @@ and can be triggered manually with the **"panda learn"** command.
 Configure in `~/.panda1/.env`:
 
 ```bash
-SENSEI_BASE_URL=http://192.168.1.19:5000
+SENSEI_BASE_URL=http://192.168.0.120:5000
 SENSEI_ENABLED=true
 SENSEI_HTTP_TIMEOUT_SECONDS=10
 SENSEI_SYNC_INTERVAL_SECONDS=600
@@ -129,7 +129,7 @@ Configure in `~/.panda1/.env`:
 
 ```bash
 PANDA_ECHO_ENABLED=true
-PANDA_ECHO_BASE_URL=http://192.168.1.20:9010
+PANDA_ECHO_BASE_URL=http://192.168.0.115:9010
 PANDA_ECHO_TOP_K=5
 ```
 
@@ -162,4 +162,4 @@ panda --audio-devices     # List devices
 
 ---
 
-**PANDA.1 v0.2.11** — Production Enhancement
+**PANDA.1 v2.0** — Production Enhancement
