@@ -3,7 +3,7 @@ PANDA.1 Voice Subsystem
 =======================
 Complete voice pipeline: PTT capture → Faster-Whisper STT → Kokoro TTS
 
-Version: 0.2.11
+Version: 2.0
 
 Components:
 - devices: Audio device enumeration and selection
@@ -65,4 +65,4 @@ __all__ = [
     "VoiceState",
 ]
 
-__version__ = "0.2.11"
+__version__ = "2.0"

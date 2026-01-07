@@ -3,7 +3,7 @@ PANDA.1 Mood System
 ===================
 Manages PANDA.1's emotional state for GUI visualization.
 
-Version: 0.2.11
+Version: 2.0
 
 Mood states affect the GUI's color scheme and response style.
 """

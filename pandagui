@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# PANDA.1 GUI Launcher v0.2.11 - Fullscreen Browser App
+# PANDA.1 GUI Launcher v2.0 - Fullscreen Browser App
 # =============================================================================
 # This script launches PANDA.1 web GUI in a fullscreen kiosk-style window.
 # 
@@ -231,7 +231,7 @@ print_lan_info() {
 # Main execution
 main() {
     log "=========================================="
-    log "PANDA.1 GUI Launcher v0.2.11"
+    log "PANDA.1 GUI Launcher v2.0"
     log "=========================================="
     
     # Load environment

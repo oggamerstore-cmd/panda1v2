@@ -13,7 +13,7 @@ This guide explains how to configure PANDA.1's Ollama backend for network access
 │                                                                     │
 │  ┌─────────────────┐     ┌─────────────────┐     ┌──────────────┐  │
 │  │   PANDA.1       │     │     SCOTT       │     │    SENSEI    │  │
-│  │  192.168.1.17   │     │  192.168.1.18   │     │ 192.168.1.19 │  │
+│  │  192.168.0.117   │     │  192.168.0.118   │     │ 192.168.0.120 │  │
 │  │                 │     │                 │     │              │  │
 │  │  Ollama:11434   │◄────┤  FastAPI:8000   │     │  AgentHub    │  │
 │  │  (LLM server)   │     │  (news agent)   │     │  (planned)   │  │
@@ -28,9 +28,9 @@ This guide explains how to configure PANDA.1's Ollama backend for network access
 
 | Machine   | IP            | Port  | Service              |
 |-----------|---------------|-------|----------------------|
-| PANDA.1   | 192.168.1.17  | 11434 | Ollama (LLM)         |
-| SCOTT     | 192.168.1.18  | 8000  | News Agent API       |
-| SENSEI    | 192.168.1.19  | 8002  | Agent Hub (planned)  |
+| PANDA.1   | 192.168.0.117  | 11434 | Ollama (LLM)         |
+| SCOTT     | 192.168.0.118  | 8000  | News Agent API       |
+| SENSEI    | 192.168.0.120  | 8002  | Agent Hub (planned)  |
 
 ---
 
@@ -99,7 +99,7 @@ curl http://localhost:11434/api/tags
 
 **Remote test (from SENSEI or any other machine):**
 ```bash
-curl http://192.168.1.17:11434/api/tags
+curl http://192.168.0.117:11434/api/tags
 ```
 
 Both should return a JSON list of available models.
@@ -150,7 +150,7 @@ In SENSEI's `agent_hub.py`:
 # PANDA.1 agent configuration
 self.agents["panda1"] = AgentConfig(
     name="panda1",
-    base_url="http://192.168.1.17:11434",  # ← Full URL with port!
+    base_url="http://192.168.0.117:11434",  # ← Full URL with port!
     model="panda1:latest",
     health_endpoint="/api/tags"
 )
@@ -160,9 +160,9 @@ self.agents["panda1"] = AgentConfig(
 
 | Wrong                              | Correct                               |
 |------------------------------------|---------------------------------------|
-| `http://localhost:11434`           | `http://192.168.1.17:11434`           |
-| `http://192.168.1.17` (no port)    | `http://192.168.1.17:11434`           |
-| `192.168.1.17:11434` (no scheme)   | `http://192.168.1.17:11434`           |
+| `http://localhost:11434`           | `http://192.168.0.117:11434`           |
+| `http://192.168.0.117` (no port)    | `http://192.168.0.117:11434`           |
+| `192.168.0.117:11434` (no scheme)   | `http://192.168.0.117:11434`           |
 
 ### Verifying AgentHub Connection
 
@@ -170,10 +170,10 @@ From SENSEI:
 
 ```bash
 # Test health check (what AgentHub does internally)
-curl http://192.168.1.17:11434/api/tags
+curl http://192.168.0.117:11434/api/tags
 
 # Test chat endpoint
-curl -X POST http://192.168.1.17:11434/api/chat \
+curl -X POST http://192.168.0.117:11434/api/chat \
   -H "Content-Type: application/json" \
   -d '{
     "model": "panda1:latest",
@@ -186,7 +186,7 @@ curl -X POST http://192.168.1.17:11434/api/chat \
 
 ## Integration with SCOTT
 
-SCOTT is a separate news agent running on 192.168.1.18:8000. PANDA.1 connects to it as a client.
+SCOTT is a separate news agent running on 192.168.0.118:8000. PANDA.1 connects to it as a client.
 
 ### PANDA.1 Configuration
 
@@ -194,7 +194,7 @@ In your `.env` file or environment:
 
 ```bash
 PANDA_SCOTT_ENABLED=true
-PANDA_SCOTT_API_URL=http://192.168.1.18:8000/api
+PANDA_SCOTT_API_URL=http://192.168.0.118:8000/api
 PANDA_SCOTT_TIMEOUT=10
 ```
 
@@ -204,10 +204,10 @@ From PANDA.1:
 
 ```bash
 # Test SCOTT health
-curl http://192.168.1.18:8000/api/health
+curl http://192.168.0.118:8000/api/health
 
 # Test SCOTT news endpoint
-curl http://192.168.1.18:8000/api/articles/top?limit=5
+curl http://192.168.0.118:8000/api/articles/top?limit=5
 ```
 
 ---
@@ -218,16 +218,16 @@ If you have UFW or another firewall enabled, allow the necessary ports:
 
 ```bash
 # On PANDA.1 - allow Ollama port
-sudo ufw allow from 192.168.1.0/24 to any port 11434
+sudo ufw allow from 192.168.0.0/24 to any port 11434
 
 # On SCOTT - allow API port
-sudo ufw allow from 192.168.1.0/24 to any port 8000
+sudo ufw allow from 192.168.0.0/24 to any port 8000
 
 # On SENSEI - allow AgentHub port (future)
-sudo ufw allow from 192.168.1.0/24 to any port 8002
+sudo ufw allow from 192.168.0.0/24 to any port 8002
 ```
 
-This only allows connections from your local network (192.168.1.0/24).
+This only allows connections from your local network (192.168.0.0/24).
 
 ---
 
@@ -256,8 +256,8 @@ sudo systemctl restart ollama
 
 **Solution:** Always include `:11434` in the URL:
 ```
-✗ http://192.168.1.17         → Defaults to port 80
-✓ http://192.168.1.17:11434   → Correct
+✗ http://192.168.0.117         → Defaults to port 80
+✓ http://192.168.0.117:11434   → Correct
 ```
 
 ### Problem: Model not found
@@ -291,7 +291,7 @@ curl -X POST http://localhost:11434/api/generate \
 
 ## Security Notes
 
-⚠️ **LAN-only access:** The configuration in this guide allows ANY device on your local network (192.168.1.0/24) to access Ollama. This is intentional for PANDA.1's use case but be aware of the implications.
+⚠️ **LAN-only access:** The configuration in this guide allows ANY device on your local network (192.168.0.0/24) to access Ollama. This is intentional for PANDA.1's use case but be aware of the implications.
 
 **Do NOT:**
 - Expose port 11434 to the internet (don't port-forward it)

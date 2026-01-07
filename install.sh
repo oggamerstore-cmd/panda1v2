@@ -1,13 +1,13 @@
 #!/bin/bash
 # =============================================================================
-# PANDA.1 v0.2.11 Installer
+# PANDA.1 v2.0 Installer
 # =============================================================================
 # Installs PANDA.1 to ~/.panda1/ with all dependencies
 # =============================================================================
 
 set -e
 
-VERSION="0.2.11"
+VERSION="2.0"
 PANDA_HOME="${HOME}/.panda1"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -343,7 +343,7 @@ EOF
 
 print_summary() {
     # Get local IP
-    LOCAL_IP=$(hostname -I 2>/dev/null | awk '{print $1}' || echo "192.168.1.17")
+    LOCAL_IP=$(hostname -I 2>/dev/null | awk '{print $1}' || echo "192.168.0.117")
     
     echo ""
     echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"

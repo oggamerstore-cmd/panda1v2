@@ -3,7 +3,7 @@ PANDA.1 Integrations
 ====================
 External service integrations for PANDA.1.
 
-Version: 0.2.11
+Version: 2.0
 
 Integrations:
 - SCOTT: News agent (LAN HTTP API)
@@ -45,4 +45,4 @@ __all__ = [
     "print_openai_doctor",
 ]
 
-__version__ = "0.2.11"
+__version__ = "2.0"

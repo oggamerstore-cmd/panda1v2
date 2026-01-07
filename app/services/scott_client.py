@@ -8,7 +8,7 @@ import httpx
 
 @dataclass(frozen=True)
 class ScottSettings:
-    base_url: str = os.getenv("SCOTT_BASE_URL", "https://192.168.1.18:8443").rstrip("/")
+    base_url: str = os.getenv("SCOTT_BASE_URL", "https://192.168.0.118:8443").rstrip("/")
     verify_tls: bool = os.getenv("SCOTT_VERIFY_TLS", "false").lower() in ("1", "true", "yes")
     timeout_seconds: float = float(os.getenv("SCOTT_TIMEOUT_SECONDS", "30"))
 

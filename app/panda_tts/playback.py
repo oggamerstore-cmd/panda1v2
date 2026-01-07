@@ -3,7 +3,7 @@ PANDA.1 Audio Playback Utilities
 ================================
 Robust non-blocking audio playback for TTS output.
 
-Version: 0.2.11
+Version: 2.0
 
 Features:
 - ALSA device selection via PANDA_ALSA_DEVICE

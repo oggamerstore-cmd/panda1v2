@@ -1,7 +1,7 @@
 # PANDA.1 Changelog
 
 
-## v0.2.11 - Production Enhancement (2025-01-01)
+## v2.0 - Production Enhancement (2025-01-01)
 
 ### 🔧 Code Quality
 - **Fixed all bare except clauses**: All exception handling now properly specifies exception types
@@ -50,7 +50,7 @@
   - `manager.py`: Unified VoiceManager for all voice operations
 
 ### 🌐 SCOTT Integration Rewrite
-- **LAN HTTP**: Proper connection to SCOTT at 192.168.1.18:8000
+- **LAN HTTP**: Proper connection to SCOTT at 192.168.0.118:8000
 - **API Key Auth**: X-API-Key header on all requests
 - **Proxy Endpoints**: Frontend never calls SCOTT directly
 - **Clear Errors**: Specific messages for timeout, auth, connection failures
@@ -99,7 +99,7 @@
 - `PANDA_OPENAI_CONFIDENCE_THRESHOLD=0.75` - Fallback trigger
 - `PANDA_ENABLE_HTTPS=false` - Enable HTTPS mode
 - `PANDA_HTTPS_PORT=7860` - HTTPS port
-- `SCOTT_BASE_URL=http://192.168.1.18:8000` - SCOTT URL
+- `SCOTT_BASE_URL=http://192.168.0.118:8000` - SCOTT URL
 - `SCOTT_API_KEY=` - SCOTT authentication
 
 ### 📜 Scripts

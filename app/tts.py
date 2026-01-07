@@ -6,7 +6,7 @@ Provides backward-compatible TTS imports for main.py and other modules.
 This shim re-exports functions from app.panda_tts and adds 
 compatibility functions like is_tts_available() and get_tts_status().
 
-Version: 0.2.11
+Version: 2.0
 
 Usage:
     from tts import speak, is_tts_available, get_tts_status

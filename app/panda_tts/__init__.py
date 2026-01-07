@@ -3,7 +3,7 @@ PANDA.1 TTS System
 ==================
 Offline Text-to-Speech for PANDA.1.
 
-Version: 0.2.11
+Version: 2.0
 
 TTS Engines:
 - Kokoro (default, lightweight 82M model, CPU-optimized, Michael voice)
@@ -52,4 +52,4 @@ __all__ = [
     "get_player",
 ]
 
-__version__ = "0.2.11"
+__version__ = "2.0"

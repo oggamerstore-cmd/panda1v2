@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================================
-# PANDA.1 v0.2.11 - HTTPS Certificate Generator
+# PANDA.1 v2.0 - HTTPS Certificate Generator
 # ============================================================================
 # Generates self-signed certificates for HTTPS mode.
 # Required when accessing GUI from LAN IP (microphone permissions).
@@ -46,7 +46,7 @@ if [[ -f "${CERT_FILE}" && -f "${KEY_FILE}" ]]; then
 fi
 
 # Get local IP
-LOCAL_IP=$(hostname -I 2>/dev/null | awk '{print $1}' || echo "192.168.1.17")
+LOCAL_IP=$(hostname -I 2>/dev/null | awk '{print $1}' || echo "192.168.0.117")
 
 echo "Generating self-signed certificate..."
 echo "  IP: ${LOCAL_IP}"

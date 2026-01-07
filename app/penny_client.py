@@ -3,10 +3,10 @@ PANDA.1 PENNY Client
 ====================
 Client for communicating with PENNY (Personal ENterprise financialNY advisor) finance agent.
 
-Version: 0.2.11
+Version: 2.0
 
 Network Configuration:
-- PENNY runs on localhost:8003 by default
+- PENNY runs on 192.168.0.119:8003 by default
 - Configure via PANDA_PENNY_API_URL environment variable
 """
 
@@ -31,7 +31,7 @@ class PennyClient:
         Initialize PENNY client.
         
         Args:
-            base_url: PENNY API base URL (e.g., http://localhost:8003/api)
+            base_url: PENNY API base URL (e.g., http://192.168.0.119:8003/api)
             timeout: Request timeout in seconds
         """
         self.base_url = base_url.rstrip('/')

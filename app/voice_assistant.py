@@ -3,7 +3,7 @@ PANDA.1 Voice Assistant
 =======================
 Voice assistant with wake phrase detection using Faster-Whisper.
 
-Version: 0.2.11
+Version: 2.0
 
 States:
 - SLEEPING: Waiting for wake phrase
@@ -676,7 +676,7 @@ def print_audio_devices():
     
     logging.info()
     logging.info("=" * 70)
-    logging.info("  PANDA.1 Audio Devices (v0.2.11)")
+    logging.info("  PANDA.1 Audio Devices (v2.0)")
     logging.info("=" * 70)
     logging.info()
     
@@ -914,7 +914,7 @@ def run_voice_assistant() -> int:
     
     logging.info()
     logging.info("=" * 50)
-    logging.info("PANDA.1 Voice Assistant v0.2.11")
+    logging.info("PANDA.1 Voice Assistant v2.0")
     logging.info("=" * 50)
     logging.info()
     logging.info(f"Wake phrases: {', '.join(config.wake_phrase_list)}")

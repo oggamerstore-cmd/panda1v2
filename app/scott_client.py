@@ -3,10 +3,10 @@ PANDA.1 SCOTT Client
 ====================
 Client for communicating with SCOTT (Smart Curator Of Today's Topics) news agent.
 
-Version: 0.2.11
+Version: 2.0
 
 Network Configuration:
-- SCOTT runs on 192.168.1.18:8000
+- SCOTT runs on 192.168.0.118:8000
 - Configure via PANDA_SCOTT_BASE_URL environment variable
 
 URL Structure:
@@ -45,7 +45,7 @@ class ScottClient:
         Initialize SCOTT client.
 
         Args:
-            base_url: SCOTT base URL (e.g., http://192.168.1.18:8000)
+            base_url: SCOTT base URL (e.g., http://192.168.0.118:8000)
             timeout: Request timeout in seconds
             max_retries: Maximum retry attempts for failed requests
         """
@@ -72,7 +72,7 @@ class ScottClient:
         adapter = HTTPAdapter(max_retries=retry_strategy)
         self._session.mount("http://", adapter)
         self._session.mount("https://", adapter)
-        self._session.headers["User-Agent"] = "PANDA.1/0.2.11"
+        self._session.headers["User-Agent"] = "PANDA.1/2.0"
 
         logger.info(f"SCOTT client initialized: {self.base_url}")
     

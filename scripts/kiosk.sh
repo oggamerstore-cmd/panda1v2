@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================================
-# PANDA.1 v0.2.11 - Kiosk Mode Launcher
+# PANDA.1 v2.0 - Kiosk Mode Launcher
 # ============================================================================
 # Launches PANDA.1 GUI in fullscreen kiosk mode.
 # Used for desktop autostart or manual kiosk launch.

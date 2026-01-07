@@ -3,11 +3,11 @@ PANDA.1 Configuration
 =====================
 Central configuration for all PANDA.1 components.
 
-Version: 0.2.11
+Version: 2.0
 
 Network Configuration:
 - Ollama host: PANDA_OLLAMA_HOST (default: http://localhost:11434)
-- SCOTT news: SCOTT_BASE_URL (default: http://192.168.1.18:8000)
+- SCOTT news: SCOTT_BASE_URL (default: http://192.168.0.118:8000)
 - GUI binds to 127.0.0.1:7860 for local kiosk usage
 
 Voice Configuration (NEW in v0.2.10):
@@ -153,7 +153,7 @@ class PandaConfig(BaseSettings):
         description="Enable SCOTT news integration"
     )
     scott_base_url: str = Field(
-        default="http://192.168.1.18:8000",
+        default="http://192.168.0.118:8000",
         validation_alias=AliasChoices("PANDA_SCOTT_BASE_URL", "SCOTT_BASE_URL", "PANDA_SCOTT_API_URL", "SCOTT_API_URL"),
         description="SCOTT news agent base URL (LAN HTTP)"
     )
@@ -174,7 +174,7 @@ class PandaConfig(BaseSettings):
     # PENNY Finance Agent
     penny_enabled: bool = Field(default=True, description="Enable PENNY finance integration")
     penny_api_url: str = Field(
-        default="http://localhost:8003/api",
+        default="http://192.168.0.119:8003/api",
         description="PENNY finance agent API URL"
     )
     penny_timeout: int = Field(default=20, description="PENNY request timeout in seconds")
@@ -186,7 +186,7 @@ class PandaConfig(BaseSettings):
         description="Enable SENSEI learning hub integration"
     )
     sensei_api_url: str = Field(
-        default="http://192.168.1.19:5000",
+        default="http://192.168.0.120:5000",
         validation_alias=AliasChoices("PANDA_SENSEI_API_URL", "SENSEI_API_URL", "SENSEI_BASE_URL"),
         description="SENSEI learning hub base URL (LAN HTTP)"
     )
@@ -215,7 +215,7 @@ class PandaConfig(BaseSettings):
     # ECHO Context Hub (Database PC)
     echo_enabled: bool = Field(default=True, description="Enable ECHO context hub integration")
     echo_base_url: str = Field(
-        default="http://192.168.1.20:9010",
+        default="http://192.168.0.115:9010",
         description="ECHO vector database base URL"
     )
     echo_api_key: str = Field(
@@ -227,7 +227,7 @@ class PandaConfig(BaseSettings):
     
     # Local network info (for documentation/reference)
     panda_ip: str = Field(
-        default="192.168.1.17",
+        default="192.168.0.117",
         description="PANDA.1 machine IP address on local network"
     )
     
@@ -572,7 +572,7 @@ class PandaConfig(BaseSettings):
     def to_display_dict(self) -> dict:
         """Return config as dict for display (no sensitive data)."""
         return {
-            "Version": "0.2.11",
+            "Version": "2.0",
             "Ollama Host": self.ollama_host,
             "LLM Model": self.llm_model,
             "Fallback Model": self.llm_fallback_model,

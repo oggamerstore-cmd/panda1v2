@@ -1,4 +1,4 @@
-# Upgrade to PANDA.1 v0.2.11 (Production)
+# Upgrade to PANDA.1 v2.0 (Production)
 
 ## What's New
 
@@ -56,7 +56,7 @@ No configuration changes required. All existing `.env` settings are compatible.
 
 If you need to rollback:
 ```bash
-mv ~/.panda1 ~/.panda1.v0.2.11
+mv ~/.panda1 ~/.panda1.v2.0
 mv ~/.panda1.backup ~/.panda1
 ```
 

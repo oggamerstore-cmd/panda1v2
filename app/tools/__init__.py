@@ -3,7 +3,7 @@ PANDA.1 Tools
 =============
 Safe tool implementations for documents, URLs, and search.
 
-Version: 0.2.11
+Version: 2.0
 
 Tools:
 - document: Open/preview .docx and text files
@@ -39,4 +39,4 @@ __all__ = [
     "open_url_safe",
 ]
 
-__version__ = "0.2.11"
+__version__ = "2.0"

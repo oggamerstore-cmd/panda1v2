@@ -3,7 +3,7 @@ PANDA.1 Intent Examples Loader
 ==============================
 Loads intent examples from JSONL files for fuzzy matching.
 
-Version: 0.2.11
+Version: 2.0
 """
 
 import json

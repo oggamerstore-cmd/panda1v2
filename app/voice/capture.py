@@ -3,7 +3,7 @@ PANDA.1 Audio Capture
 =====================
 Push-to-talk recording engine with real-time audio capture.
 
-Version: 0.2.11
+Version: 2.0
 
 Features:
 - Start/stop recording on demand (PTT)
