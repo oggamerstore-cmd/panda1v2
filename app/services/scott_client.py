@@ -5,6 +5,12 @@ from urllib.parse import quote, urlparse
 
 import httpx
 
+from app.config import get_config
+
+
+def _parse_bool_env(value: str) -> bool:
+    return value.lower() in ("1", "true", "yes")
+
 
 @dataclass(frozen=True)
 class ScottSettings:
@@ -20,7 +26,7 @@ class ScottClient:
     """
 
     def __init__(self, settings: Optional[ScottSettings] = None):
-        self.s = settings or ScottSettings()
+        self.s = settings or ScottSettings.from_config()
 
     def _candidates(self) -> list[str]:
         cands = [self.s.base_url]
