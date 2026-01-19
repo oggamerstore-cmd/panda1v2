@@ -5,12 +5,30 @@ from urllib.parse import quote
 
 import httpx
 
+from app.config import get_config
+
+
+def _parse_bool_env(value: str) -> bool:
+    return value.lower() in ("1", "true", "yes")
+
 
 @dataclass(frozen=True)
 class ScottSettings:
-    base_url: str = os.getenv("SCOTT_BASE_URL", "https://192.168.0.118:8443").rstrip("/")
-    verify_tls: bool = os.getenv("SCOTT_VERIFY_TLS", "false").lower() in ("1", "true", "yes")
-    timeout_seconds: float = float(os.getenv("SCOTT_TIMEOUT_SECONDS", "30"))
+    base_url: str
+    verify_tls: bool
+    timeout_seconds: float
+
+    @classmethod
+    def from_config(cls) -> "ScottSettings":
+        config = get_config()
+        base_url = config.scott_base_url.rstrip("/")
+        verify_tls = _parse_bool_env(os.getenv("SCOTT_VERIFY_TLS", "false"))
+        timeout_seconds = float(config.scott_timeout)
+        return cls(
+            base_url=base_url,
+            verify_tls=verify_tls,
+            timeout_seconds=timeout_seconds,
+        )
 
 
 class ScottClient:
@@ -20,7 +38,7 @@ class ScottClient:
     """
 
     def __init__(self, settings: Optional[ScottSettings] = None):
-        self.s = settings or ScottSettings()
+        self.s = settings or ScottSettings.from_config()
 
     def _candidates(self) -> list[str]:
         cands = [self.s.base_url]
