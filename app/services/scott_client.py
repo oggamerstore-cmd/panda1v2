@@ -18,6 +18,15 @@ class ScottSettings:
     verify_tls: bool = os.getenv("SCOTT_VERIFY_TLS", "false").lower() in ("1", "true", "yes")
     timeout_seconds: float = float(os.getenv("SCOTT_TIMEOUT_SECONDS", "30"))
 
+    @classmethod
+    def from_config(cls) -> "ScottSettings":
+        config = get_config()
+        return cls(
+            base_url=config.scott_base_url.rstrip("/"),
+            verify_tls=os.getenv("SCOTT_VERIFY_TLS", "false").lower() in ("1", "true", "yes"),
+            timeout_seconds=float(config.scott_timeout),
+        )
+
 
 class ScottClient:
     """
