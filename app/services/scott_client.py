@@ -1,14 +1,14 @@
 import os
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 
 import httpx
 
 
 @dataclass(frozen=True)
 class ScottSettings:
-    base_url: str = os.getenv("SCOTT_BASE_URL", "https://192.168.0.118:8443").rstrip("/")
+    base_url: str = os.getenv("SCOTT_BASE_URL", "http://192.168.0.118:8000").rstrip("/")
     verify_tls: bool = os.getenv("SCOTT_VERIFY_TLS", "false").lower() in ("1", "true", "yes")
     timeout_seconds: float = float(os.getenv("SCOTT_TIMEOUT_SECONDS", "30"))
 
@@ -16,7 +16,7 @@ class ScottSettings:
 class ScottClient:
     """
     Minimal client for BOS's SCOTT FastAPI server.
-    Tries HTTPS base_url first, optionally falls back to :5000 HTTP if unreachable.
+    Tries base_url first, then HTTPS :8443 and HTTP :8000 fallbacks.
     """
 
     def __init__(self, settings: Optional[ScottSettings] = None):
@@ -24,8 +24,14 @@ class ScottClient:
 
     def _candidates(self) -> list[str]:
         cands = [self.s.base_url]
-        if self.s.base_url.startswith("https://") and self.s.base_url.endswith(":8443"):
-            cands.append(self.s.base_url.replace("https://", "http://").replace(":8443", ":5000"))
+        parsed = urlparse(self.s.base_url)
+        host = parsed.hostname
+        if host:
+            fallbacks = [
+                f"https://{host}:8443",
+                f"http://{host}:8000",
+            ]
+            cands.extend(fallbacks)
         return list(dict.fromkeys(cands))
 
     async def _aget_json(self, path: str) -> Dict[str, Any]:
